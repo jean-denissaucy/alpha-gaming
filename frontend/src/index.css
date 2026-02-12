@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@layer base {
+	:root {
+		font-family: "Space Grotesk", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	body {
+		@apply bg-stone-50 text-slate-900 antialiased;
+	}
+}
+
+@layer components {
+	.btn { @apply inline-flex items-center justify-center rounded-full px-5 py-2 text-sm font-semibold transition; }
+	.btn-primary { @apply bg-emerald-600 text-white hover:bg-emerald-700; }
+	.btn-outline { @apply border border-slate-300 text-slate-700 hover:border-slate-400; }
+	.input { @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:outline-none; }
+}

@@ -1,0 +1,145 @@
+// pages/Register.jsx - Page d'inscription
+
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth.js';
+
+function Register() {
+    // États pour gérer les champs du formulaire
+    const [firstname, setFirstname] = useState('');
+    const [lastname, setLastname] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    // États pour gérer les erreurs et le chargement
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    // Hook d'authentification et navigation
+    const { register } = useAuth();
+    const navigate = useNavigate();
+
+    // Gestion de la soumission du formulaire d'inscription
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Réinitialisation de l'erreur et activation du loader
+        setError('');
+        setLoading(true);
+
+        try {
+            // Appel de la fonction d'inscription depuis le contexte
+            await register({ firstname, lastname, email, password });
+
+            // Redirection vers le dashboard après succès
+            navigate('/dashboard', { replace: true });
+        } catch (err) {
+            // Affichage de l'erreur en cas d'échec
+            setError(err.message || "L'inscription a échoué");
+        } finally {
+            // Désactivation du loader
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="mx-auto max-w-6xl px-6 py-16">
+            <div className="grid w-full gap-10 lg:grid-cols-2">
+                {/* Colonne gauche - Informations sur le starter kit */}
+                <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+                    <h1 className="text-3xl font-semibold text-slate-900">Créez votre compte</h1>
+                    <p className="mt-3 text-sm text-slate-600">
+                        Rejoignez le starter kit et accédez au tableau de bord protégé.
+                    </p>
+                    <ul className="mt-6 space-y-3 text-sm text-slate-600">
+                        <li>Session JWT sécurisée</li>
+                        <li>Endpoint profil prêt</li>
+                        <li>Interface Tailwind prête</li>
+                    </ul>
+                </div>
+
+                {/* Colonne droite - Formulaire d'inscription */}
+                <form
+                    onSubmit={handleSubmit}
+                    className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+                >
+                    {/* Champs prénom et nom sur la même ligne */}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <label className="text-xs uppercase tracking-wide text-slate-500">Prénom</label>
+                            <input
+                                className="input mt-2"
+                                value={firstname}
+                                onChange={(e) => setFirstname(e.target.value)}
+                                required
+                                placeholder="Jane"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-xs uppercase tracking-wide text-slate-500">Nom</label>
+                            <input
+                                className="input mt-2"
+                                value={lastname}
+                                onChange={(e) => setLastname(e.target.value)}
+                                required
+                                placeholder="Doe"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Champ email */}
+                    <div className="mt-4">
+                        <label className="text-xs uppercase tracking-wide text-slate-500">Email</label>
+                        <input
+                            type="email"
+                            className="input mt-2"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            placeholder="jane@company.com"
+                        />
+                    </div>
+
+                    {/* Champ mot de passe */}
+                    <div className="mt-4">
+                        <label className="text-xs uppercase tracking-wide text-slate-500">Mot de passe</label>
+                        <input
+                            type="password"
+                            className="input mt-2"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            placeholder="Au moins 8 caractères"
+                        />
+                    </div>
+
+                    {/* Affichage de l'erreur si présente */}
+                    {error && (
+                        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                            {error}
+                        </div>
+                    )}
+
+                    {/* Bouton de soumission avec état de chargement */}
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="btn btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        {loading ? 'Création du compte...' : 'Créer mon compte'}
+                    </button>
+
+                    {/* Lien vers la page de connexion */}
+                    <p className="mt-4 text-sm text-slate-500">
+                        Déjà un compte ?{' '}
+                        <Link className="font-semibold text-slate-900" to="/login">
+                            Se connecter
+                        </Link>
+                    </p>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+export default Register;
