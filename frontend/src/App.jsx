@@ -9,6 +9,7 @@ import { useAuth } from './hooks/useAuth.js';
 // Import des layouts (structures de page)
 import MainLayout from './layouts/MainLayout.jsx';
 import AuthLayout from './layouts/AuthLayout.jsx';
+import BackgroundAnimation from './components/BackgroundAnimation.jsx';
 
 // Import du composant de protection des routes
 import PrivateRoute from './components/PrivateRoute.jsx';
@@ -28,32 +29,35 @@ function App() {
     if (loading) return <div><p>Chargement...</p></div>;
 
     return (
-        <Routes>
-            {/* Routes publiques avec Header + Footer */}
-            <Route element={<MainLayout />}>
+        <>
+            <BackgroundAnimation />
+            <Routes>
+                {/* Routes publiques avec Header + Footer */}
+                <Route element={<MainLayout />}>
 
-                {/* Page d'accueil accessible à tous */}
-                <Route path="/" element={<Home />} />
+                    {/* Page d'accueil accessible à tous */}
+                    <Route path="/" element={<Home />} />
 
-                {/* Dashboard protégé - nécessite une authentification */}
-                <Route path="/dashboard" element={
-                    <PrivateRoute><Dashboard /></PrivateRoute>
-                } />
-            </Route>
+                    {/* Dashboard protégé - nécessite une authentification */}
+                    <Route path="/dashboard" element={
+                        <PrivateRoute><Dashboard /></PrivateRoute>
+                    } />
+                </Route>
 
-            {/* Routes d'authentification avec Header + Footer */}
-            <Route element={<AuthLayout />}>
+                {/* Routes d'authentification avec Header + Footer */}
+                <Route element={<AuthLayout />}>
 
-                {/* Page de connexion */}
-                <Route path="/login" element={<Login />} />
+                    {/* Page de connexion */}
+                    <Route path="/login" element={<Login />} />
 
-                {/* Page d'inscription */}
-                <Route path="/register" element={<Register />} />
-            </Route>
+                    {/* Page d'inscription */}
+                    <Route path="/register" element={<Register />} />
+                </Route>
 
-            {/* Redirection de toutes les routes inconnues vers l'accueil */}
-            <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+                {/* Redirection de toutes les routes inconnues vers l'accueil */}
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </>
     );
 }
 export default App;

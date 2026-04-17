@@ -1,10 +1,28 @@
 // contexts/AuthContext.jsx - Contexte global pour gérer l'authentification
 
-import { createContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { authService } from '../services/api.js';
+import { AuthContext } from './auth-context.js';
 
-// Création du contexte d'authentification
-export const AuthContext = createContext(null);
+function buildUserFromToken(token) {
+    try {
+        const payloadPart = token.split('.')[1];
+        if (!payloadPart) return null;
+
+        const normalized = payloadPart.replace(/-/g, '+').replace(/_/g, '/');
+        // Ajoute le padding manquant pour un base64 valide
+        const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), '=');
+        const decoded = JSON.parse(atob(padded));
+        return {
+            id: decoded.id,
+            email: decoded.email,
+            firstname: 'Joueur',
+            lastname: ''
+        };
+    } catch {
+        return null;
+    }
+}
 
 // Provider qui enveloppe l'application et fournit l'état d'authentification
 export function AuthProvider({ children }) {
@@ -12,23 +30,45 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
 
     // État pour gérer le chargement initial (vérification du token)
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(() => !!localStorage.getItem('token'));
 
     // Vérification de l'authentification au chargement de l'application
     useEffect(() => {
+        let isMounted = true;
+
         // Récupération du token JWT depuis le localStorage
         const token = localStorage.getItem('token');
 
-        if (token) {
-            // Si un token existe, récupération du profil utilisateur
-            authService.getProfile()
-                .then(data => setUser(data.user))
-                .catch(() => localStorage.removeItem('token')) // Suppression du token invalide
-                .finally(() => setLoading(false));
-        } else {
-            // Pas de token = pas d'authentification
-            setLoading(false);
+        if (!token) {
+            return () => {
+                isMounted = false;
+            };
         }
+
+        // Si un token existe, récupération du profil utilisateur
+        authService.getProfile()
+            .then(data => {
+                if (!isMounted) return;
+                setUser(data.user);
+            })
+            .catch(() => {
+                if (!isMounted) return;
+                const fallbackUser = buildUserFromToken(token);
+                if (fallbackUser) {
+                    setUser(fallbackUser);
+                } else {
+                    localStorage.removeItem('token');
+                }
+            })
+            .finally(() => {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            });
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     // Fonction de connexion

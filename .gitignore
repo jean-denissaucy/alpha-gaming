@@ -1,4 +1,34 @@
 /backend/node_modules
-/backend/.env
 /frontend/node_modules
+
+# Dependances (racine)
+/node_modules
+
+# Variables d'environnement
+/.env.*
+!/env.example
+/backend/.env
 /frontend/.env
+/backend/.env.*
+/frontend/.env.*
+
+# Builds / artefacts
+/frontend/dist
+/frontend/.vite
+/backend/dist
+/coverage
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Fichiers OS / editeur
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json

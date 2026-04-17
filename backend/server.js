@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import { testConnection } from './config/db.js';
 import authRoutes from './routes/auth.routes.js';
+import newsRoutes from './routes/news.routes.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -11,7 +12,34 @@ const PORT = process.env.PORT || 5000;
 testConnection();
 
 // Middlewares
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+const envAllowedOrigins = (process.env.CORS_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+const isAllowedOrigin = (origin) => {
+    if (!origin) return true;
+
+    if (envAllowedOrigins.includes(origin)) {
+        return true;
+    }
+
+    return (
+        /^http:\/\/localhost(?::\d+)?$/.test(origin)
+        || /^http:\/\/127\.0\.0\.1(?::\d+)?$/.test(origin)
+        || /^http:\/\/[a-z0-9-]+\.test(?::\d+)?$/i.test(origin)
+    );
+};
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (isAllowedOrigin(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error('Origine CORS non autorisee'));
+    },
+    credentials: true
+}));
 app.use(express.json());
 
 // Logger (dev)
@@ -29,6 +57,9 @@ app.get('/', (req, res) => {
 
 // Routes d'authentification
 app.use('/api/auth', authRoutes);
+
+// Routes news publiques
+app.use('/api/news', newsRoutes);
 
 // 404
 app.use((req, res) => res.status(404).json({ error: 'Route non trouvée' }));

@@ -1,7 +1,7 @@
 // services/api.js - Service pour les appels API
 
 // URL de base de l'API backend
-const API_URL = 'http://localhost:5000/api';
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/$/, '');
 
 // Fonction générique pour effectuer des requêtes API
 async function fetchAPI(endpoint, options = {}) {
@@ -56,4 +56,16 @@ export const authService = {
 
     // Récupération du profil utilisateur (endpoint protégé)
     getProfile: () => fetchAPI('/auth/me')
+};
+
+export const newsService = {
+
+    // Récupération des news gaming actuelles
+    getLatest: (limit = 9) => fetchAPI(`/news?limit=${limit}`)
+};
+
+export const esportService = {
+
+    // Recuperation des matchs/esports recents
+    getLatest: (limit = 10) => fetchAPI(`/news/esport?limit=${limit}`)
 };

@@ -1,7 +1,7 @@
 // hooks/useAuth.js - Hook personnalisé pour accéder au contexte d'authentification
 
 import { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext.jsx';
+import { AuthContext } from '../contexts/auth-context.js';
 
 // Hook qui permet d'utiliser le contexte d'authentification dans n'importe quel composant
 export function useAuth() {
