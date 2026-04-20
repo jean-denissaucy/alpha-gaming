@@ -48,6 +48,29 @@ Si VITE_API_URL n'est pas defini, le frontend utilise http://localhost:5000/api.
 - npm run lint: lance ESLint
 - npm run preview: sert le build localement
 
+## Deploiement production
+
+### Configuration
+
+Copier .env.example vers .env, puis definir:
+
+- VITE_API_URL=https://api.votre-domaine.tld/api
+
+### Build
+
+```bash
+npm install
+npm run build
+```
+
+Les fichiers statiques sont generes dans dist/.
+
+### Publication
+
+- Deployer le contenu de dist/ sur votre hebergement statique
+- Verifier que l'URL API configuree est accessible depuis le navigateur
+- Tester login, register et dashboard apres mise en ligne
+
 ## Structure utile
 
 - src/pages/Home.jsx: logique de chargement news/esport et rafraichissement hebdomadaire

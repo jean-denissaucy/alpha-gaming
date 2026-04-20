@@ -97,6 +97,8 @@ Racine:
 - npm run dev
 - npm run dev:backend
 - npm run dev:frontend
+- npm run build
+- npm run start:backend
 
 Frontend:
 
@@ -108,6 +110,67 @@ Frontend:
 Backend:
 
 - npm run dev
+- npm run start
+
+## Deploiement (production)
+
+Cette section documente un deploiement classique avec frontend statique + backend Node.js + MySQL.
+
+### 1) Preparer le serveur
+
+- Installer Node.js 20+
+- Installer MySQL 8+
+- Ouvrir les ports necessaires (ex: 80/443)
+
+### 2) Configurer la base de donnees
+
+- Creer la base et les tables:
+  - mysql -u <user> -p < init.sql
+- Verifier la presence de la table users
+
+### 3) Configurer le backend
+
+- Copier backend/.env.example vers backend/.env
+- Renseigner les variables de production:
+  - DB_HOST
+  - DB_USER
+  - DB_PASSWORD
+  - DB_NAME
+  - JWT_SECRET (fort et unique)
+  - JWT_EXPIRES_IN
+  - CORS_ORIGINS (URL frontend de production)
+
+### 4) Configurer le frontend
+
+- Copier frontend/.env.example vers frontend/.env
+- Renseigner VITE_API_URL avec l'URL API publique (ex: https://api.example.com/api)
+
+### 5) Build et lancement
+
+- Installer les dependances:
+  - npm install
+  - npm --prefix backend install
+  - npm --prefix frontend install
+- Build frontend:
+  - npm run build
+- Lancer le backend en mode production:
+  - npm run start:backend
+
+### 6) Verification post-deploiement
+
+- Verifier l'API:
+  - GET / doit repondre status online
+  - GET /api/news doit renvoyer des items
+- Verifier le frontend:
+  - la home charge
+  - login/register fonctionnent
+  - dashboard est protege
+
+### 7) Rollback minimal
+
+- Garder une copie du dernier build frontend valide
+- Garder une sauvegarde SQL avant migration
+- En cas d'erreur, restaurer le build precedent et la sauvegarde SQL
 
 ## API principale
 

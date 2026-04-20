@@ -55,6 +55,35 @@ npm run dev
 
 API disponible par defaut sur http://localhost:5000.
 
+## Deploiement production
+
+### Variables d'environnement
+
+Copier .env.example vers .env, puis definir:
+
+- PORT
+- DB_HOST
+- DB_USER
+- DB_PASSWORD
+- DB_NAME
+- JWT_SECRET
+- JWT_EXPIRES_IN
+- CORS_ORIGINS
+
+### Demarrage production
+
+```bash
+npm install
+npm run start
+```
+
+### Recommandations exploitation
+
+- Utiliser un reverse proxy (Nginx/Apache) devant Node
+- Forcer HTTPS
+- Restreindre CORS_ORIGINS a l'URL frontend de production
+- Sauvegarder la base MySQL regulierement
+
 ## Endpoints
 
 - GET /: etat API
