@@ -2,7 +2,7 @@
 
 ## 1. Introduction (30 secondes)
 
-Bonjour, je vais vous presenter mon projet Actu Gaming.
+Bonjour, je vais vous presenter mon projet Alpha Gaming.
 C'est une application web dynamique full-stack qui combine:
 - Un frontend React/Vite
 - Un backend Node.js/Express
