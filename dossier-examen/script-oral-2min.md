@@ -1,6 +1,6 @@
 # Script oral - 2 minutes (Jury)
 
-Bonjour, je vous presente mon projet Actu Gaming.
+Bonjour, je vous presente mon projet Alpha Gaming.
 
 C'est une application web dynamique full-stack avec React pour le frontend, Node.js/Express pour le backend et MySQL pour la base de donnees relationnelle.
 

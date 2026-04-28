@@ -1,12 +1,12 @@
 # Dossier Examen - Jury
 
 Date: 20/04/2026
-Projet: Actu Gaming
+Projet: Alpha Gaming
 Type: Application web dynamique (React + Node.js + MySQL)
 
 ## 1. Presentation rapide du projet
 
-Actu Gaming est une application full-stack qui propose:
+Alpha Gaming est une application full-stack qui propose:
 - Une partie publique (actualites gaming + esport)
 - Une partie authentifiee (login/register + dashboard)
 - Une API backend securisee par JWT
@@ -15,7 +15,7 @@ Actu Gaming est une application full-stack qui propose:
 ## 2. Environnement de travail
 
 Statut: VALIDE
-
+ 
 Preuves:
 - Installation et configuration documentees: ../README.md
 - Configuration backend: ../backend/README.md
