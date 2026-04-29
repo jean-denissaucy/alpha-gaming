@@ -1,6 +1,6 @@
-# Frontend - Alpha Gaming
+# Frontend - Alpha-Gaming
 
-Frontend React/Vite de l'application Alpha Gaming.
+Frontend React/Vite de l'application Alpha-Gaming.
 
 ## Table des matieres
 

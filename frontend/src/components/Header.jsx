@@ -43,7 +43,7 @@ function Header() {
                 <div className="flex items-center gap-3">
                     <Link className="flex items-center gap-3 text-lg font-bold uppercase tracking-[0.18em] text-white" to="/">
                         <BrandLogo variant="compact" className="h-11 w-11 drop-shadow-[0_0_18px_rgba(0,167,255,0.45)]" />
-                        <span>Alpha Gaming</span>
+                        <span>Alpha-Gaming</span>
                     </Link>
                 </div>
 

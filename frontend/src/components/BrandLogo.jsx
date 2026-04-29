@@ -1,11 +1,18 @@
-import logoCompact from '../assets/branding/logo alpha-gaming .png';
-import logoFull from '../assets/branding/bannier Alpha-Gaming.png';
+import logoCompact from '../assets/branding/logo-alpha-gaming.png';
+import logoFull from '../assets/branding/banner-alpha-gaming.png';
 
 function BrandLogo({ variant = 'full', className = '' }) {
-    const src = variant === 'compact' ? logoCompact : logoFull;
-    const alt = variant === 'compact' ? 'Alpha Gaming logo' : 'Alpha Gaming banner';
+    const alt = variant === 'compact' ? 'Alpha-Gaming logo' : 'Alpha-Gaming banner';
 
-    return <img src={src} alt={alt} className={className} />;
+    if (variant === 'compact') {
+        return (
+            <img src={logoCompact} alt={alt} className={className} width={64} height={64} loading="eager" decoding="async" />
+        );
+    }
+
+    return (
+        <img src={logoFull} alt={alt} className={className} width={900} height={280} loading="eager" decoding="async" />
+    );
 }
 
 export default BrandLogo;
