@@ -1,17 +1,17 @@
--- Initialisation MySQL pour Actu Gaming
+-- Initialisation MySQL pour Alpha Gaming
 -- Usage: mysql -u root < init.sql
 
 CREATE DATABASE IF NOT EXISTS `starter_kit`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-CREATE DATABASE IF NOT EXISTS `actu-gaming`
+CREATE DATABASE IF NOT EXISTS `alpha-gaming`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
 -- Base par defaut du backend (config/db.js): DB_NAME=starter_kit
--- Si vous utilisez DB_NAME=actu-gaming dans votre .env, remplacez la ligne USE ci-dessous.
-USE `starter_kit`;
+-- Si vous utilisez DB_NAME=alpha-gaming dans votre .env, remplacez la ligne USE ci-dessous.
+USE `alpha-gaming`;
 
 CREATE TABLE IF NOT EXISTS users (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -239,28 +239,28 @@ ON DUPLICATE KEY UPDATE
 INSERT INTO news (source, titre, extrait, url, categorie, reading_time, published_at)
 VALUES
   (
-    'Actu Gaming',
+    'Alpha Gaming',
     'Silksong refait surface: 18 minutes de gameplay diffusees',
     'Team Cherry montre enfin un build solide avec de nouveaux biomes, des boss plus agressifs et un systeme de crafting repense.',
-    'https://www.actu-gaming.com/silksong-gameplay',
+    'https://www.alpha-gaming.com/silksong-gameplay',
     'Inde',
     '6 min',
     NOW()
   ),
   (
-    'Actu Gaming',
+    'Alpha Gaming',
     'GTA VI: Rockstar confirme une bande-annonce orientee mode online',
     'Le studio tease des activites de crew en monde ouvert et une economie dynamique plus ambitieuse que sur GTA Online.',
-    'https://www.actu-gaming.com/gta-vi-online',
+    'https://www.alpha-gaming.com/gta-vi-online',
     'AAA',
     '4 min',
     NOW()
   ),
   (
-    'Actu Gaming',
+    'Alpha Gaming',
     'Le prochain Zelda miserait sur un monde maritime semi-procedural',
     'Selon plusieurs insiders, Nintendo experimenterait une navigation plus libre et des iles evolutives a chaque session.',
-    'https://www.actu-gaming.com/zelda-rumeur-maritime',
+    'https://www.alpha-gaming.com/zelda-rumeur-maritime',
     'Nintendo',
     '5 min',
     NOW()
@@ -313,7 +313,7 @@ VALUES
   ('FPS', 'Counter-Strike 2', 'https://www.counter-strike.net/cs2', 1),
   ('FPS', 'Call of Duty: Black Ops 6', 'https://www.callofduty.com/', 1),
   ('FPS', 'THE FINALS', 'https://www.reachthefinals.com/', 1),
-  ('FPS', 'Battlefield 2042', 'https://www.ea.com/games/battlefield/battlefield-2042', 1),
+  ('FPS', 'Battlefield 6', 'https://www.ea.com/games/battlefield', 1),
   ('FPS', 'Halo Infinite', 'https://www.halowaypoint.com/halo-infinite', 1),
   ('FPS', 'Overwatch 2', 'https://overwatch.blizzard.com/', 1),
   ('FPS', 'Titanfall 2', 'https://www.ea.com/games/titanfall/titanfall-2', 1),

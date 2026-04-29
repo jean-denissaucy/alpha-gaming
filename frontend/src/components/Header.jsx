@@ -38,12 +38,12 @@ function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-40 border-b border-cyan-400/20 bg-slate-950/80 backdrop-blur-xl">
+        <header className="sticky top-0 z-40 border-b border-cyan-400/20 bg-black/80 backdrop-blur-xl">
             <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
                 <div className="flex items-center gap-3">
                     <Link className="flex items-center gap-3 text-lg font-bold uppercase tracking-[0.18em] text-white" to="/">
-                        <BrandLogo variant="compact" className="h-11 w-11 drop-shadow-[0_0_18px_rgba(34,211,238,0.35)]" />
-                        <span>Actu Gaming</span>
+                        <BrandLogo variant="compact" className="h-11 w-11 drop-shadow-[0_0_18px_rgba(0,167,255,0.45)]" />
+                        <span>Alpha Gaming</span>
                     </Link>
                 </div>
 
@@ -77,7 +77,7 @@ function Header() {
                 <div className="flex items-center gap-3">
                     {isAuthenticated ? (
                         <>
-                            <span className="hidden text-sm text-slate-600 sm:inline">
+                            <span className="hidden text-sm text-slate-400 sm:inline">
                                 Bonjour <span className="font-semibold text-white">{userLabel}</span>
                             </span>
                             <button onClick={handleLogout} className="btn btn-outline">

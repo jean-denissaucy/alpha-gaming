@@ -4,15 +4,28 @@
 @layer base {
 	:root {
 		font-family: "Rajdhani", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+		/* Palette harmonisée avec le logo et la bannière */
+		--primary-rgb: 0 167 255; /* bleu principal (Alpha Gaming) */
+		--primary-light-rgb: 103 232 249; /* bleu clair pour accents */
+		--accent-rgb: 236 72 153; /* accent secondaire */
+		--color-white-rgb: 255 255 255;
+
+		/* Compatibilité avec variables générées (Tailwind/dist) */
+		--color-cyan-200: #a6f0ff;
+		--color-cyan-300: #33cfff;
+		--color-cyan-400: #00a7ff;
 	}
 
 	body {
 		min-height: 100vh;
 		color: rgb(226 232 240);
-		background-color: #0f0c29;
-		background-image: linear-gradient(270deg, #0f0c29, #302b63, #24243e);
-		background-size: 600% 600%;
-		animation: gradientMove 15s ease infinite;
+		background-color: #000000;
+		background-image:
+			radial-gradient(circle at 15% 15%, rgb(var(--primary-rgb) / 0.16), transparent 28%),
+			radial-gradient(circle at 85% 20%, rgb(var(--accent-rgb) / 0.1), transparent 24%),
+			linear-gradient(180deg, #020617 0%, #000000 52%, #050816 100%);
+		background-size: 100% 100%;
 		background-attachment: fixed;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
@@ -45,12 +58,12 @@
 		transition: all 240ms ease;
 	}
 
-	.btn-primary {
-		border: 1px solid rgb(34 211 238 / 0.6);
-		background-image: linear-gradient(135deg, rgb(8 47 73), rgb(14 116 144));
-		color: rgb(232 249 255);
-		box-shadow: 0 10px 25px -14px rgb(34 211 238 / 0.7);
-	}
+		.btn-primary {
+			border: 1px solid rgb(var(--primary-rgb) / 0.6);
+			background-image: linear-gradient(135deg, rgb(3 105 161), rgb(var(--primary-rgb)));
+			color: rgb(232 249 255);
+			box-shadow: 0 10px 25px -14px rgb(var(--primary-rgb) / 0.7);
+		}
 
 	.btn-primary:hover {
 		transform: translateY(-1px);
@@ -82,20 +95,20 @@
 		color: rgb(148 163 184);
 	}
 
-	.input:focus {
-		outline: none;
-		border-color: rgb(34 211 238 / 0.8);
-	}
+		.input:focus {
+			outline: none;
+			border-color: rgb(var(--primary-rgb) / 0.8);
+		}
 
 	.hero-glow {
 		background-image:
-			linear-gradient(120deg, rgb(8 47 73 / 0.32), transparent 48%),
-			linear-gradient(300deg, rgb(127 29 29 / 0.24), transparent 60%);
+			linear-gradient(120deg, rgb(var(--primary-rgb) / 0.24), transparent 48%),
+			linear-gradient(300deg, rgb(var(--accent-rgb) / 0.18), transparent 60%);
 	}
 
-	.mega-banner {
-		box-shadow: 0 30px 80px -40px rgb(34 211 238 / 0.45), 0 20px 60px -40px rgb(236 72 153 / 0.45);
-	}
+		.mega-banner {
+			box-shadow: 0 30px 80px -40px rgb(var(--primary-rgb) / 0.45), 0 20px 60px -40px rgb(var(--accent-rgb) / 0.45);
+		}
 
 	.banner-grid {
 		background-image:
@@ -135,14 +148,14 @@
 	object-fit: cover;
 }
 
-.site-bg-overlay {
-	position: absolute;
-	inset: 0;
-	background:
-		linear-gradient(180deg, rgb(2 6 23 / 0.52), rgb(2 6 23 / 0.75)),
-		radial-gradient(circle at 10% 15%, rgb(34 211 238 / 0.16), transparent 35%),
-		radial-gradient(circle at 88% 8%, rgb(236 72 153 / 0.12), transparent 35%);
-}
+	.site-bg-overlay {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(180deg, rgb(2 6 23 / 0.64), rgb(2 6 23 / 0.88)),
+			radial-gradient(circle at 10% 15%, rgb(var(--primary-rgb) / 0.18), transparent 35%),
+			radial-gradient(circle at 88% 8%, rgb(var(--accent-rgb) / 0.1), transparent 35%);
+	}
 
 .site-particle {
 	position: absolute;

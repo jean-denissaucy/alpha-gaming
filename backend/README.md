@@ -1,23 +1,35 @@
-# Backend - Actu Gaming
+# Backend - Alpha Gaming
 
-API Node.js/Express pour Actu Gaming.
+API REST Node.js/Express pour l'application Alpha Gaming.
 
-## Role du backend
+## Table des matieres
+
+- [Role](#role)
+- [Stack](#stack)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Demarrage](#demarrage)
+- [Endpoints API](#endpoints-api)
+- [Structure](#structure)
+
+## Role
 
 - Authentification utilisateur avec JWT
 - Exposition des endpoints de news gaming et esport
-- Connexion MySQL pour utilisateurs et fallback local
+- Connexion MySQL pour gestion des utilisateurs
 - Gestion CORS avec liste d'origines autorisees
+- Service RSS pour recuperer les actualites
 
 ## Stack
 
-- Node.js
-- Express 5
-- MySQL 8 (mysql2)
-- jsonwebtoken
-- bcrypt
-- rss-parser
-- dotenv
+- **Node.js**: Runtime JavaScript
+- **Express 5**: Framework web
+- **MySQL 8**: Base de donnees (mysql2)
+- **jsonwebtoken**: Gestion JWT
+- **bcrypt**: Hachage des mots de passe
+- **rss-parser**: Parsing des flux RSS
+- **dotenv**: Gestion des variables d'environnement
+- **cors**: Gestion des requetes cross-origin
 
 ## Installation
 
@@ -29,25 +41,98 @@ npm install
 
 ## Configuration
 
-Creer backend/.env:
+Creer un fichier `backend/.env` a la racine du dossier backend:
 
 ```env
 PORT=5000
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=
-DB_NAME=starter_kit
-JWT_SECRET=your-secret-key
+DB_NAME=alpha-gaming
+JWT_SECRET=your-secret-key-here-min-32-chars
 JWT_EXPIRES_IN=7d
 CORS_ORIGINS=http://localhost:5173
 ```
 
-Notes:
+### Parametre de configuration
 
-- CORS_ORIGINS accepte plusieurs origines separees par des virgules.
-- JWT_SECRET doit etre defini en environnement de dev/prod.
+| Param | Type | Description |
+|-------|------|-------------|
+| PORT | number | Port d'ecoute du serveur (defaut: 5000) |
+| DB_HOST | string | Hote MySQL (defaut: localhost) |
+| DB_USER | string | Utilisateur MySQL (defaut: root) |
+| DB_PASSWORD | string | Mot de passe MySQL (defaut: vide) |
+| DB_NAME | string | Nom de la base de donnees |
+| JWT_SECRET | string | Cle secrete JWT (min 32 caracteres pour prod) |
+| JWT_EXPIRES_IN | string | Duree de validite du token (ex: 7d, 24h) |
+| CORS_ORIGINS | string | Origines autorisees (separees par des virgules) |
 
-## Lancement
+## Demarrage
+
+### Mode developpement
+
+```bash
+npm run dev
+```
+
+Le serveur redemarrera automatiquement a chaque changement (watch mode).
+
+### Mode production
+
+```bash
+npm start
+```
+
+### Tests
+
+```bash
+npm test
+```
+
+Le serveur demarre sur `http://localhost:5000` (ou le PORT configure).
+
+## Endpoints API
+
+### Authentification
+
+- **POST** `/api/auth/register` - Creer un compte utilisateur
+- **POST** `/api/auth/login` - Se connecter (retourne JWT)
+- **GET** `/api/auth/me` - Recuperer le profil courant (JWT requis)
+
+### News
+
+- **GET** `/api/news` - Recuperer les actualites gaming
+- **GET** `/api/news/esport` - Recuperer les actualites esport
+
+## Structure
+
+```
+backend/
+├── config/
+│   └── db.js             # Configuration et pool MySQL
+├── controllers/
+│   ├── auth.controller.js    # Logique authentification
+│   └── news.controller.js    # Logique news
+├── middlewares/
+│   └── auth.middleware.js    # Verification JWT
+├── models/
+│   └── user.model.js         # Modele utilisateur
+├── routes/
+│   ├── auth.routes.js        # Routes /api/auth
+│   └── news.routes.js        # Routes /api/news
+├── db.js                 # Connexion MySQL
+├── server.js             # Point d'entree
+├── .env                  # Variables d'environnement (a creer)
+├── package.json
+└── README.md
+```
+
+## Notes importantes
+
+- La base de donnees doit etre initialisee via `init.sql` a la racine du projet (base par defaut creee: `alpha-gaming`)
+- Les tokens JWT sont valides pendant la duree specifiee par `JWT_EXPIRES_IN`
+- CORS_ORIGINS accepte plusieurs origines separees par des virgules
+- JWT_SECRET doit etre une chaine longue et aleatoire en production
 
 ```bash
 npm run dev

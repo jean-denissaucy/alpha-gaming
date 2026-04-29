@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import backgroundVideo from '../assets/gamig.mp4';
+import backgroundVideo from '../assets/branding/espace game.mp4';
 
 function pseudoRandom(seed) {
     const x = Math.sin(seed * 12.9898) * 43758.5453;

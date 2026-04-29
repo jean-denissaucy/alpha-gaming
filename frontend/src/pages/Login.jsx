@@ -44,17 +44,17 @@ function Login() {
         }
     };
     return (
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="mx-auto max-w-6xl px-6 py-16 text-slate-100">
             <div className="flex items-center">
                 <div className="grid w-full gap-10 lg:grid-cols-2">
 
                     {/* Colonne gauche - Informations */}
-                    <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-                        <h1 className="text-3xl font-semibold text-slate-900">Connexion</h1>
-                        <p className="mt-3 text-sm text-slate-600">
+                    <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur">
+                        <h1 className="text-3xl font-semibold text-white">Connexion</h1>
+                        <p className="mt-3 text-sm text-slate-300">
                             Accede au tableau de bord avec tes identifiants.
                         </p>
-                        <ul className="mt-6 space-y-3 text-sm text-slate-600">
+                        <ul className="mt-6 space-y-3 text-sm text-slate-300">
                             <li>Session securisee avec JWT</li>
                             <li>Acces aux routes protegees</li>
                             <li>Interface React + Tailwind</li>
@@ -62,11 +62,11 @@ function Login() {
                     </div>
 
                     {/* Colonne droite - Formulaire de connexion */}
-                    <form onSubmit={handleSubmit} className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+                    <form onSubmit={handleSubmit} className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur">
 
                         {/* Champ email */}
                         <div>
-                            <label className="text-xs uppercase tracking-wide text-slate-500">Email</label>
+                            <label className="text-xs uppercase tracking-wide text-slate-400">Email</label>
                             <input
                                 type="email"
                                 className="input mt-2"
@@ -79,7 +79,7 @@ function Login() {
 
                         {/* Champ mot de passe */}
                         <div className="mt-4">
-                            <label className="text-xs uppercase tracking-wide text-slate-500">Mot de passe</label>
+                            <label className="text-xs uppercase tracking-wide text-slate-400">Mot de passe</label>
                             <input
                                 type="password"
                                 className="input mt-2"
@@ -92,7 +92,7 @@ function Login() {
 
                         {/* Affichage de l'erreur si présente */}
                         {error && (
-                            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                            <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                                 {error}
                             </div>
                         )}
@@ -103,9 +103,9 @@ function Login() {
                         </button>
 
                         {/* Lien vers la page d'inscription */}
-                        <p className="mt-4 text-sm text-slate-500">
+                        <p className="mt-4 text-sm text-slate-300">
                             Pas encore de compte ?{' '}
-                            <Link to="/register" className="font-semibold text-slate-900">
+                            <Link to="/register" className="font-semibold text-cyan-200 hover:text-cyan-100">
                                 S'inscrire
                             </Link>
                         </p>

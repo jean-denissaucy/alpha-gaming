@@ -43,15 +43,15 @@ function Register() {
     };
 
     return (
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="mx-auto max-w-6xl px-6 py-16 text-slate-100">
             <div className="grid w-full gap-10 lg:grid-cols-2">
                 {/* Colonne gauche - Informations sur le starter kit */}
-                <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-                    <h1 className="text-3xl font-semibold text-slate-900">Créez votre compte</h1>
-                    <p className="mt-3 text-sm text-slate-600">
+                <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur">
+                    <h1 className="text-3xl font-semibold text-white">Créez votre compte</h1>
+                    <p className="mt-3 text-sm text-slate-300">
                         Rejoignez le starter kit et accédez au tableau de bord protégé.
                     </p>
-                    <ul className="mt-6 space-y-3 text-sm text-slate-600">
+                    <ul className="mt-6 space-y-3 text-sm text-slate-300">
                         <li>Session JWT sécurisée</li>
                         <li>Endpoint profil prêt</li>
                         <li>Interface Tailwind prête</li>
@@ -61,12 +61,12 @@ function Register() {
                 {/* Colonne droite - Formulaire d'inscription */}
                 <form
                     onSubmit={handleSubmit}
-                    className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+                    className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur"
                 >
                     {/* Champs prénom et nom sur la même ligne */}
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div>
-                            <label className="text-xs uppercase tracking-wide text-slate-500">Prénom</label>
+                            <label className="text-xs uppercase tracking-wide text-slate-400">Prénom</label>
                             <input
                                 className="input mt-2"
                                 value={firstname}
@@ -76,7 +76,7 @@ function Register() {
                             />
                         </div>
                         <div>
-                            <label className="text-xs uppercase tracking-wide text-slate-500">Nom</label>
+                            <label className="text-xs uppercase tracking-wide text-slate-400">Nom</label>
                             <input
                                 className="input mt-2"
                                 value={lastname}
@@ -89,7 +89,7 @@ function Register() {
 
                     {/* Champ email */}
                     <div className="mt-4">
-                        <label className="text-xs uppercase tracking-wide text-slate-500">Email</label>
+                        <label className="text-xs uppercase tracking-wide text-slate-400">Email</label>
                         <input
                             type="email"
                             className="input mt-2"
@@ -102,7 +102,7 @@ function Register() {
 
                     {/* Champ mot de passe */}
                     <div className="mt-4">
-                        <label className="text-xs uppercase tracking-wide text-slate-500">Mot de passe</label>
+                        <label className="text-xs uppercase tracking-wide text-slate-400">Mot de passe</label>
                         <input
                             type="password"
                             className="input mt-2"
@@ -115,7 +115,7 @@ function Register() {
 
                     {/* Affichage de l'erreur si présente */}
                     {error && (
-                        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                        <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                             {error}
                         </div>
                     )}
@@ -130,9 +130,9 @@ function Register() {
                     </button>
 
                     {/* Lien vers la page de connexion */}
-                    <p className="mt-4 text-sm text-slate-500">
+                    <p className="mt-4 text-sm text-slate-300">
                         Déjà un compte ?{' '}
-                        <Link className="font-semibold text-slate-900" to="/login">
+                        <Link className="font-semibold text-cyan-200 hover:text-cyan-100" to="/login">
                             Se connecter
                         </Link>
                     </p>

@@ -197,7 +197,7 @@ export async function getLatestNews(req, res) {
             .filter((result) => result.status === 'fulfilled')
             .flatMap((result) => result.value.items.map((item) => ({
                 source: result.value.source,
-                title: item.title || 'Actu gaming',
+                title: item.title || 'Alpha Gaming',
                 excerpt: stripHtml(item.contentSnippet || item['content:encoded'] || item.content || '').slice(0, 220) || 'Resume indisponible.',
                 url: item.link || null,
                 publishedAt: item.isoDate || item.pubDate || null

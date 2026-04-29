@@ -12,7 +12,7 @@ const fallbackNews = [
         category: 'Indé',
         readingTime: '6 min',
         excerpt: 'Team Cherry montre enfin un build solide avec de nouveaux biomes, des boss plus agressifs et un système de crafting repensé.',
-        source: 'Actu Gaming',
+        source: 'Alpha Gaming',
         url: null
     },
     {
@@ -20,7 +20,7 @@ const fallbackNews = [
         category: 'AAA',
         readingTime: '4 min',
         excerpt: 'Le studio tease des activités de crew en monde ouvert et une économie dynamique plus ambitieuse que sur GTA Online.',
-        source: 'Actu Gaming',
+        source: 'Alpha Gaming',
         url: null
     },
     {
@@ -28,7 +28,7 @@ const fallbackNews = [
         category: 'Nintendo',
         readingTime: '5 min',
         excerpt: 'Selon plusieurs insiders, Nintendo expérimenterait une navigation plus libre et des îles évolutives à chaque session.',
-        source: 'Actu Gaming',
+        source: 'Alpha Gaming',
         url: null
     }
 ];
@@ -245,11 +245,11 @@ function Home() {
     return (
         <div className="relative pb-16">
             <section className="mx-auto max-w-6xl px-6 pt-6">
-                <div className="mega-banner relative overflow-hidden rounded-4xl border border-cyan-400/20 bg-slate-950/90 shadow-2xl">
+                <div className="mega-banner relative overflow-hidden rounded-4xl border border-cyan-400/20 bg-black/90 shadow-2xl">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.28),transparent_24%),radial-gradient(circle_at_80%_30%,rgba(236,72,153,0.24),transparent_24%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(8,15,35,0.96))]" />
                     <div className="pointer-events-none absolute inset-0 banner-grid opacity-55" />
                     <div className="pointer-events-none absolute -left-12 top-8 h-40 w-40 rounded-full bg-cyan-400/20 blur-3xl" />
-                    <div className="pointer-events-none absolute -right-4 bottom-6 h-44 w-44 rounded-full bg-fuchsia-500/20 blur-3xl" />
+                    <div className="pointer-events-none absolute -right-4 bottom-6 h-44 w-44 rounded-full bg-blue-500/20 blur-3xl" />
 
                     <div className="relative grid gap-8 px-6 py-10 md:grid-cols-[1.2fr_0.8fr] md:items-center md:px-10 md:py-14">
                         <div className="reveal-up">
@@ -257,7 +257,7 @@ function Home() {
                                 Toute l’actualité gaming en continu
                             </p>
                             <h1 className="mt-5 text-4xl font-black uppercase leading-[0.95] text-white sm:text-6xl">
-                                Actu
+                                Alpha
                                 <span className="block text-cyan-300">Gaming</span>
                             </h1>
                             <p className="mt-4 max-w-2xl text-base text-slate-300 sm:text-lg">
@@ -284,7 +284,7 @@ function Home() {
                         </div>
 
                         <div className="relative mx-auto w-full max-w-md md:justify-self-end">
-                            <div className="absolute -inset-4 rounded-4xl bg-fuchsia-500/10 blur-2xl" />
+                            <div className="absolute -inset-4 rounded-4xl bg-blue-500/10 blur-2xl" />
                             <div className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-slate-900/80 p-5 shadow-2xl">
                                 <div className="absolute inset-0 opacity-30 banner-scan" />
                                 <div className="relative space-y-5">
@@ -305,7 +305,7 @@ function Home() {
 
             <section className="hero-glow relative overflow-hidden">
                 <div className="pointer-events-none absolute -left-12 top-12 h-56 w-56 rounded-full bg-cyan-500/20 blur-3xl" />
-                <div className="pointer-events-none absolute -right-10 bottom-0 h-52 w-52 rounded-full bg-red-500/25 blur-3xl" />
+                <div className="pointer-events-none absolute -right-10 bottom-0 h-52 w-52 rounded-full bg-blue-500/20 blur-3xl" />
 
             </section>
 
@@ -333,7 +333,7 @@ function Home() {
                                     </p>
                                     <h3 className="mt-3 text-xl font-bold text-white">{news.title}</h3>
                                     <p className="mt-3 text-sm leading-relaxed text-slate-300">{news.excerpt}</p>
-                                    <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Actu Gaming'}</p>
+                                    <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Alpha Gaming'}</p>
                                 </a>
                             ) : (
                                 <>
@@ -342,7 +342,7 @@ function Home() {
                                     </p>
                                     <h3 className="mt-3 text-xl font-bold text-white">{news.title}</h3>
                                     <p className="mt-3 text-sm leading-relaxed text-slate-300">{news.excerpt}</p>
-                                    <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Actu Gaming'}</p>
+                                    <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Alpha Gaming'}</p>
                                 </>
                             )}
                         </article>

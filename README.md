@@ -1,41 +1,84 @@
-# Actu Gaming
+# Alpha Gaming
 
-Actu Gaming est une application full-stack d'actualites gaming et esport.
+Alpha Gaming est une application full-stack d'actualites gaming et esport.
 Le projet combine un frontend React/Vite, un backend Node.js/Express et une base MySQL initialisee via init.sql.
+
+## Table des matieres
+
+- [Fonctionnalites](#fonctionnalites)
+- [Stack technique](#stack-technique)
+- [Structure du projet](#structure-du-projet)
+- [Prerequis](#prerequis)
+- [Installation](#installation)
+- [Demarrage](#demarrage)
+- [Configuration](#configuration)
 
 ## Fonctionnalites
 
-- Accueil public avec news gaming et bloc esport.
-- Rafraichissement automatique des news et de l'esport chaque lundi a 00h00.
-- Authentification JWT (register, login, profil courant).
-- Dashboard protege apres connexion.
-- Onglet Favoris avec 12 categories et 10 jeux par categorie.
-- Chaque jeu dans Favoris ouvre son site officiel au clic.
-- Page de presentation statique accessible via /presentation.html.
+- **Accueil public**: News gaming et bloc esport avec contenu dynamique
+- **Rafraichissement planifie**: Mise a jour de la Home chaque lundi a 00h00 (declenchee cote navigateur)
+- **Authentification JWT**: Register, login, profil utilisateur courant
+- **Dashboard protege**: Accessible apres connexion utilisateur
+- **Favoris personnalises**: 12 categories et 10 jeux par categorie
+- **Navigation vers les jeux**: Chaque jeu des Favoris ouvre son site officiel au clic
+- **Page de presentation**: Accessible via `/presentation.html`
 
 ## Stack technique
 
-- Frontend: React 19, React Router 7, Vite, Tailwind CSS 4
-- Backend: Node.js, Express 5, MySQL 8, JWT, bcrypt, rss-parser
-- Outillage: npm, concurrently, ESLint
+- **Frontend**: React 19, React Router 7, Vite 7, Tailwind CSS 4
+- **Backend**: Node.js, Express 5, MySQL 8, JWT (jsonwebtoken), bcrypt, rss-parser
+- **Outillage**: npm, concurrently, ESLint
 
-## Structure
+## Structure du projet
 
-- backend/: API, routes, controllers, middlewares, config MySQL
-- frontend/: application React (pages, composants, contextes, services)
-- frontend/public/presentation.html: page de presentation statique
-- frontend/public/presentation.css: styles de la page de presentation
-- init.sql: schema + seed MySQL
+```
+.
+├── backend/                 # API Node.js/Express
+│   ├── config/             # Configuration MySQL
+│   ├── controllers/        # Logique metier (auth, news)
+│   ├── middlewares/        # Middlewares Express (JWT, CORS)
+│   ├── models/             # Modeles de donnees
+│   ├── routes/             # Routes API
+│   ├── server.js          # Point d'entree
+│   ├── db.js              # Connexion BD
+│   └── package.json
+│
+├── frontend/               # Application React
+│   ├── src/
+│   │   ├── components/    # Composants React
+│   │   ├── contexts/      # React Contexts (auth)
+│   │   ├── hooks/         # Hooks personnalises
+│   │   ├── layouts/       # Layouts (Auth, Main)
+│   │   ├── pages/         # Pages (Home, Login, Dashboard)
+│   │   ├── services/      # Services API
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── public/
+│   │   ├── presentation.html
+│   │   └── presentation.css
+│   ├── vite.config.js
+│   └── package.json
+│
+├── init.sql               # Schema et seed MySQL
+├── package.json           # Scripts root (concurrently)
+└── README.md
+```
 
 ## Prerequis
 
-- Node.js 20+
-- MySQL 8+ (ou compatible)
-- npm
+- **Node.js**: 20+ (avec npm 10+)
+- **MySQL**: 8+ (ou compatible)
+- **Gestionnaire de paquets**: npm
 
 ## Installation
 
-1. Installer les dependances:
+### 1. Cloner/acceder au projet
+
+```bash
+cd c:\laragon\www\Alpha Gaming
+```
+
+### 2. Installer les dependances
 
 ```bash
 npm install
@@ -43,10 +86,65 @@ npm --prefix backend install
 npm --prefix frontend install
 ```
 
-2. Initialiser la base:
+### 3. Initialiser la base de donnees
 
 ```bash
 mysql -u root < init.sql
+```
+
+## Configuration
+
+### Backend
+
+Creer un fichier `backend/.env`:
+
+```env
+PORT=5000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=starter_kit
+JWT_SECRET=your-secret-key-here
+JWT_EXPIRES_IN=7d
+CORS_ORIGINS=http://localhost:5173
+```
+
+### Frontend
+
+Creer un fichier `frontend/.env` (optionnel):
+
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+## Demarrage
+
+### Mode developpement (backend + frontend)
+
+Depuis la racine du projet:
+
+```bash
+npm run dev
+```
+
+Cela lance simultanement:
+- Backend sur `http://localhost:5000`
+- Frontend sur `http://localhost:5173`
+
+### Modes alternatifs
+
+```bash
+# Backend seul
+npm run dev:backend
+
+# Frontend seul
+npm run dev:frontend
+
+# Build frontend pour production
+npm run build
+
+# Lancer backend en production
+npm run start:backend
 ```
 
 ## Configuration

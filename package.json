@@ -1,5 +1,5 @@
 {
-  "name": "actu-gaming",
+  "name": "alpha-gaming",
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",

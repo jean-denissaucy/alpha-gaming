@@ -60,7 +60,7 @@ const gamesByCategory = {
         'Counter-Strike 2',
         'Call of Duty: Black Ops 6',
         'THE FINALS',
-        'Battlefield 2042',
+        'Battlefield 6',
         'Halo Infinite',
         'Overwatch 2',
         'Titanfall 2',
@@ -182,11 +182,11 @@ const gameLinks = {
     'Counter-Strike 2': 'https://www.counter-strike.net/cs2',
     'Call of Duty: Black Ops 6': 'https://www.callofduty.com/',
     'THE FINALS': 'https://www.reachthefinals.com/',
-    'Battlefield 2042': 'https://www.ea.com/games/battlefield/battlefield-2042',
-    Fortnite: 'https://www.fortnite.com/',
+    'Battlefield 6': 'https://www.ea.com/games/battlefield',
+    'Fortnite': 'https://www.fortnite.com/',
     'Apex Legends': 'https://www.ea.com/games/apex-legends',
     'PUBG: Battlegrounds': 'https://pubg.com/',
-    Warzone: 'https://www.callofduty.com/warzone',
+    'Warzone': 'https://www.callofduty.com/warzone',
     'EA SPORTS FC 26': 'https://www.ea.com/games/ea-sports-fc',
     'NBA 2K26': 'https://nba.2k.com/',
     'F1 26': 'https://www.ea.com/games/f1',
@@ -220,10 +220,10 @@ const gameLinks = {
     'Sekiro: Shadows Die Twice': 'https://www.sekirothegame.com/',
     'Ghost of Tsushima Director\'s Cut': 'https://www.playstation.com/games/ghost-of-tsushima/',
     'Hi-Fi Rush': 'https://hifi-rush.com/',
-    Returnal: 'https://www.playstation.com/games/returnal/',
+    'Returnal': 'https://www.playstation.com/games/returnal/',
     'The Last of Us Part II Remastered': 'https://www.playstation.com/games/the-last-of-us-part-ii-remastered/',
     'A Plague Tale: Requiem': 'https://www.asobostudio.com/games/a-plague-tale-requiem',
-    Tchia: 'https://www.tchia.com/',
+    'Tchia': 'https://www.tchia.com/',
     'Kena: Bridge of Spirits': 'https://www.kenagame.com/',
     'Prince of Persia: The Lost Crown': 'https://www.ubisoft.com/game/prince-of-persia/the-lost-crown',
     'Life is Strange: Double Exposure': 'https://www.square-enix-games.com/en_US/games/life-is-strange-double-exposure',
@@ -241,10 +241,10 @@ const gameLinks = {
     'DOOM Eternal': 'https://bethesda.net/en/game/doom-eternal',
     'Fall Guys': 'https://www.fallguys.com/',
     'NARAKA: BLADEPOINT': 'https://www.narakathegame.com/',
-    Bloodhunt: 'https://bloodhunt.com/',
+    'Bloodhunt': 'https://bloodhunt.com/',
     'Super People': 'https://superpeople.com/',
     'Realm Royale Reforged': 'https://www.realmroyale.com/',
-    H1Z1: 'https://www.h1z1.com/',
+    'H1Z1': 'https://www.h1z1.com/',
     'Madden NFL 26': 'https://www.ea.com/games/madden-nfl/madden-nfl-26',
     'NHL 25': 'https://www.ea.com/games/nhl/nhl-25',
     'MLB The Show 25': 'https://www.theshow.com/',
@@ -252,7 +252,7 @@ const gameLinks = {
     'WWE 2K25': 'https://wwe.2k.com/',
     'eFootball 2025': 'https://www.konami.com/efootball/en/',
     'F1 25': 'https://www.ea.com/games/f1/f1-25',
-    Wreckfest: 'https://wreckfest.thqnordic.com/',
+    'Wreckfest': 'https://wreckfest.thqnordic.com/',
     'Assetto Corsa Competizione': 'https://assettocorsa.gg/competizione/',
     'Hot Wheels Unleashed 2': 'https://hotwheelsunleashed.com/',
     'MotoGP 24': 'https://www.motogp.com/',
@@ -268,17 +268,17 @@ const gameLinks = {
     'Anno 1800': 'https://www.anno-union.com/en/anno-1800/',
     'XCOM 2': 'https://www.xcom.com/',
     'Frostpunk 2': 'https://www.frostpunk2.com/',
-    Northgard: 'https://northgard.com/',
-    Balatro: 'https://www.playbalatro.com/',
-    Celeste: 'https://www.celestegame.com/',
+    'Northgard': 'https://northgard.com/',
+    'Balatro': 'https://www.playbalatro.com/',
+    'Celeste': 'https://www.celestegame.com/',
     'Ori and the Will of the Wisps': 'https://www.orithegame.com/',
     'Vampire Survivors': 'https://www.vampiresurvivors.com/',
     'Cult of the Lamb': 'https://www.cultofthelamb.com/',
-    Tunic: 'https://tunicgame.com/',
+    'Tunic': 'https://tunicgame.com/',
     'New World': 'https://www.newworld.com/',
     'Black Desert Online': 'https://www.naeu.playblackdesert.com/',
     'Lost Ark': 'https://www.playlostark.com/',
-    RuneScape: 'https://www.runescape.com/',
+    'RuneScape': 'https://www.runescape.com/',
     'EVE Online': 'https://www.eveonline.com/',
     'Throne and Liberty': 'https://www.playthroneandliberty.com/',
     'Silent Hill 2': 'https://www.silenthill.com/',
@@ -355,17 +355,17 @@ function Dashboard() {
     }));
 
     return (
-        <div className="relative mx-auto max-w-6xl overflow-hidden px-6 py-16">
+        <div className="relative mx-auto max-w-6xl overflow-hidden px-6 py-16 text-slate-100">
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 -z-10 rounded-[2.2rem] bg-linear-to-br from-cyan-500/10 via-slate-900/20 to-pink-500/10"
+                className="pointer-events-none absolute inset-0 -z-10 rounded-[2.2rem] bg-linear-to-br from-cyan-500/14 via-slate-900/20 to-blue-500/12"
             />
             {/* En-tête avec titre et bouton de déconnexion */}
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <p className="text-sm uppercase tracking-widest text-slate-500">Tableau de bord</p>
-                    <h1 className="text-3xl font-semibold text-slate-900">Bon retour</h1>
-                    <p className="mt-2 text-sm text-slate-600">
+                    <p className="text-sm uppercase tracking-widest text-cyan-200/80">Tableau de bord</p>
+                    <h1 className="text-3xl font-semibold text-white">Bon retour</h1>
+                    <p className="mt-2 text-sm text-slate-300">
                         Donnees chargees depuis le endpoint protege /api/auth/me.
                     </p>
                 </div>
@@ -377,14 +377,14 @@ function Dashboard() {
             {/* Grille avec informations du profil */}
             <div className="mt-10">
                 {/* Carte principale - Informations du profil */}
-                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-6 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.4)] backdrop-blur">
                     <div className="flex items-center justify-between gap-3">
                         <div className="flex flex-wrap items-center gap-2">
                             <button
                                 onClick={() => setActiveTab('profil')}
                                 className={`rounded-full px-4 py-2 text-sm font-semibold transition ${activeTab === 'profil'
-                                    ? 'bg-cyan-400/20 text-cyan-200'
-                                    : 'border border-slate-300 text-slate-700 hover:border-slate-400'
+                                    ? 'border border-cyan-400/35 bg-cyan-400/15 text-cyan-100'
+                                    : 'border border-slate-700 text-slate-300 hover:border-cyan-400/40 hover:text-white'
                                     }`}
                             >
                                 Profil
@@ -392,8 +392,8 @@ function Dashboard() {
                             <button
                                 onClick={() => setActiveTab('favoris')}
                                 className={`rounded-full px-4 py-2 text-sm font-semibold transition ${activeTab === 'favoris'
-                                    ? 'bg-cyan-400/20 text-cyan-200'
-                                    : 'border border-slate-300 text-slate-700 hover:border-slate-400'
+                                    ? 'border border-cyan-400/35 bg-cyan-400/15 text-cyan-100'
+                                    : 'border border-slate-700 text-slate-300 hover:border-cyan-400/40 hover:text-white'
                                     }`}
                             >
                                 Favoris
@@ -415,7 +415,7 @@ function Dashboard() {
                         <>
                             {/* Affichage des erreurs */}
                             {error && (
-                                <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                                <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                                     {error}
                                 </div>
                             )}
@@ -423,23 +423,23 @@ function Dashboard() {
                             {/* Grille des informations utilisateur */}
                             {!error && (
                                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                                    <div className="rounded-2xl border border-slate-200 bg-stone-50 p-4">
-                                        <p className="text-xs uppercase text-slate-500">Nom</p>
-                                        <p className="mt-2 text-sm text-slate-900">
+                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                        <p className="text-xs uppercase text-slate-400">Nom</p>
+                                        <p className="mt-2 text-sm text-white">
                                             {displayUser?.firstname || '—'} {displayUser?.lastname || ''}
                                         </p>
                                     </div>
-                                    <div className="rounded-2xl border border-slate-200 bg-stone-50 p-4">
-                                        <p className="text-xs uppercase text-slate-500">Email</p>
-                                        <p className="mt-2 text-sm text-slate-900">{displayUser?.email || '—'}</p>
+                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                        <p className="text-xs uppercase text-slate-400">Email</p>
+                                        <p className="mt-2 text-sm text-white">{displayUser?.email || '—'}</p>
                                     </div>
-                                    <div className="rounded-2xl border border-slate-200 bg-stone-50 p-4">
-                                        <p className="text-xs uppercase text-slate-500">Membre depuis</p>
-                                        <p className="mt-2 text-sm text-slate-900">{createdAtLabel}</p>
+                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                        <p className="text-xs uppercase text-slate-400">Membre depuis</p>
+                                        <p className="mt-2 text-sm text-white">{createdAtLabel}</p>
                                     </div>
-                                    <div className="rounded-2xl border border-slate-200 bg-stone-50 p-4">
-                                        <p className="text-xs uppercase text-slate-500">Statut</p>
-                                        <p className="mt-2 text-sm text-slate-900">Actif</p>
+                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                        <p className="text-xs uppercase text-slate-400">Statut</p>
+                                        <p className="mt-2 text-sm text-white">Actif</p>
                                     </div>
                                 </div>
                             )}
@@ -448,7 +448,7 @@ function Dashboard() {
 
                     {activeTab === 'favoris' && (
                         <div className="mt-4 space-y-4">
-                            <p className="text-sm text-slate-600">
+                            <p className="text-sm text-slate-300">
                                 Selectionne tes categories de jeux preferees. Elles seront sauvegardees localement.
                             </p>
 
@@ -461,8 +461,8 @@ function Dashboard() {
                                             type="button"
                                             onClick={() => toggleCategory(category)}
                                             className={`rounded-xl border px-4 py-3 text-left text-sm font-semibold transition ${isActive
-                                                ? 'border-cyan-400/50 bg-cyan-400/15 text-cyan-200'
-                                                : 'border-slate-200 bg-stone-50 text-slate-700 hover:border-slate-300'
+                                                ? 'border-cyan-400/40 bg-cyan-400/15 text-cyan-100'
+                                                : 'border-slate-700 bg-slate-900/70 text-slate-300 hover:border-cyan-400/40 hover:text-white'
                                                 }`}
                                         >
                                             {isActive ? '★ ' : ''}{category}
@@ -471,9 +471,9 @@ function Dashboard() {
                                 })}
                             </div>
 
-                            <div className="rounded-2xl border border-slate-200 bg-stone-50 p-4">
-                                <p className="text-xs uppercase text-slate-500">Mes favoris</p>
-                                <p className="mt-2 text-sm text-slate-900">
+                            <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                <p className="text-xs uppercase text-slate-400">Mes favoris</p>
+                                <p className="mt-2 text-sm text-white">
                                     {favoriteCategories.length > 0
                                         ? favoriteCategories.join(', ')
                                         : 'Aucune categorie favorite pour le moment.'}
@@ -481,18 +481,18 @@ function Dashboard() {
                             </div>
 
                             <div className="space-y-3">
-                                <p className="text-xs uppercase text-slate-500">Jeux correspondants</p>
+                                <p className="text-xs uppercase text-slate-400">Jeux correspondants</p>
 
                                 {selectedCategoryGames.length === 0 && (
-                                    <div className="rounded-2xl border border-slate-200 bg-stone-50 p-4 text-sm text-slate-700">
+                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">
                                         Selectionne une ou plusieurs categories pour voir la liste des jeux.
                                     </div>
                                 )}
 
                                 {selectedCategoryGames.map(({ category, games }) => (
-                                    <div key={category} className="rounded-2xl border border-slate-200 bg-stone-50 p-4">
-                                        <p className="text-sm font-semibold text-slate-900">{category}</p>
-                                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
+                                    <div key={category} className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                        <p className="text-sm font-semibold text-white">{category}</p>
+                                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-300">
                                             {games.map((game) => (
                                                 <li key={`${category}-${game}`}>
                                                     {gameLinks[game] ? (
@@ -500,7 +500,7 @@ function Dashboard() {
                                                             href={gameLinks[game]}
                                                             target="_blank"
                                                             rel="noreferrer"
-                                                            className="underline decoration-cyan-500/60 underline-offset-2 transition hover:text-cyan-300"
+                                                            className="underline decoration-cyan-400/60 underline-offset-2 transition hover:text-cyan-200"
                                                         >
                                                             {game}
                                                         </a>
