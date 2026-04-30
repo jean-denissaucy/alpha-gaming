@@ -10,8 +10,12 @@ Le projet combine un frontend React/Vite, un backend Node.js/Express et une base
 - [Structure du projet](#structure-du-projet)
 - [Prerequis](#prerequis)
 - [Installation](#installation)
-- [Demarrage](#demarrage)
 - [Configuration](#configuration)
+- [Demarrage](#demarrage)
+- [Scripts disponibles](#scripts-disponibles)
+- [Deploiement](#deploiement)
+- [API principale](#api-principale)
+- [Depannage](#depannage)
 
 ## Fonctionnalites
 
@@ -103,15 +107,15 @@ PORT=5000
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=
-DB_NAME=starter_kit
-JWT_SECRET=your-secret-key-here
+DB_NAME=alpha-gaming
+JWT_SECRET=your-secret-key-here-change-in-production
 JWT_EXPIRES_IN=7d
 CORS_ORIGINS=http://localhost:5173
 ```
 
 ### Frontend
 
-Creer un fichier `frontend/.env` (optionnel):
+Creer un fichier `frontend/.env.local` (optionnel, utilise `http://localhost:5000/api` par defaut):
 
 ```env
 VITE_API_URL=http://localhost:5000/api
@@ -119,7 +123,7 @@ VITE_API_URL=http://localhost:5000/api
 
 ## Demarrage
 
-### Mode developpement (backend + frontend)
+### Mode developpement (backend + frontend simultanement)
 
 Depuis la racine du projet:
 
@@ -127,17 +131,17 @@ Depuis la racine du projet:
 npm run dev
 ```
 
-Cela lance simultanement:
-- Backend sur `http://localhost:5000`
-- Frontend sur `http://localhost:5173`
+Cela lance:
+- **Backend** sur `http://localhost:5000`
+- **Frontend** sur `http://localhost:5173`
 
 ### Modes alternatifs
 
 ```bash
-# Backend seul
+# Backend seul (lancer d'abord init.sql)
 npm run dev:backend
 
-# Frontend seul
+# Frontend seul (require backend en execution)
 npm run dev:frontend
 
 # Build frontend pour production
@@ -147,146 +151,117 @@ npm run build
 npm run start:backend
 ```
 
-## Configuration
+## Scripts disponibles
 
-Creer backend/.env:
+### Racine du projet
 
-```env
-PORT=5000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=starter_kit
-JWT_SECRET=your-secret-key
-JWT_EXPIRES_IN=7d
-CORS_ORIGINS=http://localhost:5173
-```
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Lance backend + frontend en mode dev |
+| `npm run dev:backend` | Lance backend seul en dev |
+| `npm run dev:frontend` | Lance frontend seul en dev |
+| `npm run build` | Build frontend pour production |
+| `npm run start:backend` | Lance backend en mode production |
 
-Creer frontend/.env (optionnel):
+### Frontend (`npm run` depuis `frontend/`)
 
-```env
-VITE_API_URL=http://localhost:5000/api
-```
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Dev server Vite sur port 5173 |
+| `npm run build` | Build production avec Vite |
+| `npm run lint` | Lint avec ESLint |
+| `npm run preview` | Preview du build production |
 
-## Lancement
+### Backend (`npm run` depuis `backend/`)
 
-Depuis la racine:
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Dev server Node.js avec nodemon |
+| `npm run start` | Prod server Node.js |
 
-```bash
-npm run dev
-```
+## Deploiement
 
-Ou separement:
+Cette section documente un deploiement classique (frontend statique + backend Node.js + MySQL).
 
-```bash
-npm run dev:backend
-npm run dev:frontend
-```
+### Etapes
 
-Par defaut:
+1. **Preparer le serveur**
+   - Installer Node.js 20+ et npm 10+
+   - Installer MySQL 8+
+   - Ouvrir les ports 80/443 et 5000 (interne)
 
-- Backend: http://localhost:5000
-- Frontend: http://localhost:5173
+2. **Initialiser la base de donnees**
+   ```bash
+   mysql -u <user> -p < init.sql
+   ```
 
-## Scripts
+3. **Configurer backend/.env (production)**
+   ```env
+   PORT=5000
+   DB_HOST=db-server-internal-ip
+   DB_USER=prod-user
+   DB_PASSWORD=prod-password-secure
+   DB_NAME=alpha-gaming
+   JWT_SECRET=very-long-random-secret-min-32-chars
+   JWT_EXPIRES_IN=7d
+   CORS_ORIGINS=https://yourdomain.com
+   NODE_ENV=production
+   ```
 
-Racine:
+4. **Configurer frontend/.env (production)**
+   ```env
+   VITE_API_URL=https://yourdomain.com/api
+   ```
 
-- npm run dev
-- npm run dev:backend
-- npm run dev:frontend
-- npm run build
-- npm run start:backend
+5. **Installer et builder**
+   ```bash
+   npm install
+   npm --prefix backend install
+   npm --prefix frontend install
+   npm run build
+   ```
 
-Frontend:
+6. **Deployer frontend (statique)**
+   - Copier `frontend/dist/` sur serveur web (Nginx, Apache)
+   - Configurer rewrite: `try_files $uri $uri/ /index.html;` pour React Router
 
-- npm run dev
-- npm run build
-- npm run lint
-- npm run preview
+7. **Lancer backend**
+   ```bash
+   npm run start:backend
+   ```
+   Ou avec PM2:
+   ```bash
+   pm2 start backend/server.js --name alpha-api
+   ```
 
-Backend:
-
-- npm run dev
-- npm run start
-
-## Deploiement (production)
-
-Cette section documente un deploiement classique avec frontend statique + backend Node.js + MySQL.
-
-### 1) Preparer le serveur
-
-- Installer Node.js 20+
-- Installer MySQL 8+
-- Ouvrir les ports necessaires (ex: 80/443)
-
-### 2) Configurer la base de donnees
-
-- Creer la base et les tables:
-  - mysql -u <user> -p < init.sql
-- Verifier la presence de la table users
-
-### 3) Configurer le backend
-
-- Copier backend/.env.example vers backend/.env
-- Renseigner les variables de production:
-  - DB_HOST
-  - DB_USER
-  - DB_PASSWORD
-  - DB_NAME
-  - JWT_SECRET (fort et unique)
-  - JWT_EXPIRES_IN
-  - CORS_ORIGINS (URL frontend de production)
-
-### 4) Configurer le frontend
-
-- Copier frontend/.env.example vers frontend/.env
-- Renseigner VITE_API_URL avec l'URL API publique (ex: https://api.example.com/api)
-
-### 5) Build et lancement
-
-- Installer les dependances:
-  - npm install
-  - npm --prefix backend install
-  - npm --prefix frontend install
-- Build frontend:
-  - npm run build
-- Lancer le backend en mode production:
-  - npm run start:backend
-
-### 6) Verification post-deploiement
-
-- Verifier l'API:
-  - GET / doit repondre status online
-  - GET /api/news doit renvoyer des items
-- Verifier le frontend:
-  - la home charge
-  - login/register fonctionnent
-  - dashboard est protege
-
-### 7) Rollback minimal
-
-- Garder une copie du dernier build frontend valide
-- Garder une sauvegarde SQL avant migration
-- En cas d'erreur, restaurer le build precedent et la sauvegarde SQL
+8. **Verifier post-deploiement**
+   - GET `https://yourdomain.com/` → Frontend charge
+   - GET `https://yourdomain.com/api/news` → API repond
+   - Test login → JWT fonctionne
 
 ## API principale
 
-- GET /
-- POST /api/auth/register
-- POST /api/auth/login
-- GET /api/auth/me
-- GET /api/news
-- GET /api/news/esport
+| Route | Methode | Description |
+|-------|---------|-------------|
+| `/` | GET | Status serveur |
+| `/api/auth/register` | POST | Enregistrement (email, password, firstname, lastname) |
+| `/api/auth/login` | POST | Connexion (email, password) → token JWT |
+| `/api/auth/me` | GET | Profil courant (require Authorization header) |
+| `/api/news` | GET | Toutes les news gaming |
+| `/api/news/esport` | GET | Evenements esport en direct |
 
 ## Depannage
 
-- Erreur serveur au register/login:
-  - verifier JWT_SECRET et JWT_EXPIRES_IN dans backend/.env
-  - verifier le schema users (firstname, lastname)
-- Erreur CORS:
-  - verifier CORS_ORIGINS
-- Unknown database:
-  - verifier DB_NAME et relancer init.sql
-- Port backend occupe:
-  - changer PORT ou liberer le port
+| Probleme | Solution |
+|----------|----------|
+| "Unknown database" au demarrage | Verifier DB_NAME dans backend/.env, relancer `init.sql` |
+| Erreur CORS | Verifier CORS_ORIGINS dans backend/.env |
+| Port 5000 deja occupe | Changer `PORT=5001` dans backend/.env |
+| JWT non accepte | Verifier `JWT_SECRET` identique partout, re-login |
+| Favoris/Tests/Live vides | Verifier seed dans init.sql, relancer `mysql -u root < init.sql` |
+| Frontend ne se connecte pas au backend | Verifier VITE_API_URL pointe sur le bon port/host |
+
+---
+
+**Last Updated**: Avril 2026
+**Version**: 1.0.0

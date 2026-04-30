@@ -13,6 +13,7 @@ CREATE DATABASE IF NOT EXISTS `alpha-gaming`
 -- Si vous utilisez DB_NAME=alpha-gaming dans votre .env, remplacez la ligne USE ci-dessous.
 USE `alpha-gaming`;
 
+
 CREATE TABLE IF NOT EXISTS users (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   email VARCHAR(255) NOT NULL,
@@ -81,6 +82,7 @@ CREATE TABLE IF NOT EXISTS live_esport (
 -- Migration de compatibilite pour les anciennes bases (schema live_esport)
 SET @db_name = DATABASE();
 
+-- Migrate: competition → league
 SELECT COUNT(*) INTO @has_competition
 FROM information_schema.columns
 WHERE table_schema = @db_name AND table_name = 'live_esport' AND column_name = 'competition';
@@ -89,6 +91,7 @@ SET @sql = IF(@has_competition > 0,
   'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
+-- Migrate: affiche → match_title
 SELECT COUNT(*) INTO @has_affiche
 FROM information_schema.columns
 WHERE table_schema = @db_name AND table_name = 'live_esport' AND column_name = 'affiche';
@@ -97,6 +100,7 @@ SET @sql = IF(@has_affiche > 0,
   'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
+-- Migrate: heure_debut → kickoff_time
 SELECT COUNT(*) INTO @has_heure_debut
 FROM information_schema.columns
 WHERE table_schema = @db_name AND table_name = 'live_esport' AND column_name = 'heure_debut';
@@ -105,6 +109,7 @@ SET @sql = IF(@has_heure_debut > 0,
   'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
+-- Migrate: lien → href
 SELECT COUNT(*) INTO @has_lien
 FROM information_schema.columns
 WHERE table_schema = @db_name AND table_name = 'live_esport' AND column_name = 'lien';
@@ -113,6 +118,7 @@ SET @sql = IF(@has_lien > 0,
   'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
+-- Add: source column (if missing)
 SELECT COUNT(*) INTO @has_source
 FROM information_schema.columns
 WHERE table_schema = @db_name AND table_name = 'live_esport' AND column_name = 'source';
@@ -121,6 +127,7 @@ SET @sql = IF(@has_source = 0,
   'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
+-- Add: published_at column (if missing)
 SELECT COUNT(*) INTO @has_published_at
 FROM information_schema.columns
 WHERE table_schema = @db_name AND table_name = 'live_esport' AND column_name = 'published_at';
@@ -129,10 +136,12 @@ SET @sql = IF(@has_published_at = 0,
   'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
+-- Backfill missing hrefs with placeholder URLs
 UPDATE live_esport
 SET href = CONCAT('https://example.com/live-esport/', id)
 WHERE href IS NULL OR href = '';
 
+-- Enforce NOT NULL on critical columns post-migration
 ALTER TABLE live_esport
   MODIFY COLUMN league VARCHAR(120) NOT NULL,
   MODIFY COLUMN match_title VARCHAR(255) NOT NULL,
@@ -140,6 +149,7 @@ ALTER TABLE live_esport
   MODIFY COLUMN href VARCHAR(500) NOT NULL,
   MODIFY COLUMN source VARCHAR(120) NOT NULL DEFAULT 'RSS';
 
+-- Remove old unique constraint if it exists
 SELECT COUNT(*) INTO @has_old_unique
 FROM information_schema.statistics
 WHERE table_schema = @db_name AND table_name = 'live_esport' AND index_name = 'uq_live_esport_competition_affiche';
@@ -148,10 +158,12 @@ SET @sql = IF(@has_old_unique > 0,
   'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
+-- Remove duplicate records (keep oldest)
 DELETE t1
 FROM live_esport t1
 JOIN live_esport t2 ON t1.href = t2.href AND t1.id > t2.id;
 
+-- Ensure proper unique index on href
 SELECT COUNT(*) INTO @has_uq_href
 FROM information_schema.statistics
 WHERE table_schema = @db_name AND table_name = 'live_esport' AND index_name = 'uq_live_esport_href';
@@ -160,6 +172,7 @@ SET @sql = IF(@has_uq_href = 0,
   'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
+-- Ensure indexes for querying
 SELECT COUNT(*) INTO @has_idx_league
 FROM information_schema.statistics
 WHERE table_schema = @db_name AND table_name = 'live_esport' AND index_name = 'idx_live_esport_league';
@@ -192,7 +205,6 @@ CREATE TABLE IF NOT EXISTS news (
   KEY idx_news_categorie (categorie)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
 -- Seed tests rapides
 INSERT INTO tests_rapides (titre_jeu, score, plateformes, verdict, lien, is_external)
 VALUES
@@ -203,7 +215,6 @@ VALUES
   ('Monster Hunter Wilds', 8.9, 'PC / PS5 / Xbox', 'Des chasses plus spectaculaires et un monde plus vivant.', 'https://www.monsterhunter.com/wilds/', 1),
   ('EA SPORTS FC 26', 8.0, 'PC / PS5 / Xbox', 'Gameplay plus propre, progression mode carriere amelioree.', 'https://www.ea.com/games/ea-sports-fc', 1),
   ('Helldivers 2', 8.7, 'PC / PS5', 'Coop explosive et sensation de guerre totale reussie.', 'https://www.playstation.com/games/helldivers-2/', 1),
-  ('Prince of Persia: The Lost Crown', 8.6, 'PC / PS5 / Xbox / Switch', 'Metroidvania nerveux, excellent level design.', 'https://www.ubisoft.com/game/prince-of-persia/the-lost-crown', 1),
   ('Hades II', 9.1, 'PC', 'Roguelike ultra solide, ecriture et rythme exemplaires.', 'https://www.supergiantgames.com/games/hades-ii/', 1)
 ON DUPLICATE KEY UPDATE
   score = VALUES(score),
@@ -211,7 +222,6 @@ ON DUPLICATE KEY UPDATE
   verdict = VALUES(verdict),
   lien = VALUES(lien),
   is_external = VALUES(is_external);
-
 
 -- Seed live esport (fallback local)
 INSERT INTO live_esport (league, match_title, kickoff_time, href, source, published_at, is_external)
@@ -233,7 +243,6 @@ ON DUPLICATE KEY UPDATE
   source = VALUES(source),
   published_at = VALUES(published_at),
   is_external = VALUES(is_external);
-
 
 -- Seed news (fallback local)
 INSERT INTO news (source, titre, extrait, url, categorie, reading_time, published_at)
@@ -273,7 +282,6 @@ ON DUPLICATE KEY UPDATE
   reading_time = VALUES(reading_time),
   published_at = VALUES(published_at);
 
-
 -- Seed jeux disponibles par categorie (utilises dans l'onglet Favoris)
 INSERT INTO favoris_jeux (categorie, titre_jeu, lien, is_external)
 VALUES
@@ -299,137 +307,105 @@ VALUES
   ('Aventure', 'Prince of Persia: The Lost Crown', 'https://www.ubisoft.com/game/prince-of-persia/the-lost-crown', 1),
   ('Aventure', 'Life is Strange: Double Exposure', 'https://www.square-enix-games.com/en_US/games/life-is-strange-double-exposure', 1),
 
-  ('RPG', 'Metaphor: ReFantazio', 'https://metaphor.atlus.com/', 1),
-  ('RPG', 'Final Fantasy VII Rebirth', 'https://ffvii.square-enix-games.com/', 1),
   ('RPG', 'Baldur''s Gate 3', 'https://baldursgate3.game/', 1),
-  ('RPG', 'Dragon''s Dogma 2', 'https://www.dragonsdogma.com/2/en-us/', 1),
-  ('RPG', 'Elden Ring', 'https://en.bandainamcoent.eu/elden-ring/elden-ring', 1),
-  ('RPG', 'Persona 5 Royal', 'https://asia.sega.com/p5r/en/', 1),
-  ('RPG', 'Dragon Quest XI S', 'https://www.dragonquest.jp/dq11s/', 1),
-  ('RPG', 'Xenoblade Chronicles 3', 'https://www.nintendo.com/us/store/products/xenoblade-chronicles-3-switch/', 1),
-  ('RPG', 'Tales of Arise', 'https://www.bandainamcoent.com/games/tales-of-arise', 1),
-  ('RPG', 'Final Fantasy XVI', 'https://www.finalfantasyxvi.com/', 1),
+  ('RPG', 'Final Fantasy VII Rebirth', 'https://www.playstation.com/games/final-fantasy-vii-rebirth/', 1),
+  ('RPG', 'Dragon''s Dogma 2', 'https://www.dragons-dogma.com/', 1),
+  ('RPG', 'Metaphor: ReFantazio', 'https://metaphor.atlus.com/', 1),
+  ('RPG', 'Elden Ring: Shadow of the Erdtree', 'https://www.elden-ring.com/', 1),
+  ('RPG', 'Persona 5 Royal', 'https://www.playstation.com/games/persona-5-royal/', 1),
+  ('RPG', 'Cyberpunk 2077', 'https://www.cyberpunk.net/', 1),
+  ('RPG', 'Starfield', 'https://www.bethesda.net/en/game/starfield', 1),
+  ('RPG', 'Dragon Age: The Veilguard', 'https://www.dragonage.com/', 1),
+  ('RPG', 'Xenoblade Chronicles 3', 'https://www.nintendo.com/games/xenoblade-chronicles-3/', 1),
 
-  ('FPS', 'Counter-Strike 2', 'https://www.counter-strike.net/cs2', 1),
-  ('FPS', 'Call of Duty: Black Ops 6', 'https://www.callofduty.com/', 1),
-  ('FPS', 'THE FINALS', 'https://www.reachthefinals.com/', 1),
-  ('FPS', 'Battlefield 6', 'https://www.ea.com/games/battlefield', 1),
-  ('FPS', 'Halo Infinite', 'https://www.halowaypoint.com/halo-infinite', 1),
-  ('FPS', 'Overwatch 2', 'https://overwatch.blizzard.com/', 1),
-  ('FPS', 'Titanfall 2', 'https://www.ea.com/games/titanfall/titanfall-2', 1),
-  ('FPS', 'Destiny 2', 'https://www.bungie.net/7/en/Destiny', 1),
-  ('FPS', 'Rainbow Six Siege', 'https://www.ubisoft.com/game/rainbow-six/siege', 1),
-  ('FPS', 'DOOM Eternal', 'https://bethesda.net/en/game/doom-eternal', 1),
-
-  ('Battle Royale', 'Fortnite', 'https://www.fortnite.com/', 1),
-  ('Battle Royale', 'Apex Legends', 'https://www.ea.com/games/apex-legends', 1),
-  ('Battle Royale', 'PUBG: Battlegrounds', 'https://pubg.com/', 1),
-  ('Battle Royale', 'Warzone', 'https://www.callofduty.com/warzone', 1),
-  ('Battle Royale', 'Fall Guys', 'https://www.fallguys.com/', 1),
-  ('Battle Royale', 'NARAKA: BLADEPOINT', 'https://www.narakathegame.com/', 1),
-  ('Battle Royale', 'Bloodhunt', 'https://bloodhunt.com/', 1),
-  ('Battle Royale', 'Super People', 'https://superpeople.com/', 1),
-  ('Battle Royale', 'Realm Royale Reforged', 'https://www.realmroyale.com/', 1),
-  ('Battle Royale', 'H1Z1', 'https://www.h1z1.com/', 1),
+  ('Strategie', 'Civilization VII', 'https://www.civilization.com/', 1),
+  ('Strategie', 'Total War: Warhammer III', 'https://www.totalwar.com/', 1),
+  ('Strategie', 'StarCraft II', 'https://starcraft2.com/', 1),
+  ('Strategie', 'Fire Emblem: Three Houses', 'https://www.nintendo.com/games/fire-emblem-three-houses/', 1),
+  ('Strategie', 'XCOM 3', 'https://www.2k.com/xcom/', 1),
+  ('Strategie', 'They Are Billions', 'https://www.they-are-billions.com/', 1),
+  ('Strategie', 'Dota 2', 'https://www.dota2.com/', 1),
+  ('Strategie', 'Heroes of the Storm', 'https://heroesofthestorm.com/', 1),
+  ('Strategie', 'Manor Lords', 'https://www.manorlords.com/', 1),
+  ('Strategie', 'Crusader Kings III', 'https://www.crusaderkings.com/', 1),
 
   ('Sport', 'EA SPORTS FC 26', 'https://www.ea.com/games/ea-sports-fc', 1),
-  ('Sport', 'NBA 2K26', 'https://nba.2k.com/', 1),
+  ('Sport', 'NBA 2K25', 'https://www.nba2k.com/', 1),
   ('Sport', 'F1 26', 'https://www.ea.com/games/f1', 1),
-  ('Sport', 'UFC 5', 'https://www.ea.com/games/ufc/ufc-5', 1),
-  ('Sport', 'Madden NFL 26', 'https://www.ea.com/games/madden-nfl/madden-nfl-26', 1),
-  ('Sport', 'NHL 25', 'https://www.ea.com/games/nhl/nhl-25', 1),
-  ('Sport', 'MLB The Show 25', 'https://www.theshow.com/', 1),
-  ('Sport', 'TopSpin 2K25', 'https://topspin.2k.com/', 1),
-  ('Sport', 'WWE 2K25', 'https://wwe.2k.com/', 1),
-  ('Sport', 'eFootball 2025', 'https://www.konami.com/efootball/en/', 1),
+  ('Sport', 'Madden NFL 25', 'https://www.ea.com/games/madden', 1),
+  ('Sport', 'PES 2025', 'https://www.pesworld.com/', 1),
+  ('Sport', 'MLB The Show 25', 'https://theshow.com/', 1),
+  ('Sport', 'UFC 5', 'https://www.ea.com/games/ufc', 1),
+  ('Sport', 'WWE 2K25', 'https://www.wwe2k.com/', 1),
+  ('Sport', 'Riders Republic', 'https://riders-republic.ubisoft.com/', 1),
+  ('Sport', 'Steep', 'https://www.ubisoft.com/en-US/game/steep/', 1),
 
-  ('Course', 'Forza Horizon 5', 'https://forza.net/horizon', 1),
-  ('Course', 'Gran Turismo 7', 'https://www.gran-turismo.com/', 1),
-  ('Course', 'Need for Speed Unbound', 'https://www.ea.com/games/need-for-speed/need-for-speed-unbound', 1),
-  ('Course', 'The Crew Motorfest', 'https://www.ubisoft.com/game/the-crew/motorfest', 1),
-  ('Course', 'F1 25', 'https://www.ea.com/games/f1/f1-25', 1),
-  ('Course', 'Wreckfest', 'https://wreckfest.thqnordic.com/', 1),
-  ('Course', 'Assetto Corsa Competizione', 'https://assettocorsa.gg/competizione/', 1),
-  ('Course', 'Hot Wheels Unleashed 2', 'https://hotwheelsunleashed.com/', 1),
-  ('Course', 'MotoGP 24', 'https://www.motogp.com/', 1),
-  ('Course', 'Burnout Paradise Remastered', 'https://www.ea.com/games/burnout/burnout-paradise-remastered', 1),
+  ('Course', 'Forza Motorsport 8', 'https://forzamotorsport.net/', 1),
+  ('Course', 'Gran Turismo 7', 'https://www.playstation.com/games/gran-turismo-7/', 1),
+  ('Course', 'Need for Speed Unbound', 'https://www.ea.com/games/need-for-speed', 1),
+  ('Course', 'Mario Kart 8 Deluxe', 'https://www.nintendo.com/games/mario-kart-8-deluxe/', 1),
+  ('Course', 'Crash Team Racing Nitro-Fueled', 'https://www.playstation.com/games/crash-team-racing-nitro-fueled/', 1),
+  ('Course', 'Sonic Racing', 'https://www.sonicthehedgehog.com/', 1),
+  ('Course', 'Ridge Racer Unbounded', 'https://ridgeracer.game/', 1),
+  ('Course', 'Assetto Corsa Competizione', 'https://www.assettocorsa.net/', 1),
+  ('Course', 'Project Cars 3', 'https://www.projectcarsgame.com/', 1),
+  ('Course', 'Wangan Midnight Maximum Tune', 'https://wangan.sega.com/', 1),
 
-  ('Simulation', 'Microsoft Flight Simulator', 'https://www.flightsimulator.com/', 1),
-  ('Simulation', 'Euro Truck Simulator 2', 'https://eurotrucksimulator2.com/', 1),
-  ('Simulation', 'The Sims 4', 'https://www.ea.com/games/the-sims/the-sims-4', 1),
-  ('Simulation', 'Cities: Skylines II', 'https://www.paradoxinteractive.com/games/cities-skylines-ii/about', 1),
-  ('Simulation', 'Farming Simulator 25', 'https://www.farming-simulator.com/', 1),
-  ('Simulation', 'House Flipper 2', 'https://houseflipper2.com/', 1),
-  ('Simulation', 'Train Sim World 5', 'https://www.trainsimworld.com/', 1),
-  ('Simulation', 'Planet Coaster 2', 'https://www.planetcoaster.com/', 1),
-  ('Simulation', 'Car Mechanic Simulator 2021', 'https://www.carmechanicsimulator.com/', 1),
-  ('Simulation', 'Prison Architect 2', 'https://www.paradoxinteractive.com/games/prison-architect-2/about', 1),
+  ('Shooter', 'Call of Duty: Black Ops 6', 'https://www.callofduty.com/', 1),
+  ('Shooter', 'Counter-Strike 2', 'https://www.counter-strike.net/', 1),
+  ('Shooter', 'VALORANT', 'https://playvalorant.com/', 1),
+  ('Shooter', 'Destiny 2', 'https://www.bungie.net/en/Destiny', 1),
+  ('Shooter', 'Rainbow Six Siege', 'https://www.ubisoft.com/en-us/game/rainbow-six/siege', 1),
+  ('Shooter', 'Overwatch 2', 'https://overwatch.blizzard.com/', 1),
+  ('Shooter', 'Apex Legends', 'https://www.ea.com/games/apex-legends', 1),
+  ('Shooter', 'Helldivers 2', 'https://www.playstation.com/games/helldivers-2/', 1),
+  ('Shooter', 'Team Fortress 2', 'https://www.teamfortress.com/', 1),
+  ('Shooter', 'Warzone', 'https://www.callofduty.com/warzone', 1),
 
-  ('Strategie', 'Age of Empires IV', 'https://www.ageofempires.com/games/age-of-empires-iv/', 1),
-  ('Strategie', 'StarCraft II', 'https://starcraft2.com/', 1),
-  ('Strategie', 'Civilization VI', 'https://civilization.2k.com/civ-vi/', 1),
-  ('Strategie', 'Total War: Warhammer III', 'https://www.totalwar.com/games/warhammer-iii/', 1),
-  ('Strategie', 'Company of Heroes 3', 'https://www.companyofheroes.com/', 1),
-  ('Strategie', 'Crusader Kings III', 'https://www.crusaderkings.com/', 1),
-  ('Strategie', 'Anno 1800', 'https://www.anno-union.com/en/anno-1800/', 1),
-  ('Strategie', 'XCOM 2', 'https://www.xcom.com/', 1),
-  ('Strategie', 'Frostpunk 2', 'https://www.frostpunk2.com/', 1),
-  ('Strategie', 'Northgard', 'https://northgard.com/', 1),
+  ('Plateforme', 'Astro''s Playroom', 'https://www.playstation.com/games/astros-playroom/', 1),
+  ('Plateforme', 'Super Mario Bros. Wonder', 'https://www.nintendo.com/games/super-mario-bros-wonder/', 1),
+  ('Plateforme', 'Donkey Kong Country Returns', 'https://www.nintendo.com/games/donkey-kong-country-returns/', 1),
+  ('Plateforme', 'Rayman Legends', 'https://www.ubisoft.com/en-us/game/rayman-legends', 1),
+  ('Plateforme', 'Kirby and the Forgotten Land', 'https://www.nintendo.com/games/kirby-and-the-forgotten-land/', 1),
+  ('Plateforme', 'Sonic Frontiers', 'https://www.sonicthehedgehog.com/', 1),
+  ('Plateforme', 'Celeste', 'https://www.celestegame.com/', 1),
+  ('Plateforme', 'Dead Cells', 'https://dead-cells.com/', 1),
+  ('Plateforme', 'Hollow Knight', 'https://www.hollowknight.com/', 1),
+  ('Plateforme', 'Ori and the Blind Forest', 'https://www.orithegame.com/', 1),
 
-  ('Inde', 'Hades II', 'https://www.supergiantgames.com/games/hades-ii/', 1),
-  ('Inde', 'Hollow Knight', 'https://www.hollowknight.com/', 1),
-  ('Inde', 'Dead Cells', 'https://dead-cells.com/', 1),
-  ('Inde', 'Slay the Spire', 'https://www.megacrit.com/', 1),
-  ('Inde', 'Balatro', 'https://www.playbalatro.com/', 1),
-  ('Inde', 'Celeste', 'https://www.celestegame.com/', 1),
-  ('Inde', 'Ori and the Will of the Wisps', 'https://www.orithegame.com/', 1),
-  ('Inde', 'Vampire Survivors', 'https://www.vampiresurvivors.com/', 1),
-  ('Inde', 'Cult of the Lamb', 'https://www.cultofthelamb.com/', 1),
-  ('Inde', 'Tunic', 'https://tunicgame.com/', 1),
+  ('Puzzle', 'Portal 2', 'https://www.valvesoftware.com/en/games/portal2/', 1),
+  ('Puzzle', 'The Witness', 'https://the-witness.com/', 1),
+  ('Puzzle', 'Tetris Effect', 'https://www.tetriseffect.game/', 1),
+  ('Puzzle', 'Baba Is You', 'https://hempuli.itch.io/baba-is-you', 1),
+  ('Puzzle', 'Unpacking', 'https://unpackinggame.com/', 1),
+  ('Puzzle', 'A Short Hike', 'https://adamgryu.itch.io/a-short-hike', 1),
+  ('Puzzle', 'Return of the Obra Dinn', 'https://www.diegeticgames.com/', 1),
+  ('Puzzle', 'The Swapper', 'https://theswapper.com/', 1),
+  ('Puzzle', 'Outer Wilds', 'https://www.outerwilds.com/', 1),
+  ('Puzzle', 'Deus Ex Machina', 'https://deusexmachina.game/', 1),
 
-  ('MMO', 'World of Warcraft', 'https://worldofwarcraft.blizzard.com/', 1),
-  ('MMO', 'Final Fantasy XIV', 'https://na.finalfantasyxiv.com/', 1),
-  ('MMO', 'Guild Wars 2', 'https://www.guildwars2.com/', 1),
-  ('MMO', 'The Elder Scrolls Online', 'https://www.elderscrollsonline.com/', 1),
-  ('MMO', 'New World', 'https://www.newworld.com/', 1),
-  ('MMO', 'Black Desert Online', 'https://www.naeu.playblackdesert.com/', 1),
-  ('MMO', 'Lost Ark', 'https://www.playlostark.com/', 1),
-  ('MMO', 'RuneScape', 'https://www.runescape.com/', 1),
-  ('MMO', 'EVE Online', 'https://www.eveonline.com/', 1),
-  ('MMO', 'Throne and Liberty', 'https://www.playthroneandliberty.com/', 1),
-
-  ('Horreur', 'Resident Evil 4', 'https://www.residentevil.com/re4/en-us/', 1),
+  ('Horreur', 'Resident Evil 9', 'https://www.residentevil.com/', 1),
+  ('Horreur', 'Dead Space Remake', 'https://www.ea.com/games/dead-space', 1),
   ('Horreur', 'Alan Wake 2', 'https://www.alanwake.com/', 1),
-  ('Horreur', 'Dead Space', 'https://www.ea.com/games/dead-space', 1),
-  ('Horreur', 'The Outlast Trials', 'https://redbarrelsgames.com/games/the-outlast-trials/', 1),
-  ('Horreur', 'Silent Hill 2', 'https://www.silenthill.com/', 1),
-  ('Horreur', 'Resident Evil Village', 'https://www.residentevil.com/village/', 1),
-  ('Horreur', 'Amnesia: The Bunker', 'https://www.amnesiathegame.com/', 1),
-  ('Horreur', 'Layers of Fear', 'https://www.layersoffear.com/', 1),
-  ('Horreur', 'The Casting of Frank Stone', 'https://thecastingoffrankstone.com/', 1),
-  ('Horreur', 'Until Dawn', 'https://www.playstation.com/games/until-dawn/', 1)
+  ('Horreur', 'Evil Within 2', 'https://www.theevilwithin.com/', 1),
+  ('Horreur', 'Outlast 3', 'https://www.outlastgame.com/', 1),
+  ('Horreur', 'Amnesia: The Bunker', 'https://www.amnesiathebunker.com/', 1),
+  ('Horreur', 'Five Nights at Freddy''s', 'https://www.fivenightsatfreddys.com/', 1),
+  ('Horreur', 'Layers of Fear', 'https://layersoffear.com/', 1),
+  ('Horreur', 'Phasmophobia', 'https://www.phasmophobiagame.com/', 1),
+  ('Horreur', 'The Callisto Protocol', 'https://www.callistoprotocol.com/', 1),
+
+  ('Indie', 'Stardew Valley', 'https://www.stardewvalley.net/', 1),
+  ('Indie', 'Hollow Knight: Silksong', 'https://www.hollowknight.com/silksong/', 1),
+  ('Indie', 'Hades', 'https://www.supergiantgames.com/games/hades/', 1),
+  ('Indie', 'Stray', 'https://www.playstation.com/games/stray/', 1),
+  ('Indie', 'Coffee Talk', 'https://coffeetal.k.com/', 1),
+  ('Indie', 'Gris', 'https://nomada.studio/gris/', 1),
+  ('Indie', 'Inside', 'https://www.playinside.com/', 1),
+  ('Indie', 'Limbo', 'https://www.playlimbo.com/', 1),
+  ('Indie', 'Night in the Woods', 'https://nightinthewoods.com/', 1),
+  ('Indie', 'Undertale', 'https://undertale.com/', 1)
+
 ON DUPLICATE KEY UPDATE
   lien = VALUES(lien),
   is_external = VALUES(is_external);
-
-
--- Seed categories favorites (ajoute des categories pour le premier utilisateur existant)
-INSERT INTO favoris (user_id, categorie)
-SELECT u.id, c.categorie
-FROM (SELECT id FROM users ORDER BY id LIMIT 1) AS u
-JOIN (
-  SELECT 'Action' AS categorie
-  UNION ALL SELECT 'Aventure'
-  UNION ALL SELECT 'RPG'
-  UNION ALL SELECT 'FPS'
-  UNION ALL SELECT 'Battle Royale'
-  UNION ALL SELECT 'Sport'
-  UNION ALL SELECT 'Course'
-  UNION ALL SELECT 'Simulation'
-  UNION ALL SELECT 'Strategie'
-  UNION ALL SELECT 'Inde'
-  UNION ALL SELECT 'MMO'
-  UNION ALL SELECT 'Horreur'
-) AS c
-ON 1 = 1
-ON DUPLICATE KEY UPDATE categorie = VALUES(categorie);
