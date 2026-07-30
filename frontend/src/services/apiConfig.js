@@ -11,12 +11,12 @@ export function resolveApiBaseUrl(env = {}, location = {}) {
         return 'http://localhost/api';
     }
 
-    return 'https://alpha-gaming.vercel.app/api';
+    return 'https://alpha-gaming-1.onrender.com/api';
 }
 
 export function getApiCandidates(env = {}, location = {}) {
     const primary = resolveApiBaseUrl(env, location);
-    const fallback = 'https://alpha-gaming.vercel.app/api';
+    const fallback = 'https://alpha-gaming-1.onrender.com/api';
 
     return [primary, fallback].filter((value, index, values) => values.indexOf(value) === index);
 }
