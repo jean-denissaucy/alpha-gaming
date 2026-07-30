@@ -1,6 +1,7 @@
 // controllers/auth.controller.js
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
+import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 
 const normalizeUser = (user) => {
     if (!user) return null;
@@ -39,19 +40,19 @@ export const register = async (req, res) => {
     try {
         const { email, password, firstname, lastname } = req.body;
         if (!email || !password || !firstname || !lastname) {
-            return res.status(400).json({ error: 'Tous les champs sont requis' });
+            return res.status(400).json(buildErrorResponse('Tous les champs sont requis', 400));
         }
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
-            return res.status(409).json({ error: 'Email déjà utilisé' });
+            return res.status(409).json(buildErrorResponse('Email déjà utilisé', 409));
         }
         const user = await User.create({ email, password, firstname, lastname });
         const normalizedUser = normalizeUser(user);
         const token = generateToken(normalizedUser);
-        res.status(201).json({ message: 'Inscription réussie', user: normalizedUser, token });
+        return res.status(201).json(buildSuccessResponse({ message: 'Inscription réussie', user: normalizedUser }, { user: normalizedUser, token }));
     } catch (error) {
         console.error('Erreur register:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
+        return res.status(500).json(buildErrorResponse('Erreur serveur', 500));
     }
 };
 // POST /api/auth/login
@@ -60,20 +61,17 @@ export const login = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findByEmail(email);
         if (!user || !(await User.verifyPassword(password, user.password))) {
-            return res.status(401).json({ error: 'Identifiants incorrects' });
+            return res.status(401).json(buildErrorResponse('Identifiants incorrects', 401));
         }
         const normalizedUser = normalizeUser(user);
         const token = generateToken(normalizedUser);
-        res.json({
-            user: normalizedUser,
-            token
-        });
+        return res.json(buildSuccessResponse({ message: 'Connexion réussie' }, { user: normalizedUser, token }));
     } catch (error) {
         console.error('Erreur login:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
+        return res.status(500).json(buildErrorResponse('Erreur serveur', 500));
     }
 };
 // GET /api/auth/me
 export const getProfile = async (req, res) => {
-    res.json({ user: normalizeUser(req.user) });
+    return res.json(buildSuccessResponse({ user: normalizeUser(req.user) }));
 };

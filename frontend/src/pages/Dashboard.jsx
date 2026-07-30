@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.js';
-import { authService } from '../services/api.js';
+import { authLocalService } from '../services/authLocal.js';
 
 const gameCategories = [
     'Action',
@@ -311,8 +311,7 @@ function Dashboard() {
     const loadProfile = async () => {
         setLoading(true);
         try {
-            // Appel de l'endpoint protégé /api/auth/me
-            const data = await authService.getProfile();
+            const data = await authLocalService.getProfile();
             setProfile(data.user);
             setError('');
         } catch (err) {

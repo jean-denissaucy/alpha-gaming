@@ -1,70 +1,31 @@
 ﻿Etape 1 Consultation des actualités
 
-
-
-
-
-
-
-
 * US-01 Voir la home publique: P1
-
-
 * US-02 Rafraîchissement hebdomadaire de la home: P2
-
-
 * US-03 Créer un compte: P1
-
-
 * US-04 Se connecter: P1
-
-
 * US-05 Consulter mon profil courant: P2
- 
 * US-06 Accéder au dashboard protège: P1
-
-
 * US-07 Voir des favoris par catégories: P2
-
-
 * US-08 Ouvrir le site officiel d’un jeu favori: P2
-
-
 * US-09 Consulter une page de présentation statique: P3
-
-
 * US-10 API disponible pour le frontend: P1 
-
-
-
-
-
-
-
-
 
 
 * Echelle de priorité:
 
-
 * P1: Critique
- 
 * P2: Important
-
-
 * P3: Confort
 
 
 US-01 Voir la home publique 
 
-
 En tant que Visiteur:
 Je veux accéder à une page d’accueil publique  
 Afin de consulter rapidement les actus gaming et esport.
 
-
 * Priorité: P1
-
 
 Critères d’acceptation:
 * Etant donné que je suis non connecté, quand j’ouvre le site, alors la page Home s’affiche.
@@ -73,31 +34,26 @@ Critères d’acceptation:
 
 
 
-
 US-02 Rafraîchissement hebdomadaire de la home
-
 
 En tant que Utilisateur 
 Je veux que les informations de la Home se rafraîchissent chaque semaine.
 Afin de voir des contenus récents.
 
-
 * Priorité: P2
-
 
 Critères d’acceptation:
 * Etant donné que la Home est ouverte, quand la condition 
 * “lundi 0H00” est atteinte côté navigateur, alors les blocs news et esport sont rechargés.
 * Étant donné que le navigateur est fermé, quand 0H00 passe, alors la mise à jour est exécutée lors de la prochaine ouverture de la Home. 
-US-03 Créer un compte:
 
+
+US-03 Créer un compte:
 
 En tant que visiteur  je veux créer un compte avec email et mot de passe.
 Afin d'accéder à l’espace membre.
 
-
 * Priorité: P1
-
 
 Critères d’acceptation:
 * Étant donné que je saisis des informations valides, quand je valide le formulaire d’inscription, alors mon compte est créé.
@@ -105,16 +61,13 @@ Critères d’acceptation:
 * Étant donné une inscription réussie, quand la réponse revient, alors je peux me connecter.
 
 
-
-
 US-04 Se Connecter
+
 En tant qu’utilisateur inscrit 
 je veux me connecter avec mes identifiants
 Afin de récupérer un token JWT et accéder au dashboard.
 
-
 * Priorité: P1 
-
 
 Critères d’acceptation: 
 * Etant donné que les identifiants sont valides, quand je soumets le formulaire, alors je suis authentifié.
@@ -123,16 +76,12 @@ Critères d’acceptation:
 * quand je tente la connexion, alors un message d’ erreur est affiché.
 
 
-
-
 US-05 Consulter mon profil courant
-                 En tant qu’utilisateur connecté,
+En tant qu’utilisateur connecté,
 je veux récupérer mes informations de profil 
 afin de vérifier que ma session est active.
 
-
 * Priorité: P2
-
 
 Critères d’acceptation:
 * Étant donné un JWT valide, quand j’appelle le profil courant, alors mes informations utilisateur sont retournées.
@@ -143,25 +92,24 @@ Critères d’acceptation:
 
 US -06 Accéder au Dashboard protège 
         
-        En tant qu’utilisateur connecté 
-        je veux acceder a une page dashboard réservée 
-        afin de consulter mon espace personnalisé.
-
+En tant qu’utilisateur connecté 
+je veux acceder a une page dashboard réservée 
+afin de consulter mon espace personnalisé.
 
 * Priorité: P1
-
 
 Critères d’acceptation:
 * Etant donné que je suis connecté, quand je vais sur dashboard, alors la page s’affiche.
 * Etant donné que je ne suis pas connecté, quand je vais sur dashboard, alors je suis redirigé vers la page connexion.
+
+
 US- 07 Voir des favoris par catégories 
+
 En tant qu’utilisateur connecté 
 je veux visualiser des jeux favoris classés par catégories
 afin d'accéder rapidement à mes centres d'intérêt.
 
-
 * Priorité: P2
-
 
 Critères d’acceptation:
 * Etant donné que je suis dans le dashboard, 
@@ -169,56 +117,39 @@ Quand la section favorite s’affiche, alors 12 catégories sont disponibles.
 * Etant donné une catégorie sélectionnée, quand je consulte la liste, alors jusqu'à 10 jeux sont affichés pour cette catégorie.
 
 
-
-
 US-08 Ouvrir le site officiel d’un jeu favori
+
 En tant qu’utilisateur connecté 
 je veux cliquer sur un jeu favori
 afin de visiter son site officiel
 
-
 * Priorité: P2
-
 
 Critères d’acceptation: 
 * Etant donné qu' un jeu affiche dans favoris, quand je clique dessus, alors le site officiel du jeu s’ouvre.
 * Étant donné un lien invalide, quand je clique, alors l’application ne plante pas et informe l’utilisateur.
 
 
-
-
-
-
-
-
 US-09 Consulter une page de présentation statique 
-
 
 En tant que visiteur 
 je veux acceder a une page de présentation indépendante 
 afin de comprendre rapidement le projet.
 
-
 * Priorité: P3
-
 
 Critères d’acceptation: 
 * Étant donné l’URL /presentation.html, quand je l’ouvre, alors la page statique se charge avec son css.
 * Etant donné un affichage mobile, quand je consulte la page, alors le contenu reste lisible.
 
 
-
-
 US-10 API disponible pour le frontend
-
 
 En tant que frontend
 je veux disposer d’endpoints stables pour auth et news
 afin de changer et protéger les données côté client.
 
-
 * Priorité: P1
-
 
 Critères d’acceptation: 
 * Étant donné que le backend démarre, quand j’appelle `GET/API/news`,alors une liste d'actualités gaming est retournée.

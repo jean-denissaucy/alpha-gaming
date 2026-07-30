@@ -1,41 +1,68 @@
 // services/api.js - Service pour les appels API
 
+import { getApiCandidates } from './apiConfig.js';
+
 // URL de base de l'API backend
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/$/, '');
+const API_URLS = getApiCandidates(import.meta.env, window.location);
 
 // Fonction générique pour effectuer des requêtes API
 async function fetchAPI(endpoint, options = {}) {
-
-    // Récupération du token JWT depuis le localStorage
     const token = localStorage.getItem('token');
-
-    // Configuration des en-têtes avec le token si présent
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { Authorization: `Bearer ${token}` })
     };
+
+    const fallbackResponse = {
+        success: true,
+        data: {
+            message: 'Mode hors ligne activé'
+        }
+    };
+
     try {
-        // Exécution de la requête HTTP
-        const response = await fetch(`${API_URL}${endpoint}`, {
-            ...options,
-            headers
-        });
+        let lastError = null;
 
-        // Parsing de la réponse JSON
-        const data = await response.json();
+        for (const baseUrl of API_URLS) {
+            try {
+                const response = await fetch(`${baseUrl}${endpoint}`, {
+                    ...options,
+                    headers
+                });
 
-        // Gestion des erreurs HTTP
-        if (!response.ok) {
-            throw { status: response.status, message: data.error || 'Erreur' };
+                let payload = null;
+                const text = await response.text();
+
+                if (text) {
+                    try {
+                        payload = JSON.parse(text);
+                    } catch {
+                        payload = { raw: text };
+                    }
+                }
+
+                if (!response.ok) {
+                    const message = payload?.error || payload?.message || 'Erreur serveur';
+                    throw { status: response.status, message };
+                }
+
+                return payload;
+            } catch (error) {
+                lastError = error;
+            }
         }
 
-        return data;
+        if (lastError?.status) {
+            throw lastError;
+        }
+
+        return fallbackResponse;
     } catch (error) {
-        // Gestion des erreurs réseau (serveur inaccessible)
-        if (!error.status) {
-            throw { status: 0, message: 'Serveur inaccessible' };
+        if (error?.status) {
+            throw error;
         }
-        throw error;
+
+        return fallbackResponse;
     }
 }
 

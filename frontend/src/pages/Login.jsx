@@ -36,8 +36,8 @@ function Login() {
             // Redirection vers la page d'origine ou le dashboard
             navigate(from, { replace: true });
         } catch (err) {
-            // Affichage de l'erreur en cas d'échec
-            setError(err.message || 'Erreur de connexion');
+            const message = err?.message || 'Erreur de connexion';
+            setError(message);
         } finally {
             // Désactivation du loader
             setLoading(false);

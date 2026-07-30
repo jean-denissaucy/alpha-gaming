@@ -5,11 +5,14 @@ import cors from 'cors';
 import { testConnection } from './config/db.js';
 import authRoutes from './routes/auth.routes.js';
 import newsRoutes from './routes/news.routes.js';
+import { buildErrorResponse, buildSuccessResponse } from './utils/response.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connexion BDD
-testConnection();
+if (process.env.DB_HOST) {
+    testConnection();
+}
 
 // Middlewares
 const envAllowedOrigins = (process.env.CORS_ORIGINS || '')
@@ -52,7 +55,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Routes
 app.get('/', (req, res) => {
-    res.json({ message: 'Starter Kit API (ES Modules)', status: 'online' });
+    res.json(buildSuccessResponse({ message: 'Starter Kit API (ES Modules)', status: 'online' }));
 });
 
 // Routes d'authentification
@@ -62,9 +65,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 
 // 404
-app.use((req, res) => res.status(404).json({ error: 'Route non trouvée' }));
+app.use((req, res) => res.status(404).json(buildErrorResponse('Route non trouvée', 404)));
 
-// Démarrage
-app.listen(PORT, () => {
-    console.log(`Serveur sur http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Serveur sur http://localhost:${PORT}`);
+    });
+}
+
+export default app;

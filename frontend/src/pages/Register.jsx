@@ -34,8 +34,8 @@ function Register() {
             // Redirection vers le dashboard après succès
             navigate('/dashboard', { replace: true });
         } catch (err) {
-            // Affichage de l'erreur en cas d'échec
-            setError(err.message || "L'inscription a échoué");
+            const message = err?.message || "L'inscription a échoué";
+            setError(message);
         } finally {
             // Désactivation du loader
             setLoading(false);

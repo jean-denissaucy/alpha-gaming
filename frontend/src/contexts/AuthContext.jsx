@@ -1,7 +1,7 @@
 // contexts/AuthContext.jsx - Contexte global pour gérer l'authentification
 
 import { useState, useEffect } from 'react';
-import { authService } from '../services/api.js';
+import { authLocalService } from '../services/authLocal.js';
 import { AuthContext } from './auth-context.js';
 
 function buildUserFromToken(token) {
@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
         }
 
         // Si un token existe, récupération du profil utilisateur
-        authService.getProfile()
+        authLocalService.getProfile()
             .then(data => {
                 if (!isMounted) return;
                 setUser(data.user);
@@ -73,29 +73,16 @@ export function AuthProvider({ children }) {
 
     // Fonction de connexion
     const login = async (email, password) => {
-        // Appel API pour se connecter
-        const data = await authService.login(email, password);
-
-        // Stockage du token JWT dans le localStorage
+        const data = await authLocalService.login(email, password);
         localStorage.setItem('token', data.token);
-
-        // Mise à jour de l'état utilisateur
         setUser(data.user);
-
         return data;
     };
-    // Fonction d'inscription
+
     const register = async (userData) => {
-
-        // Appel API pour créer un nouveau compte
-        const data = await authService.register(userData);
-
-        // Stockage du token JWT
+        const data = await authLocalService.register(userData);
         localStorage.setItem('token', data.token);
-
-        // Mise à jour de l'état utilisateur
         setUser(data.user);
-
         return data;
     };
     // Fonction de déconnexion

@@ -1,4 +1,5 @@
 import Parser from 'rss-parser';
+import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 
 const parser = new Parser({
     timeout: 9000,
@@ -216,12 +217,12 @@ export async function getLatestNews(req, res) {
             .slice(0, Math.max(1, Math.min(limit, 20)));
 
         if (news.length === 0) {
-            return res.status(502).json({ error: 'Aucune actu disponible pour le moment' });
+            return res.status(502).json(buildErrorResponse('Aucune actu disponible pour le moment', 502));
         }
 
-        return res.json({ items: news, total: news.length });
+        return res.json(buildSuccessResponse({ items: news, total: news.length }));
     } catch (error) {
-        return res.status(500).json({ error: 'Erreur lors de la recuperation des news' });
+        return res.status(500).json(buildErrorResponse('Erreur lors de la recuperation des news', 500));
     }
 }
 
@@ -282,11 +283,11 @@ export async function getLatestEsport(req, res) {
             .map(({ teams, ...rest }) => rest);
 
         if (finalMatches.length === 0) {
-            return res.status(502).json({ error: 'Aucun live esport disponible pour le moment' });
+            return res.status(502).json(buildErrorResponse('Aucun live esport disponible pour le moment', 502));
         }
 
-        return res.json({ items: finalMatches, total: finalMatches.length });
+        return res.json(buildSuccessResponse({ items: finalMatches, total: finalMatches.length }));
     } catch {
-        return res.status(500).json({ error: 'Erreur lors de la recuperation du live esport' });
+        return res.status(500).json(buildErrorResponse('Erreur lors de la recuperation du live esport', 500));
     }
 }

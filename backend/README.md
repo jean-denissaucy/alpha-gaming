@@ -74,7 +74,7 @@ CORS_ORIGINS=http://localhost:5173
 ```bash
 npm run dev
 ```
-
+ 
 Le serveur redemarrera automatiquement a chaque changement (watch mode).
 
 ### Mode production
