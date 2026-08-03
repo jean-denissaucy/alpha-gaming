@@ -1,7 +1,8 @@
 # Alpha Gaming
 
-Alpha Gaming est une application full-stack d'actualites gaming et esport.
+Alpha Gaming est une application web full-stack d'actualites gaming et esport.
 Le projet combine un frontend React/Vite, un backend Node.js/Express et une base MySQL initialisee via init.sql.
+L'application propose une partie publique pour consulter les contenus, ainsi qu'un espace authentifie pour les utilisateurs.
 
 ## Table des matieres
 
@@ -20,12 +21,13 @@ Le projet combine un frontend React/Vite, un backend Node.js/Express et une base
 ## Fonctionnalites
 
 - **Accueil public**: News gaming et bloc esport avec contenu dynamique
-- **Rafraichissement planifie**: Mise a jour de la Home chaque lundi a 00h00 (declenchee cote navigateur)
-- **Authentification JWT**: Register, login, profil utilisateur courant
+- **Rafraichissement planifie**: Mise a jour de la Home chaque lundi a 00h00 cote navigateur
+- **Authentification JWT**: Register, login et profil utilisateur courant
 - **Dashboard protege**: Accessible apres connexion utilisateur
 - **Favoris personnalises**: 12 categories et 10 jeux par categorie
 - **Navigation vers les jeux**: Chaque jeu des Favoris ouvre son site officiel au clic
 - **Page de presentation**: Accessible via `/presentation.html`
+- **Interface responsive**: Consultation adaptee au desktop et au mobile
 
 ## Stack technique
 
@@ -73,6 +75,7 @@ Le projet combine un frontend React/Vite, un backend Node.js/Express et une base
 - **Node.js**: 20+ (avec npm 10+)
 - **MySQL**: 8+ (ou compatible)
 - **Gestionnaire de paquets**: npm
+- **Navigateur moderne**: pour tester l'interface React
 
 ## Installation
 
@@ -100,7 +103,7 @@ mysql -u root < init.sql
 
 ### Backend
 
-Creer un fichier `backend/.env`:
+Creer un fichier `backend/.env` :
 
 ```env
 PORT=5000
@@ -113,9 +116,11 @@ JWT_EXPIRES_IN=7d
 CORS_ORIGINS=http://localhost:5173
 ```
 
+Le backend ecoute par defaut sur le port 5000 en local. L'API est ensuite exposee sous `/api`.
+
 ### Frontend
 
-Creer un fichier `frontend/.env.local` (optionnel, utilise `http://localhost:5000/api` par defaut):
+Creer un fichier `frontend/.env.local` (optionnel, utilise `http://localhost:5000/api` par defaut) :
 
 ```env
 VITE_API_URL=http://localhost:5000/api
@@ -125,13 +130,13 @@ VITE_API_URL=http://localhost:5000/api
 
 ### Mode developpement (backend + frontend simultanement)
 
-Depuis la racine du projet:
+Depuis la racine du projet :
 
 ```bash
 npm run dev
 ```
 
-Cela lance:
+Cela lance :
 - **Backend** sur `http://localhost:5000`
 - **Frontend** sur `http://localhost:5173`
 
@@ -141,7 +146,7 @@ Cela lance:
 # Backend seul (lancer d'abord init.sql)
 npm run dev:backend
 
-# Frontend seul (require backend en execution)
+# Frontend seul (requiert le backend en execution)
 npm run dev:frontend
 
 # Build frontend pour production
@@ -150,6 +155,14 @@ npm run build
 # Lancer backend en production
 npm run start:backend
 ```
+
+## Utilisation rapide
+
+1. Installer les dependances avec `npm install`, puis dans `backend/` et `frontend/`.
+2. Importer la base avec `mysql -u root < init.sql`.
+3. Creer `backend/.env` et, si besoin, `frontend/.env.local`.
+4. Lancer le projet avec `npm run dev`.
+5. Ouvrir le frontend sur `http://localhost:5173` et tester l'API sur `http://localhost:5000`.
 
 ## Scripts disponibles
 
@@ -176,19 +189,20 @@ npm run start:backend
 
 | Script | Description |
 |--------|-------------|
-| `npm run dev` | Dev server Node.js avec nodemon |
+| `npm run dev` | Dev server Node.js avec `node --watch` |
 | `npm run start` | Prod server Node.js |
 
 ## Deploiement
 
-Cette section documente un deploiement classique (frontend statique + backend Node.js + MySQL).
+Cette section documente un deploiement classique pour une application web dynamique : frontend statique, backend Node.js et base MySQL.
 
 ### Etapes
 
 1. **Preparer le serveur**
    - Installer Node.js 20+ et npm 10+
    - Installer MySQL 8+
-   - Ouvrir les ports 80/443 et 5000 (interne)
+   - Installer Nginx et, si besoin, PM2
+   - Ouvrir les ports 80/443 et conserver 5000 uniquement en interne
 
 2. **Initialiser la base de donnees**
    ```bash
@@ -239,6 +253,14 @@ Cette section documente un deploiement classique (frontend statique + backend No
    - GET `https://yourdomain.com/api/news` → API repond
    - Test login → JWT fonctionne
 
+### Points de controle
+
+- Le frontend doit charger sans erreur.
+- L'API doit repondre sur `/api`.
+- La connexion utilisateur doit generer un token JWT valide.
+- Les routes protegees doivent rester inaccessibles sans authentification.
+- La configuration Nginx doit rediriger correctement vers le frontend et le backend.
+
 ## API principale
 
 | Route | Methode | Description |
@@ -264,4 +286,4 @@ Cette section documente un deploiement classique (frontend statique + backend No
 ---
 
 **Last Updated**: Avril 2026
-**Version**: 1.0.0
+**Version**: 1.1.0
