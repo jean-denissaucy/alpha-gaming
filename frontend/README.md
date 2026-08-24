@@ -184,6 +184,8 @@ Les fichiers statiques sont generes dans dist/.
 - GET /api/news/esport
 - GET /api/news/tests-rapides?limit=9
 
+En production, definir `VITE_API_URL=https://votre-backend.onrender.com/api` dans les variables du déploiement frontend.
+
 ## Notes
 
 - Le dashboard est protege par PrivateRoute et requiert un JWT valide.
