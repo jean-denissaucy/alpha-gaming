@@ -15,8 +15,9 @@ Frontend React/Vite de l'application Alpha-Gaming.
 
 ## Fonctionnalites
 
-- **Accueil public**: Home avec sections news gaming et esport
+- **Accueil public**: Home avec sections news gaming, tests rapides et esport
 - **Chargement dynamique**: Contenu charge au montage de la page
+- **Tests rapides dynamiques**: Jeux, scores et verdicts recuperes depuis l'API et MySQL
 - **Mise a jour automatique**: Actualisation de la Home chaque lundi a 00h00 (cote navigateur)
 - **Authentification complète**: Register, login avec JWT
 - **Routes protegees**: Dashboard accessible uniquement apres connexion
@@ -168,9 +169,9 @@ Les fichiers statiques sont generes dans dist/.
 
 ## Structure utile
 
-- src/pages/Home.jsx: logique de chargement news/esport et rafraichissement hebdomadaire
+- src/pages/Home.jsx: logique de chargement news, tests rapides, esport et rafraichissement hebdomadaire
 - src/pages/Dashboard.jsx: profil utilisateur et favoris (categories + liens officiels)
-- src/services/api.js: couche d'appel API (auth, news, esport)
+- src/services/api.js: couche d'appel API (auth, news, tests rapides, esport)
 - public/presentation.html: page de presentation statique
 - public/presentation.css: styles de la page statique
 
@@ -181,6 +182,7 @@ Les fichiers statiques sont generes dans dist/.
 - GET /api/auth/me
 - GET /api/news
 - GET /api/news/esport
+- GET /api/news/tests-rapides?limit=9
 
 ## Notes
 

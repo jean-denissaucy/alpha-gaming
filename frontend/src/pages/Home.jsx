@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
 import BrandLogo from '../components/BrandLogo.jsx';
-import { newsService, esportService } from '../services/api.js';
+import { newsService, esportService, testService } from '../services/api.js';
 
 const fallbackNews = [
     {
@@ -30,81 +30,6 @@ const fallbackNews = [
         excerpt: 'Selon plusieurs insiders, Nintendo expérimenterait une navigation plus libre et des îles évolutives à chaque session.',
         source: 'Alpha Gaming',
         url: null
-    }
-];
-
-const reviews = [
-    {
-        game: 'DOOM: Dark Ages',
-        score: '9.2',
-        platform: 'PC / Xbox',
-        verdict: 'Brutal, fluide, ultra lisible.',
-        href: 'https://bethesda.net/en/game/doom',
-        external: true
-    },
-    {
-        game: 'Clair Obscur: Expedition 33',
-        score: '8.8',
-        platform: 'PC / PS5',
-        verdict: 'Direction artistique magistrale.',
-        href: 'https://www.expedition33.com/',
-        external: true
-    },
-    {
-        game: 'F1 26',
-        score: '8.1',
-        platform: 'PC / PS5 / Xbox',
-        verdict: 'Carrière plus profonde et nerveuse.',
-        href: 'https://www.ea.com/games/f1',
-        external: true
-    },
-    {
-        game: 'Metaphor: ReFantazio',
-        score: '9.0',
-        platform: 'PC / PS5 / Xbox',
-        verdict: 'Un JRPG dense avec une direction artistique marquante.',
-        href: 'https://metaphor.atlus.com/',
-        external: true
-    },
-    {
-        game: 'Monster Hunter Wilds',
-        score: '8.9',
-        platform: 'PC / PS5 / Xbox',
-        verdict: 'Des chasses plus spectaculaires et un monde plus vivant.',
-        href: 'https://www.monsterhunter.com/wilds/',
-        external: true
-    },
-    {
-        game: 'EA SPORTS FC 26',
-        score: '8.0',
-        platform: 'PC / PS5 / Xbox',
-        verdict: 'Gameplay plus propre, progression mode carriere amelioree.',
-        href: 'https://www.ea.com/games/ea-sports-fc',
-        external: true
-    },
-    {
-        game: 'Helldivers 2',
-        score: '8.7',
-        platform: 'PC / PS5',
-        verdict: 'Coop explosive et sensation de guerre totale reussie.',
-        href: 'https://www.playstation.com/games/helldivers-2/',
-        external: true
-    },
-    {
-        game: 'Prince of Persia: The Lost Crown',
-        score: '8.6',
-        platform: 'PC / PS5 / Xbox / Switch',
-        verdict: 'Metroidvania nerveux, excellent level design.',
-        href: 'https://www.ubisoft.com/game/prince-of-persia/the-lost-crown',
-        external: true
-    },
-    {
-        game: 'Hades II',
-        score: '9.1',
-        platform: 'PC',
-        verdict: 'Roguelike ultra solide, ecriture et rythme exemplaires.',
-        href: 'https://www.supergiantgames.com/games/hades-ii/',
-        external: true
     }
 ];
 
@@ -146,6 +71,7 @@ function Home() {
     const [lastNewsUpdate, setLastNewsUpdate] = useState(null);
     const [liveEsportMatches, setLiveEsportMatches] = useState(fallbackEsportMatches);
     const [lastEsportUpdate, setLastEsportUpdate] = useState(null);
+    const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
         let isMounted = true;
@@ -167,6 +93,20 @@ function Home() {
                 setFeaturedNews(fallbackNews);
             }
         };
+
+        const loadQuickTests = async () => {
+            try {
+                const data = await testService.getLatest(9);
+                if (!isMounted) return;
+
+                const items = Array.isArray(data?.data?.items) ? data.data.items : Array.isArray(data?.items) ? data.items : [];
+                setReviews(items);
+            } catch {
+                if (isMounted) setReviews([]);
+            }
+        };
+
+        loadQuickTests();
 
         const scheduleMondayRefresh = () => {
             const now = new Date();
@@ -355,7 +295,11 @@ function Home() {
                     <div className="rounded-3xl border border-slate-700/70 bg-slate-900/75 p-6 lg:col-span-3">
                         <h2 className="text-2xl font-bold uppercase tracking-wide text-white">Tests rapides</h2>
                         <div className="mt-5 space-y-3">
-                            {reviews.map((review) => {
+                            {reviews.length === 0 ? (
+                                <p className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4 text-sm text-slate-300">
+                                    Aucun test rapide disponible pour le moment.
+                                </p>
+                            ) : reviews.map((review) => {
                                 const content = (
                                     <>
                                         <div className="flex flex-wrap items-center justify-between gap-3">

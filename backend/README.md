@@ -15,8 +15,9 @@ API REST Node.js/Express pour l'application Alpha Gaming.
 ## Role
 
 - Authentification utilisateur avec JWT
-- Exposition des endpoints de news gaming et esport
+- Exposition des endpoints de news gaming, tests rapides et esport
 - Connexion MySQL pour gestion des utilisateurs
+- Lecture des tests rapides depuis la table MySQL `tests_rapides`
 - Gestion CORS avec liste d'origines autorisees
 - Service RSS pour recuperer les actualites
 
@@ -103,6 +104,7 @@ Le serveur demarre sur `http://localhost:5000` (ou le PORT configure).
 
 - **GET** `/api/news` - Recuperer les actualites gaming
 - **GET** `/api/news/esport` - Recuperer les actualites esport
+- **GET** `/api/news/tests-rapides?limit=9` - Recuperer les tests rapides depuis MySQL (limite de 1 a 20)
 
 ## Structure
 
@@ -177,13 +179,14 @@ npm run start
 - GET /api/auth/me: profil utilisateur (token requis)
 - GET /api/news: actualites gaming
 - GET /api/news/esport: actualites/matchs esport
+- GET /api/news/tests-rapides: tests rapides dynamiques depuis MySQL
 
 ## Structure utile
 
 - server.js: bootstrap Express, CORS, routes
 - config/db.js: connexion MySQL
 - controllers/auth.controller.js: logique register/login/me
-- controllers/news.controller.js: logique flux RSS + fallback
+- controllers/news.controller.js: logique flux RSS et lecture des tests rapides
 - routes/auth.routes.js: routes auth
 - routes/news.routes.js: routes news
 - middlewares/auth.middleware.js: validation JWT
@@ -193,3 +196,4 @@ npm run start
 - Erreur CORS: verifier CORS_ORIGINS
 - Erreur auth register/login: verifier JWT_SECRET et schema users
 - Erreur DB Unknown database: verifier DB_NAME et reexecuter init.sql
+- Tests rapides absents: verifier que la table `tests_rapides` est initialisee avec `init.sql`

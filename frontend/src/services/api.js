@@ -96,3 +96,9 @@ export const esportService = {
     // Recuperation des matchs/esports recents
     getLatest: (limit = 10) => fetchAPI(`/news/esport?limit=${limit}`)
 };
+
+export const testService = {
+
+    // Recuperation des tests rapides depuis la base de donnees
+    getLatest: (limit = 9) => fetchAPI(`/news/tests-rapides?limit=${limit}`)
+};

@@ -1,4 +1,5 @@
 import Parser from 'rss-parser';
+import { query } from '../config/db.js';
 import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 
 const parser = new Parser({
@@ -289,5 +290,30 @@ export async function getLatestEsport(req, res) {
         return res.json(buildSuccessResponse({ items: finalMatches, total: finalMatches.length }));
     } catch {
         return res.status(500).json(buildErrorResponse('Erreur lors de la recuperation du live esport', 500));
+    }
+}
+
+export async function getLatestQuickTests(req, res) {
+    const limit = Number.parseInt(req.query.limit, 10) || 9;
+    const boundedLimit = Math.max(1, Math.min(limit, 20));
+
+    try {
+        const items = await query(
+            `SELECT
+                titre_jeu AS game,
+                score,
+                plateformes AS platform,
+                verdict,
+                lien AS href,
+                is_external AS external
+             FROM tests_rapides
+             ORDER BY created_at DESC, id DESC
+             LIMIT ?`,
+            [boundedLimit]
+        );
+
+        return res.json(buildSuccessResponse({ items, total: items.length }));
+    } catch {
+        return res.status(500).json(buildErrorResponse('Erreur lors de la recuperation des tests rapides', 500));
     }
 }

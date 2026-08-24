@@ -20,7 +20,8 @@ L'application propose une partie publique pour consulter les contenus, ainsi qu'
 
 ## Fonctionnalites
 
-- **Accueil public**: News gaming et bloc esport avec contenu dynamique
+- **Accueil public**: News gaming, tests rapides et bloc esport avec contenu dynamique
+- **Tests rapides dynamiques**: Fiches de jeux, scores et verdicts charges depuis MySQL (`tests_rapides`)
 - **Rafraichissement planifie**: Mise a jour de la Home chaque lundi a 00h00 cote navigateur
 - **Authentification JWT**: Register, login et profil utilisateur courant
 - **Dashboard protege**: Accessible apres connexion utilisateur
@@ -262,6 +263,8 @@ Cette section documente un deploiement classique pour une application web dynami
 - La configuration Nginx doit rediriger correctement vers le frontend et le backend.
 
 ## API principale
+
+- **GET** `/api/news/tests-rapides?limit=9` - Recuperer les tests rapides depuis MySQL
 
 | Route | Methode | Description |
 |-------|---------|-------------|
