@@ -305,7 +305,8 @@ export async function getLatestQuickTests(req, res) {
                 plateformes AS platform,
                 verdict,
                 lien AS href,
-                is_external AS external
+                is_external AS external,
+                created_at AS testedAt
              FROM tests_rapides
              ORDER BY created_at DESC, id DESC
              LIMIT ?`,

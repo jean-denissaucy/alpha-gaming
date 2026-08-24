@@ -293,7 +293,10 @@ function Home() {
             <section className="mx-auto mt-8 max-w-6xl px-6">
                 <div className="grid gap-6 lg:grid-cols-5">
                     <div className="rounded-3xl border border-slate-700/70 bg-slate-900/75 p-6 lg:col-span-3">
-                        <h2 className="text-2xl font-bold uppercase tracking-wide text-white">Tests rapides</h2>
+                        <div>
+                            <h2 className="text-2xl font-bold uppercase tracking-wide text-white">Tests rapides</h2>
+                            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-400">Les plus récents en premier</p>
+                        </div>
                         <div className="mt-5 space-y-3">
                             {reviews.length === 0 ? (
                                 <p className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4 text-sm text-slate-300">
@@ -308,6 +311,11 @@ function Home() {
                                         </div>
                                         <p className="mt-2 text-sm text-cyan-200">{review.platform}</p>
                                         <p className="mt-2 text-sm text-slate-300">{review.verdict}</p>
+                                        {review.testedAt && (
+                                            <p className="mt-3 text-xs uppercase tracking-[0.12em] text-slate-500">
+                                                Testé le {new Date(review.testedAt).toLocaleDateString('fr-FR')}
+                                            </p>
+                                        )}
                                     </>
                                 );
 
