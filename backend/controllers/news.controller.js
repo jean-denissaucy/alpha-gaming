@@ -309,8 +309,7 @@ export async function getLatestQuickTests(req, res) {
                 created_at AS testedAt
              FROM tests_rapides
              ORDER BY created_at DESC, id DESC
-             LIMIT ?`,
-            [boundedLimit]
+             LIMIT ${boundedLimit}`
         );
 
         return res.json(buildSuccessResponse({ items, total: items.length }));

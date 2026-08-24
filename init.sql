@@ -9,8 +9,7 @@ CREATE DATABASE IF NOT EXISTS `alpha-gaming`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
--- Base par defaut du backend (config/db.js): DB_NAME=starter_kit
--- Si vous utilisez DB_NAME=alpha-gaming dans votre .env, remplacez la ligne USE ci-dessous.
+-- Base par defaut du backend: DB_NAME=alpha-gaming
 USE `alpha-gaming`;
 
 
