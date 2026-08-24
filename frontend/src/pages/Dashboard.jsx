@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.js';
-import { authLocalService } from '../services/authLocal.js';
+import { authService } from '../services/api.js';
 
 const gameCategories = [
     'Action',
@@ -311,8 +311,8 @@ function Dashboard() {
     const loadProfile = async () => {
         setLoading(true);
         try {
-            const data = await authLocalService.getProfile();
-            setProfile(data.user);
+            const data = await authService.getProfile();
+            setProfile(data?.user || data?.data?.user || null);
             setError('');
         } catch (err) {
             setError(err.message || 'Impossible de charger le profil');
