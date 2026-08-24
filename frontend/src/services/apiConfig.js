@@ -11,7 +11,7 @@ export function resolveApiBaseUrl(env = {}, location = {}) {
         return 'http://localhost:5000/api';
     }
 
-    return 'https://alpha-gaming-1.onrender.com/api';
+    return '/api';
 }
 
 export function getApiCandidates(env = {}, location = {}) {
