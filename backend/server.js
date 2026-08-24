@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connexion BDD
-if (process.env.DB_HOST || process.env.MYSQL_URL || process.env.DATABASE_URL) {
+if (process.env.DB_HOST) {
     testConnection();
 }
 

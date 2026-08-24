@@ -47,12 +47,9 @@ Creer un fichier `backend/.env` a la racine du dossier backend:
 ```env
 PORT=5000
 DB_HOST=localhost
-DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=
 DB_NAME=alpha-gaming
-# Alternative pour Render : MYSQL_URL=mysql://user:password@host:3306/alpha-gaming
-# DB_SSL=true si la base distante exige TLS
 JWT_SECRET=your-secret-key-here-min-32-chars
 JWT_EXPIRES_IN=7d
 CORS_ORIGINS=http://localhost:5173
@@ -64,29 +61,12 @@ CORS_ORIGINS=http://localhost:5173
 |-------|------|-------------|
 | PORT | number | Port d'ecoute du serveur (defaut: 5000) |
 | DB_HOST | string | Hote MySQL (defaut: localhost) |
-| DB_PORT | number | Port MySQL (defaut: 3306) |
 | DB_USER | string | Utilisateur MySQL (defaut: root) |
 | DB_PASSWORD | string | Mot de passe MySQL (defaut: vide) |
 | DB_NAME | string | Nom de la base de donnees |
 | JWT_SECRET | string | Cle secrete JWT (min 32 caracteres pour prod) |
 | JWT_EXPIRES_IN | string | Duree de validite du token (ex: 7d, 24h) |
 | CORS_ORIGINS | string | Origines autorisees (separees par des virgules) |
-| MYSQL_URL | string | URL complete MySQL, prioritaire sur les variables DB_* |
-| DB_SSL | boolean | Active TLS avec `true` pour une base distante |
-
-### Connexion Render
-
-Render ne fournit pas de serveur MySQL gere pour ce projet. Utiliser une base MySQL externe, puis ajouter dans **Render > Service backend > Environment** :
-
-```env
-MYSQL_URL=mysql://utilisateur:mot_de_passe@hote:3306/alpha-gaming
-DB_SSL=true
-JWT_SECRET=une-cle-secrete-longue
-JWT_EXPIRES_IN=7d
-CORS_ORIGINS=https://votre-frontend.vercel.app
-```
-
-Executer ensuite `init.sql` sur cette base distante. Le service Render doit utiliser `backend` comme Root Directory, `npm install` comme Build Command et `npm start` comme Start Command.
 
 ## Demarrage
 

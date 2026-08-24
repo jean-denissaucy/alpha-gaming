@@ -119,7 +119,6 @@ CORS_ORIGINS=http://localhost:5173
 
 Le backend ecoute par defaut sur le port 5000 en local. L'API est ensuite exposee sous `/api`.
 
-Pour Render, definir `MYSQL_URL` avec l'URL de votre fournisseur MySQL externe. Ajouter `DB_SSL=true` si ce fournisseur impose TLS, puis executer `init.sql` sur cette base distante.
 
 ### Frontend
 
@@ -216,7 +215,6 @@ Cette section documente un deploiement classique pour une application web dynami
    ```env
    PORT=5000
    DB_HOST=db-server-internal-ip
-   DB_PORT=3306
    DB_USER=prod-user
    DB_PASSWORD=prod-password-secure
    DB_NAME=alpha-gaming
@@ -224,7 +222,6 @@ Cette section documente un deploiement classique pour une application web dynami
    JWT_EXPIRES_IN=7d
    CORS_ORIGINS=https://yourdomain.com
    NODE_ENV=production
-   DB_SSL=true
    ```
 
 4. **Configurer frontend/.env (production)**
