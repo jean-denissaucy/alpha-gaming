@@ -1,5 +1,5 @@
-import logoCompact from '../assets/branding/logo-alpha-gaming.png';
-import logoFull from '../assets/branding/banner-alpha-gaming.png';
+import logoCompact from '../assets/branding/logo-alpha-gaming.webp';
+import logoFull from '../assets/branding/banner-alpha-gaming.webp';
 
 function BrandLogo({ variant = 'full', className = '' }) {
     const alt = variant === 'compact' ? 'Alpha-Gaming logo' : 'Alpha-Gaming banner';

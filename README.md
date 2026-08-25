@@ -1,8 +1,8 @@
 # Alpha Gaming
 
-Alpha Gaming est une application web full-stack d'actualites gaming et esport.
-Le projet combine un frontend React/Vite, un backend Node.js/Express et une base MySQL initialisee via init.sql.
-L'application propose une partie publique pour consulter les contenus, ainsi qu'un espace authentifie pour les utilisateurs.
+Alpha Gaming est une application web full-stack consacree aux actualites gaming, aux tests rapides et a l'esport.
+Le projet combine une interface React/Vite, une API Node.js/Express et une base MySQL initialisee via `init.sql`.
+Les visiteurs peuvent consulter les contenus publics; les utilisateurs inscrits disposent egalement d'un espace personnel protege.
 
 ## Table des matieres
 
@@ -13,19 +13,21 @@ L'application propose une partie publique pour consulter les contenus, ainsi qu'
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Demarrage](#demarrage)
+- [Utilisation rapide](#utilisation-rapide)
 - [Scripts disponibles](#scripts-disponibles)
+- [Tests](#tests)
 - [Deploiement](#deploiement)
 - [API principale](#api-principale)
 - [Depannage](#depannage)
 
 ## Fonctionnalites
 
-- **Accueil public**: News gaming, tests rapides et bloc esport avec contenu dynamique
-- **Tests rapides dynamiques**: Fiches de jeux, scores et verdicts charges depuis MySQL (`tests_rapides`)
+- **Accueil public**: Actualites gaming, tests rapides et evenements esport
+- **Tests rapides dynamiques**: Fiches de jeux, scores et verdicts charges depuis MySQL (`tests_rapides`), avec donnees de secours pour la route Vercel
 - **Rafraichissement planifie**: Mise a jour de la Home chaque lundi a 00h00 cote navigateur
 - **Authentification JWT**: Register, login et profil utilisateur courant
 - **Dashboard protege**: Accessible apres connexion utilisateur
-- **Favoris personnalises**: 12 categories et 10 jeux par categorie
+- **Favoris personnalises**: 12 categories et 10 jeux par categorie, conserves dans le `localStorage` du navigateur
 - **Navigation vers les jeux**: Chaque jeu des Favoris ouvre son site officiel au clic
 - **Page de presentation**: Accessible via `/presentation.html`
 - **Interface responsive**: Consultation adaptee au desktop et au mobile
@@ -122,7 +124,7 @@ Le backend ecoute par defaut sur le port 5000 en local. L'API est ensuite expose
 
 ### Frontend
 
-Creer un fichier `frontend/.env.local` (optionnel, utilise `http://localhost:5000/api` par defaut) :
+Creer un fichier `frontend/.env.local` (optionnel). En local, l'URL par defaut est `http://localhost:5000/api`; en production, le frontend utilise `/api` si aucune valeur n'est fournie.
 
 ```env
 VITE_API_URL=http://localhost:5000/api
@@ -164,7 +166,15 @@ npm run start:backend
 2. Importer la base avec `mysql -u root < init.sql`.
 3. Creer `backend/.env` et, si besoin, `frontend/.env.local`.
 4. Lancer le projet avec `npm run dev`.
-5. Ouvrir le frontend sur `http://localhost:5173` et tester l'API sur `http://localhost:5000`.
+5. Ouvrir `http://localhost:5173`.
+6. Creer un compte depuis `/register`, puis se connecter pour acceder au dashboard.
+
+Pour verifier rapidement que l'API repond :
+
+```bash
+curl http://localhost:5000/
+curl http://localhost:5000/api/news
+```
 
 ## Scripts disponibles
 
@@ -193,6 +203,16 @@ npm run start:backend
 |--------|-------------|
 | `npm run dev` | Dev server Node.js avec `node --watch` |
 | `npm run start` | Prod server Node.js |
+
+## Tests
+
+Le backend utilise le test runner natif de Node.js. Depuis `backend/` :
+
+```bash
+node --test tests/*.test.js
+```
+
+Le script `npm test` du backend est encore un placeholder et retourne volontairement une erreur; utilisez la commande ci-dessus.
 
 ## Deploiement
 
@@ -228,6 +248,8 @@ Cette section documente un deploiement classique pour une application web dynami
    ```env
    VITE_API_URL=https://yourdomain.com/api
    ```
+
+Pour un frontend heberge sur Vercel, le proxy `frontend/api/[...path].js` peut relayer la route des tests rapides vers `BACKEND_API_URL`. Cette variable doit contenir l'URL publique de l'API sans slash final.
 
 5. **Installer et builder**
    ```bash
@@ -265,16 +287,25 @@ Cette section documente un deploiement classique pour une application web dynami
 
 ## API principale
 
-- **GET** `/api/news/tests-rapides?limit=9` - Recuperer les tests rapides depuis MySQL
+Toutes les reponses suivent le format `{ success, data }` pour les succes et `{ success, error, statusCode }` pour les erreurs.
 
 | Route | Methode | Description |
 |-------|---------|-------------|
 | `/` | GET | Status serveur |
-| `/api/auth/register` | POST | Enregistrement (email, password, firstname, lastname) |
-| `/api/auth/login` | POST | Connexion (email, password) → token JWT |
-| `/api/auth/me` | GET | Profil courant (require Authorization header) |
+| `/api/auth/register` | POST | Enregistrement avec `email`, `password`, `firstname`, `lastname` |
+| `/api/auth/login` | POST | Connexion avec `email`, `password`; retourne un token JWT |
+| `/api/auth/me` | GET | Profil courant avec `Authorization: Bearer <token>` |
 | `/api/news` | GET | Toutes les news gaming |
 | `/api/news/esport` | GET | Evenements esport en direct |
+| `/api/news/tests-rapides?limit=9` | GET | Tests rapides depuis MySQL, avec limite de 1 a 20 |
+
+Exemple d'inscription PowerShell :
+
+```powershell
+Invoke-RestMethod -Method Post -Uri http://localhost:5000/api/auth/register `
+   -ContentType 'application/json' `
+   -Body '{"email":"joueur@example.com","password":"secret","firstname":"Alex","lastname":"Joueur"}'
+```
 
 ## Depannage
 
@@ -289,5 +320,5 @@ Cette section documente un deploiement classique pour une application web dynami
 
 ---
 
-**Last Updated**: Avril 2026
-**Version**: 1.1.0
+**Derniere mise a jour**: Aout 2026
+**Version**: 1.2.0
