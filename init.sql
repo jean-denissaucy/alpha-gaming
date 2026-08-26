@@ -15,6 +15,7 @@ USE `alpha-gaming`;
 -- Suppression complete des anciennes tables de favoris pour eviter les doublons ou les donnees obsoletes
 DROP TABLE IF EXISTS user_favorite_games;
 DROP TABLE IF EXISTS favorite_games;
+DROP TABLE IF EXISTS favoris_jeux;
 DROP TABLE IF EXISTS favoris;
 
 CREATE TABLE IF NOT EXISTS users (
