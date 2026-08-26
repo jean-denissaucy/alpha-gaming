@@ -26,11 +26,11 @@ export async function findUserById(id) {
 
 export async function findFavoriteGamesByUserId(userId) {
     const rows = await query(
-        `SELECT fj.id, fj.categorie, fj.titre_jeu AS game_name, fj.lien AS link
+        `SELECT fg.id, fg.categorie, fg.titre_jeu AS game_name, fg.lien AS link
          FROM user_favorite_games ufg
-         JOIN favoris_jeux fj ON fj.id = ufg.game_id
+         JOIN favorite_games fg ON fg.id = ufg.game_id
          WHERE ufg.user_id = ?
-         ORDER BY fj.categorie ASC, fj.titre_jeu ASC`,
+         ORDER BY fg.categorie ASC, fg.titre_jeu ASC`,
         [userId]
     );
 

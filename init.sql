@@ -12,6 +12,10 @@ CREATE DATABASE IF NOT EXISTS `alpha-gaming`
 -- Base par defaut du backend: DB_NAME=alpha-gaming
 USE `alpha-gaming`;
 
+-- Suppression complete des anciennes tables de favoris pour eviter les doublons ou les donnees obsoletes
+DROP TABLE IF EXISTS user_favorite_games;
+DROP TABLE IF EXISTS favorite_games;
+DROP TABLE IF EXISTS favoris;
 
 CREATE TABLE IF NOT EXISTS users (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -24,20 +28,7 @@ CREATE TABLE IF NOT EXISTS users (
   UNIQUE KEY uq_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS favoris (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user_id INT UNSIGNED NOT NULL,
-  categorie VARCHAR(100) NOT NULL,
-  created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  UNIQUE KEY uq_favoris_user_categorie (user_id, categorie),
-  CONSTRAINT fk_favoris_user
-    FOREIGN KEY (user_id)
-    REFERENCES users(id)
-    ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS favoris_jeux (
+CREATE TABLE IF NOT EXISTS favorite_games (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   categorie VARCHAR(100) NOT NULL,
   titre_jeu VARCHAR(150) NOT NULL,
@@ -45,8 +36,8 @@ CREATE TABLE IF NOT EXISTS favoris_jeux (
   is_external TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_favoris_jeux_categorie_titre (categorie, titre_jeu),
-  KEY idx_favoris_jeux_categorie (categorie)
+  UNIQUE KEY uq_favorite_games_categorie_titre (categorie, titre_jeu),
+  KEY idx_favorite_games_categorie (categorie)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS user_favorite_games (
@@ -64,7 +55,7 @@ CREATE TABLE IF NOT EXISTS user_favorite_games (
     ON DELETE CASCADE,
   CONSTRAINT fk_user_favorite_games_game
     FOREIGN KEY (game_id)
-    REFERENCES favoris_jeux(id)
+    REFERENCES favorite_games(id)
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -301,7 +292,7 @@ ON DUPLICATE KEY UPDATE
   published_at = VALUES(published_at);
 
 -- Seed jeux disponibles par categorie (utilises dans l'onglet Favoris)
-INSERT INTO favoris_jeux (categorie, titre_jeu, lien, is_external)
+INSERT INTO favorite_games (categorie, titre_jeu, lien, is_external)
 VALUES
   ('Action', 'DOOM: Dark Ages', 'https://bethesda.net/en/game/doom', 1),
   ('Action', 'Devil May Cry 5', 'https://www.devilmaycry.com/5/us/', 1),
