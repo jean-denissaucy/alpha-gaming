@@ -4,168 +4,6 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.js';
 import { authService } from '../services/api.js';
 
-const gameCategories = [
-    'Action',
-    'Aventure',
-    'RPG',
-    'FPS',
-    'Battle Royale',
-    'Sport',
-    'Course',
-    'Simulation',
-    'Strategie',
-    'Inde',
-    'MMO',
-    'Horreur'
-];
-
-const gamesByCategory = {
-    Action: [
-        'DOOM: Dark Ages',
-        'Devil May Cry 5',
-        'Ninja Gaiden 4',
-        'Stellar Blade',
-        'God of War Ragnarök',
-        'Bayonetta 3',
-        'Sekiro: Shadows Die Twice',
-        'Ghost of Tsushima Director\'s Cut',
-        'Hi-Fi Rush',
-        'Returnal'
-    ],
-    Aventure: [
-        'The Legend of Zelda: Echoes of Wisdom',
-        'Astro Bot',
-        'Uncharted 4',
-        'Indiana Jones and the Great Circle',
-        'The Last of Us Part II Remastered',
-        'A Plague Tale: Requiem',
-        'Tchia',
-        'Kena: Bridge of Spirits',
-        'Prince of Persia: The Lost Crown',
-        'Life is Strange: Double Exposure'
-    ],
-    RPG: [
-        'Metaphor: ReFantazio',
-        'Final Fantasy VII Rebirth',
-        'Baldur\'s Gate 3',
-        'Dragon\'s Dogma 2',
-        'Elden Ring',
-        'Persona 5 Royal',
-        'Dragon Quest XI S',
-        'Xenoblade Chronicles 3',
-        'Tales of Arise',
-        'Final Fantasy XVI'
-    ],
-    FPS: [
-        'Counter-Strike 2',
-        'Call of Duty: Black Ops 6',
-        'THE FINALS',
-        'Battlefield 6',
-        'Halo Infinite',
-        'Overwatch 2',
-        'Titanfall 2',
-        'Destiny 2',
-        'Rainbow Six Siege',
-        'DOOM Eternal'
-    ],
-    'Battle Royale': [
-        'Fortnite',
-        'Apex Legends',
-        'PUBG: Battlegrounds',
-        'Warzone',
-        'Fall Guys',
-        'NARAKA: BLADEPOINT',
-        'Bloodhunt',
-        'Super People',
-        'Realm Royale Reforged',
-        'H1Z1'
-    ],
-    Sport: [
-        'EA SPORTS FC 26',
-        'NBA 2K26',
-        'F1 26',
-        'UFC 5',
-        'Madden NFL 26',
-        'NHL 25',
-        'MLB The Show 25',
-        'TopSpin 2K25',
-        'WWE 2K25',
-        'eFootball 2025'
-    ],
-    Course: [
-        'Forza Horizon 5',
-        'Gran Turismo 7',
-        'Need for Speed Unbound',
-        'The Crew Motorfest',
-        'F1 25',
-        'Wreckfest',
-        'Assetto Corsa Competizione',
-        'Hot Wheels Unleashed 2',
-        'MotoGP 24',
-        'Burnout Paradise Remastered'
-    ],
-    Simulation: [
-        'Microsoft Flight Simulator',
-        'Euro Truck Simulator 2',
-        'The Sims 4',
-        'Cities: Skylines II',
-        'Farming Simulator 25',
-        'House Flipper 2',
-        'Train Sim World 5',
-        'Planet Coaster 2',
-        'Car Mechanic Simulator 2021',
-        'Prison Architect 2'
-    ],
-    Strategie: [
-        'Age of Empires IV',
-        'StarCraft II',
-        'Civilization VI',
-        'Total War: Warhammer III',
-        'Company of Heroes 3',
-        'Crusader Kings III',
-        'Anno 1800',
-        'XCOM 2',
-        'Frostpunk 2',
-        'Northgard'
-    ],
-    Inde: [
-        'Hades II',
-        'Hollow Knight',
-        'Dead Cells',
-        'Slay the Spire',
-        'Balatro',
-        'Celeste',
-        'Ori and the Will of the Wisps',
-        'Vampire Survivors',
-        'Cult of the Lamb',
-        'Tunic'
-    ],
-    MMO: [
-        'World of Warcraft',
-        'Final Fantasy XIV',
-        'Guild Wars 2',
-        'The Elder Scrolls Online',
-        'New World',
-        'Black Desert Online',
-        'Lost Ark',
-        'RuneScape',
-        'EVE Online',
-        'Throne and Liberty'
-    ],
-    Horreur: [
-        'Resident Evil 4',
-        'Alan Wake 2',
-        'Dead Space',
-        'The Outlast Trials',
-        'Silent Hill 2',
-        'Resident Evil Village',
-        'Amnesia: The Bunker',
-        'Layers of Fear',
-        'The Casting of Frank Stone',
-        'Until Dawn'
-    ]
-};
-
 const gameLinks = {
     'DOOM: Dark Ages': 'https://bethesda.net/en/game/doom',
     'Devil May Cry 5': 'https://www.devilmaycry.com/5/us/',
@@ -297,15 +135,6 @@ function Dashboard() {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [activeTab, setActiveTab] = useState('profil');
-    const [favoriteCategories, setFavoriteCategories] = useState(() => {
-        try {
-            const raw = localStorage.getItem('favoriteGameCategories');
-            return raw ? JSON.parse(raw) : [];
-        } catch {
-            return [];
-        }
-    });
 
     // Fonction pour charger le profil depuis l'API protégée
     const loadProfile = async () => {
@@ -326,11 +155,6 @@ function Dashboard() {
         loadProfile();
     }, []);
 
-    // Sauvegarde locale des categories favorites
-    useEffect(() => {
-        localStorage.setItem('favoriteGameCategories', JSON.stringify(favoriteCategories));
-    }, [favoriteCategories]);
-
     // Sélection du profil à afficher (depuis l'API ou depuis le contexte)
     const displayUser = profile || user;
 
@@ -340,18 +164,7 @@ function Dashboard() {
         ? new Date(createdAt).toLocaleDateString('fr-FR')
         : 'Non disponible';
 
-    const toggleCategory = (category) => {
-        setFavoriteCategories((current) => (
-            current.includes(category)
-                ? current.filter((item) => item !== category)
-                : [...current, category]
-        ));
-    };
-
-    const selectedCategoryGames = favoriteCategories.map((category) => ({
-        category,
-        games: gamesByCategory[category] || []
-    }));
+    const favoriteGames = Array.isArray(displayUser?.favorite_games) ? displayUser.favorite_games : [];
 
     return (
         <div className="relative mx-auto max-w-6xl overflow-hidden px-6 py-16 text-slate-100">
@@ -379,141 +192,81 @@ function Dashboard() {
                 <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-6 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.4)] backdrop-blur">
                     <div className="flex items-center justify-between gap-3">
                         <div className="flex flex-wrap items-center gap-2">
-                            <button
-                                onClick={() => setActiveTab('profil')}
-                                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${activeTab === 'profil'
-                                    ? 'border border-cyan-400/35 bg-cyan-400/15 text-cyan-100'
-                                    : 'border border-slate-700 text-slate-300 hover:border-cyan-400/40 hover:text-white'
-                                    }`}
-                            >
+                            <span className="rounded-full border border-cyan-400/35 bg-cyan-400/15 px-4 py-2 text-sm font-semibold text-cyan-100">
                                 Profil
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('favoris')}
-                                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${activeTab === 'favoris'
-                                    ? 'border border-cyan-400/35 bg-cyan-400/15 text-cyan-100'
-                                    : 'border border-slate-700 text-slate-300 hover:border-cyan-400/40 hover:text-white'
-                                    }`}
-                            >
-                                Favoris
-                            </button>
+                            </span>
                         </div>
 
-                        {activeTab === 'profil' && (
-                            <button
-                                onClick={loadProfile}
-                                disabled={loading}
-                                className="btn btn-outline disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                                {loading ? 'Chargement...' : 'Rafraichir'}
-                            </button>
-                        )}
+                        <button
+                            onClick={loadProfile}
+                            disabled={loading}
+                            className="btn btn-outline disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            {loading ? 'Chargement...' : 'Rafraichir'}
+                        </button>
                     </div>
 
-                    {activeTab === 'profil' && (
-                        <>
-                            {/* Affichage des erreurs */}
-                            {error && (
-                                <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-                                    {error}
+                    <>
+                        {/* Affichage des erreurs */}
+                        {error && (
+                            <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                                {error}
+                            </div>
+                        )}
+
+                        {/* Grille des informations utilisateur */}
+                        {!error && (
+                            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                    <p className="text-xs uppercase text-slate-400">Nom</p>
+                                    <p className="mt-2 text-sm text-white">
+                                        {displayUser?.firstname || '—'} {displayUser?.lastname || ''}
+                                    </p>
                                 </div>
-                            )}
-
-                            {/* Grille des informations utilisateur */}
-                            {!error && (
-                                <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                                        <p className="text-xs uppercase text-slate-400">Nom</p>
-                                        <p className="mt-2 text-sm text-white">
-                                            {displayUser?.firstname || '—'} {displayUser?.lastname || ''}
-                                        </p>
-                                    </div>
-                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                                        <p className="text-xs uppercase text-slate-400">Email</p>
-                                        <p className="mt-2 text-sm text-white">{displayUser?.email || '—'}</p>
-                                    </div>
-                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                                        <p className="text-xs uppercase text-slate-400">Membre depuis</p>
-                                        <p className="mt-2 text-sm text-white">{createdAtLabel}</p>
-                                    </div>
-                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                                        <p className="text-xs uppercase text-slate-400">Statut</p>
-                                        <p className="mt-2 text-sm text-white">Actif</p>
-                                    </div>
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                    <p className="text-xs uppercase text-slate-400">Email</p>
+                                    <p className="mt-2 text-sm text-white">{displayUser?.email || '—'}</p>
                                 </div>
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                    <p className="text-xs uppercase text-slate-400">Membre depuis</p>
+                                    <p className="mt-2 text-sm text-white">{createdAtLabel}</p>
+                                </div>
+                                <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                                    <p className="text-xs uppercase text-slate-400">Statut</p>
+                                    <p className="mt-2 text-sm text-white">Actif</p>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                            <p className="text-xs uppercase text-slate-400">Mes jeux favoris</p>
+                            {favoriteGames.length > 0 ? (
+                                <ul className="mt-3 space-y-2 text-sm text-slate-200">
+                                    {favoriteGames.map((game) => (
+                                        <li key={game.id ?? `${game.category}-${game.game_name}`} className="flex flex-wrap items-center gap-2">
+                                            <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2 py-1 text-[10px] uppercase tracking-wide text-cyan-200">
+                                                {game.category || 'Jeu'}
+                                            </span>
+                                            {game.link ? (
+                                                <a
+                                                    href={game.link}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="underline decoration-cyan-400/60 underline-offset-2 transition hover:text-cyan-200"
+                                                >
+                                                    {game.game_name}
+                                                </a>
+                                            ) : (
+                                                <span>{game.game_name}</span>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="mt-3 text-sm text-slate-300">Aucun jeu favori enregistré pour cet utilisateur.</p>
                             )}
-                        </>
-                    )}
-
-                    {activeTab === 'favoris' && (
-                        <div className="mt-4 space-y-4">
-                            <p className="text-sm text-slate-300">
-                                Selectionne tes categories de jeux preferees. Elles seront sauvegardees localement.
-                            </p>
-
-                            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {gameCategories.map((category) => {
-                                    const isActive = favoriteCategories.includes(category);
-                                    return (
-                                        <button
-                                            key={category}
-                                            type="button"
-                                            onClick={() => toggleCategory(category)}
-                                            className={`rounded-xl border px-4 py-3 text-left text-sm font-semibold transition ${isActive
-                                                ? 'border-cyan-400/40 bg-cyan-400/15 text-cyan-100'
-                                                : 'border-slate-700 bg-slate-900/70 text-slate-300 hover:border-cyan-400/40 hover:text-white'
-                                                }`}
-                                        >
-                                            {isActive ? '★ ' : ''}{category}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                                <p className="text-xs uppercase text-slate-400">Mes favoris</p>
-                                <p className="mt-2 text-sm text-white">
-                                    {favoriteCategories.length > 0
-                                        ? favoriteCategories.join(', ')
-                                        : 'Aucune categorie favorite pour le moment.'}
-                                </p>
-                            </div>
-
-                            <div className="space-y-3">
-                                <p className="text-xs uppercase text-slate-400">Jeux correspondants</p>
-
-                                {selectedCategoryGames.length === 0 && (
-                                    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">
-                                        Selectionne une ou plusieurs categories pour voir la liste des jeux.
-                                    </div>
-                                )}
-
-                                {selectedCategoryGames.map(({ category, games }) => (
-                                    <div key={category} className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                                        <p className="text-sm font-semibold text-white">{category}</p>
-                                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-300">
-                                            {games.map((game) => (
-                                                <li key={`${category}-${game}`}>
-                                                    {gameLinks[game] ? (
-                                                        <a
-                                                            href={gameLinks[game]}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            className="underline decoration-cyan-400/60 underline-offset-2 transition hover:text-cyan-200"
-                                                        >
-                                                            {game}
-                                                        </a>
-                                                    ) : (
-                                                        game
-                                                    )}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
-                    )}
+                    </>
                 </div>
             </div>
         </div>

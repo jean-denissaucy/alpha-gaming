@@ -1,9 +1,12 @@
 // models/user.model.js
 import bcrypt from 'bcrypt';
 import {
+    addFavoriteGameForUser,
     createUserRecord,
+    findFavoriteGamesByUserId,
     findUserByEmail,
-    findUserById
+    findUserById,
+    removeFavoriteGameForUser
 } from '../queries/user.queries.js';
 const User = {
     // Trouver par email
@@ -13,6 +16,15 @@ const User = {
     // Trouver par ID (sans le password)
     async findById(id) {
         return findUserById(id);
+    },
+    async findFavoriteGamesByUserId(userId) {
+        return findFavoriteGamesByUserId(userId);
+    },
+    async addFavoriteGame(userId, gameId) {
+        return addFavoriteGameForUser(userId, gameId);
+    },
+    async removeFavoriteGame(userId, gameId) {
+        return removeFavoriteGameForUser(userId, gameId);
     },
     // Créer un utilisateur
     async create({ email, password, firstname, lastname }) {

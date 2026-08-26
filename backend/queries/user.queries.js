@@ -24,6 +24,24 @@ export async function findUserById(id) {
     return users[0] || null;
 }
 
+export async function findFavoriteGamesByUserId(userId) {
+    const rows = await query(
+        `SELECT fj.id, fj.categorie, fj.titre_jeu AS game_name, fj.lien AS link
+         FROM user_favorite_games ufg
+         JOIN favoris_jeux fj ON fj.id = ufg.game_id
+         WHERE ufg.user_id = ?
+         ORDER BY fj.categorie ASC, fj.titre_jeu ASC`,
+        [userId]
+    );
+
+    return rows.map((row) => ({
+        id: row.id,
+        game_name: row.game_name,
+        category: row.categorie,
+        ...(row.link ? { link: row.link } : {})
+    }));
+}
+
 export async function createUserRecord({ email, hashedPassword, firstname, lastname }) {
     const result = await query(
         `INSERT INTO users (email, password, firstname, lastname)
@@ -41,4 +59,29 @@ export async function createUserRecord({ email, hashedPassword, firstname, lastn
         firstname: String(firstname || '').trim(),
         lastname: String(lastname || '').trim()
     };
+}
+
+export async function addFavoriteGameForUser(userId, gameId) {
+    if (!userId || !gameId) return null;
+
+    const result = await query(
+        `INSERT INTO user_favorite_games (user_id, game_id)
+         VALUES (?, ?)
+         ON DUPLICATE KEY UPDATE user_id = VALUES(user_id), game_id = VALUES(game_id)`,
+        [userId, gameId]
+    );
+
+    return result.insertId || null;
+}
+
+export async function removeFavoriteGameForUser(userId, gameId) {
+    if (!userId || !gameId) return false;
+
+    const result = await query(
+        `DELETE FROM user_favorite_games
+         WHERE user_id = ? AND game_id = ?`,
+        [userId, gameId]
+    );
+
+    return (result.affectedRows || 0) > 0;
 }

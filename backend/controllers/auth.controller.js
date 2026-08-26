@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 
-const normalizeUser = (user) => {
+const normalizeUser = (user, favoriteGames = []) => {
     if (!user) return null;
 
     const fullName = (user.name || '').trim();
@@ -16,7 +16,8 @@ const normalizeUser = (user) => {
         email: user.email,
         firstname,
         lastname,
-        created_at: user.created_at
+        created_at: user.created_at,
+        favorite_games: favoriteGames
     };
 };
 
@@ -73,5 +74,11 @@ export const login = async (req, res) => {
 };
 // GET /api/auth/me
 export const getProfile = async (req, res) => {
-    return res.json(buildSuccessResponse({ user: normalizeUser(req.user) }));
+    try {
+        const favoriteGames = await User.findFavoriteGamesByUserId(req.user.id);
+        return res.json(buildSuccessResponse({ user: normalizeUser(req.user, favoriteGames) }));
+    } catch (error) {
+        console.error('Erreur getProfile:', error);
+        return res.status(500).json(buildErrorResponse('Erreur serveur', 500));
+    }
 };

@@ -49,6 +49,25 @@ CREATE TABLE IF NOT EXISTS favoris_jeux (
   KEY idx_favoris_jeux_categorie (categorie)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS user_favorite_games (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  game_id INT UNSIGNED NOT NULL,
+  created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_user_favorite_games (user_id, game_id),
+  KEY idx_user_favorite_games_user (user_id),
+  KEY idx_user_favorite_games_game (game_id),
+  CONSTRAINT fk_user_favorite_games_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_user_favorite_games_game
+    FOREIGN KEY (game_id)
+    REFERENCES favoris_jeux(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS tests_rapides (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   titre_jeu VARCHAR(150) NOT NULL,
