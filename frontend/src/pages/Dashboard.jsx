@@ -4,6 +4,15 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.js';
 import { authService } from '../services/api.js';
 
+const defaultFavoriteGames = [
+    { category: 'Action', game_name: 'DOOM: Dark Ages', link: 'https://bethesda.net/en/game/doom' },
+    { category: 'RPG', game_name: 'Metaphor: ReFantazio', link: 'https://metaphor.atlus.com/' },
+    { category: 'Aventure', game_name: 'The Legend of Zelda: Echoes of Wisdom', link: 'https://www.nintendo.com/' },
+    { category: 'Sport', game_name: 'EA SPORTS FC 26', link: 'https://www.ea.com/games/ea-sports-fc' },
+    { category: 'Course', game_name: 'Gran Turismo 7', link: 'https://www.gran-turismo.com/' },
+    { category: 'MMO', game_name: 'World of Warcraft', link: 'https://worldofwarcraft.blizzard.com/' }
+];
+
 const gameLinks = {
     'DOOM: Dark Ages': 'https://bethesda.net/en/game/doom',
     'Devil May Cry 5': 'https://www.devilmaycry.com/5/us/',
@@ -164,7 +173,9 @@ function Dashboard() {
         ? new Date(createdAt).toLocaleDateString('fr-FR')
         : 'Non disponible';
 
-    const favoriteGames = Array.isArray(displayUser?.favorite_games) ? displayUser.favorite_games : [];
+    const favoriteGames = Array.isArray(displayUser?.favorite_games) && displayUser.favorite_games.length > 0
+        ? displayUser.favorite_games
+        : defaultFavoriteGames;
 
     return (
         <div className="relative mx-auto max-w-6xl overflow-hidden px-6 py-16 text-slate-100">
