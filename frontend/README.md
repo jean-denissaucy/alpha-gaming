@@ -22,7 +22,9 @@ Frontend React/Vite de l'application Alpha-Gaming.
 - **Authentification complète**: Register, login avec JWT
 - **Routes protegees**: Dashboard accessible uniquement apres connexion
 - **Dashboard utilisateur**: Espace personnalise avec onglet Favoris
-- **Favoris sophistiques**: 12 categories, 10 jeux par categorie
+- **Favoris dynamiques**: Donnees chargees depuis `/api/auth/me` (profil + favoris)
+- **Filtre par categorie**: Volet deroulant dans le dashboard avec scroll vertical
+- **Affichage progressif**: La liste des jeux apparait seulement apres selection d'une categorie
 - **Navigation vers jeux**: Chaque jeu des Favoris est cliquable vers son site officiel
 - **Page de presentation**: Statique et publique via `/presentation.html`
 
@@ -170,7 +172,7 @@ Les fichiers statiques sont generes dans dist/.
 ## Structure utile
 
 - src/pages/Home.jsx: logique de chargement news, tests rapides, esport et rafraichissement hebdomadaire
-- src/pages/Dashboard.jsx: profil utilisateur et favoris (categories + liens officiels)
+- src/pages/Dashboard.jsx: profil utilisateur, volet deroulant par categorie et liste des favoris filtres
 - src/services/api.js: couche d'appel API (auth, news, tests rapides, esport)
 - public/presentation.html: page de presentation statique
 - public/presentation.css: styles de la page statique

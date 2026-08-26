@@ -27,7 +27,9 @@ Les visiteurs peuvent consulter les contenus publics; les utilisateurs inscrits 
 - **Rafraichissement planifie**: Mise a jour de la Home chaque lundi a 00h00 cote navigateur
 - **Authentification JWT**: Register, login et profil utilisateur courant
 - **Dashboard protege**: Accessible apres connexion utilisateur
-- **Favoris personnalises**: 12 categories et 10 jeux par categorie, conserves dans le `localStorage` du navigateur
+- **Favoris relies aux utilisateurs**: Catalogue `favorite_games` + liaison `user_favorite_games`
+- **Fallback intelligent des favoris**: Si un utilisateur n'a pas encore de selection, le dashboard affiche tout le catalogue
+- **Filtre par categorie dans le dashboard**: Volet deroulant avec scroll vertical pour parcourir les categories
 - **Navigation vers les jeux**: Chaque jeu des Favoris ouvre son site officiel au clic
 - **Page de presentation**: Accessible via `/presentation.html`
 - **Interface responsive**: Consultation adaptee au desktop et au mobile
@@ -102,6 +104,12 @@ npm --prefix frontend install
 mysql -u root < init.sql
 ```
 
+Sous PowerShell, utiliser plutot:
+
+```powershell
+Get-Content .\init.sql -Raw | mysql -u root
+```
+
 ## Configuration
 
 ### Backend
@@ -163,7 +171,7 @@ npm run start:backend
 ## Utilisation rapide
 
 1. Installer les dependances avec `npm install`, puis dans `backend/` et `frontend/`.
-2. Importer la base avec `mysql -u root < init.sql`.
+2. Importer la base avec `mysql -u root < init.sql` (ou `Get-Content .\init.sql -Raw | mysql -u root` sous PowerShell).
 3. Creer `backend/.env` et, si besoin, `frontend/.env.local`.
 4. Lancer le projet avec `npm run dev`.
 5. Ouvrir `http://localhost:5173`.
@@ -315,7 +323,7 @@ Invoke-RestMethod -Method Post -Uri http://localhost:5000/api/auth/register `
 | Erreur CORS | Verifier CORS_ORIGINS dans backend/.env |
 | Port 5000 deja occupe | Changer `PORT=5001` dans backend/.env |
 | JWT non accepte | Verifier `JWT_SECRET` identique partout, re-login |
-| Favoris/Tests/Live vides | Verifier seed dans init.sql, relancer `mysql -u root < init.sql` |
+| Favoris/Tests/Live vides | Verifier seed dans init.sql, relancer l'import SQL (PowerShell: `Get-Content .\init.sql -Raw | mysql -u root`) |
 | Frontend ne se connecte pas au backend | Verifier VITE_API_URL pointe sur le bon port/host |
 
 ---

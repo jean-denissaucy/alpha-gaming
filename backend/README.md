@@ -17,6 +17,7 @@ API REST Node.js/Express pour l'application Alpha Gaming.
 - Authentification utilisateur avec JWT
 - Exposition des endpoints de news gaming, tests rapides et esport
 - Connexion MySQL pour gestion des utilisateurs
+- Gestion des favoris relies aux utilisateurs (`favorite_games` + `user_favorite_games`)
 - Lecture des tests rapides depuis la table MySQL `tests_rapides`
 - Gestion CORS avec liste d'origines autorisees
 - Service RSS pour recuperer les actualites
@@ -87,8 +88,10 @@ npm start
 ### Tests
 
 ```bash
-npm test
+node --test tests/*.test.js
 ```
+
+Note: le script `npm test` est actuellement un placeholder dans `package.json`.
 
 Le serveur demarre sur `http://localhost:5000` (ou le PORT configure).
 
@@ -99,6 +102,7 @@ Le serveur demarre sur `http://localhost:5000` (ou le PORT configure).
 - **POST** `/api/auth/register` - Creer un compte utilisateur
 - **POST** `/api/auth/login` - Se connecter (retourne JWT)
 - **GET** `/api/auth/me` - Recuperer le profil courant (JWT requis)
+	- Retourne aussi `favorite_games` (favoris utilisateur, ou catalogue complet si aucun favori utilisateur)
 
 ### News
 
