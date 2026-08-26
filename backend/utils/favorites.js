@@ -34,3 +34,14 @@ export function buildFavoriteGamesPayload(items = []) {
     ...(link ? { link } : {})
   }));
 }
+
+export function resolveUserFavoriteGames(userFavorites = [], allFavorites = []) {
+  const normalizedUserFavorites = normalizeFavoriteGames(userFavorites);
+  const normalizedAllFavorites = normalizeFavoriteGames(allFavorites);
+
+  if (!Array.isArray(userFavorites) || userFavorites.length === 0) {
+    return normalizedAllFavorites;
+  }
+
+  return normalizedUserFavorites.length > 0 ? normalizedUserFavorites : normalizedAllFavorites;
+}

@@ -4,13 +4,16 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.js';
 import { authService } from '../services/api.js';
 
-const defaultFavoriteGames = [
+const allFavoriteGames = [
     { category: 'Action', game_name: 'DOOM: Dark Ages', link: 'https://bethesda.net/en/game/doom' },
     { category: 'RPG', game_name: 'Metaphor: ReFantazio', link: 'https://metaphor.atlus.com/' },
     { category: 'Aventure', game_name: 'The Legend of Zelda: Echoes of Wisdom', link: 'https://www.nintendo.com/' },
     { category: 'Sport', game_name: 'EA SPORTS FC 26', link: 'https://www.ea.com/games/ea-sports-fc' },
     { category: 'Course', game_name: 'Gran Turismo 7', link: 'https://www.gran-turismo.com/' },
-    { category: 'MMO', game_name: 'World of Warcraft', link: 'https://worldofwarcraft.blizzard.com/' }
+    { category: 'MMO', game_name: 'World of Warcraft', link: 'https://worldofwarcraft.blizzard.com/' },
+    { category: 'FPS', game_name: 'Counter-Strike 2', link: 'https://www.counter-strike.net/cs2' },
+    { category: 'Inde', game_name: 'Hades II', link: 'https://www.supergiantgames.com/games/hades-ii/' },
+    { category: 'Horreur', game_name: 'Resident Evil 4', link: 'https://www.residentevil.com/re4/en-us/' }
 ];
 
 const gameLinks = {
@@ -175,7 +178,7 @@ function Dashboard() {
 
     const favoriteGames = Array.isArray(displayUser?.favorite_games) && displayUser.favorite_games.length > 0
         ? displayUser.favorite_games
-        : defaultFavoriteGames;
+        : allFavoriteGames;
 
     return (
         <div className="relative mx-auto max-w-6xl overflow-hidden px-6 py-16 text-slate-100">
@@ -253,25 +256,29 @@ function Dashboard() {
                             <p className="text-xs uppercase text-slate-400">Mes jeux favoris</p>
                             {favoriteGames.length > 0 ? (
                                 <ul className="mt-3 space-y-2 text-sm text-slate-200">
-                                    {favoriteGames.map((game) => (
-                                        <li key={game.id ?? `${game.category}-${game.game_name}`} className="flex flex-wrap items-center gap-2">
-                                            <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2 py-1 text-[10px] uppercase tracking-wide text-cyan-200">
-                                                {game.category || 'Jeu'}
-                                            </span>
-                                            {game.link ? (
-                                                <a
-                                                    href={game.link}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="underline decoration-cyan-400/60 underline-offset-2 transition hover:text-cyan-200"
-                                                >
-                                                    {game.game_name}
-                                                </a>
-                                            ) : (
-                                                <span>{game.game_name}</span>
-                                            )}
-                                        </li>
-                                    ))}
+                                    {favoriteGames.map((game) => {
+                                        const resolvedLink = game.link || gameLinks[game.game_name] || '';
+
+                                        return (
+                                            <li key={game.id ?? `${game.category}-${game.game_name}`} className="flex flex-wrap items-center gap-2">
+                                                <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2 py-1 text-[10px] uppercase tracking-wide text-cyan-200">
+                                                    {game.category || 'Jeu'}
+                                                </span>
+                                                {resolvedLink ? (
+                                                    <a
+                                                        href={resolvedLink}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="underline decoration-cyan-400/60 underline-offset-2 transition hover:text-cyan-200"
+                                                    >
+                                                        {game.game_name}
+                                                    </a>
+                                                ) : (
+                                                    <span>{game.game_name}</span>
+                                                )}
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                             ) : (
                                 <p className="mt-3 text-sm text-slate-300">Aucun jeu favori enregistré pour cet utilisateur.</p>
