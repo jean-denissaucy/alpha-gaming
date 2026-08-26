@@ -42,6 +42,21 @@ export async function findFavoriteGamesByUserId(userId) {
     }));
 }
 
+export async function findAllFavoriteGames() {
+    const rows = await query(
+        `SELECT id, categorie, titre_jeu AS game_name, lien AS link
+         FROM favorite_games
+         ORDER BY categorie ASC, titre_jeu ASC`
+    );
+
+    return rows.map((row) => ({
+        id: row.id,
+        game_name: row.game_name,
+        category: row.categorie,
+        ...(row.link ? { link: row.link } : {})
+    }));
+}
+
 export async function createUserRecord({ email, hashedPassword, firstname, lastname }) {
     const result = await query(
         `INSERT INTO users (email, password, firstname, lastname)

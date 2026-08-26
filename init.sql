@@ -1,15 +1,11 @@
 -- Initialisation MySQL pour Alpha Gaming
 -- Usage: mysql -u root < init.sql
 
-CREATE DATABASE IF NOT EXISTS `starter_kit`
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
+-- Base utile pour l'application: le backend attend DB_NAME=alpha-gaming
 CREATE DATABASE IF NOT EXISTS `alpha-gaming`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
--- Base par defaut du backend: DB_NAME=alpha-gaming
 USE `alpha-gaming`;
 
 -- Suppression complete des anciennes tables de favoris pour eviter les doublons ou les donnees obsoletes

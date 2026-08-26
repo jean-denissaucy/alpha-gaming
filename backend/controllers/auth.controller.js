@@ -1,6 +1,7 @@
 // controllers/auth.controller.js
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
+import { resolveUserFavoriteGames } from '../utils/favorites.js';
 import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 
 const normalizeUser = (user, favoriteGames = []) => {
@@ -75,7 +76,12 @@ export const login = async (req, res) => {
 // GET /api/auth/me
 export const getProfile = async (req, res) => {
     try {
-        const favoriteGames = await User.findFavoriteGamesByUserId(req.user.id);
+        const [userFavoriteGames, allFavoriteGames] = await Promise.all([
+            User.findFavoriteGamesByUserId(req.user.id),
+            User.findAllFavoriteGames()
+        ]);
+        const favoriteGames = resolveUserFavoriteGames(userFavoriteGames, allFavoriteGames);
+
         return res.json(buildSuccessResponse({ user: normalizeUser(req.user, favoriteGames) }));
     } catch (error) {
         console.error('Erreur getProfile:', error);

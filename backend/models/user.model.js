@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import {
     addFavoriteGameForUser,
     createUserRecord,
+    findAllFavoriteGames,
     findFavoriteGamesByUserId,
     findUserByEmail,
     findUserById,
@@ -19,6 +20,9 @@ const User = {
     },
     async findFavoriteGamesByUserId(userId) {
         return findFavoriteGamesByUserId(userId);
+    },
+    async findAllFavoriteGames() {
+        return findAllFavoriteGames();
     },
     async addFavoriteGame(userId, gameId) {
         return addFavoriteGameForUser(userId, gameId);

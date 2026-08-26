@@ -147,6 +147,8 @@ function Dashboard() {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
 
     // Fonction pour charger le profil depuis l'API protégée
     const loadProfile = async () => {
@@ -180,8 +182,18 @@ function Dashboard() {
         ? displayUser.favorite_games
         : allFavoriteGames;
 
+    const availableCategories = Array.from(
+        new Set(favoriteGames.map((game) => game.category).filter(Boolean))
+    ).sort((a, b) => a.localeCompare(b, 'fr'));
+
+    const activeCategory = availableCategories.includes(selectedCategory) ? selectedCategory : '';
+
+    const filteredFavoriteGames = activeCategory
+        ? favoriteGames.filter((game) => game.category === activeCategory)
+        : [];
+
     return (
-        <div className="relative mx-auto max-w-6xl overflow-hidden px-6 py-16 text-slate-100">
+        <div className="relative mx-auto max-w-6xl overflow-visible px-6 py-16 text-slate-100">
             <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 -z-10 rounded-[2.2rem] bg-linear-to-br from-cyan-500/14 via-slate-900/20 to-blue-500/12"
@@ -253,10 +265,53 @@ function Dashboard() {
                         )}
 
                         <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                            <p className="text-xs uppercase text-slate-400">Mes jeux favoris</p>
-                            {favoriteGames.length > 0 ? (
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                <p className="text-xs uppercase text-slate-400">Mes jeux favoris</p>
+
+                                <div className="relative">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsCategoryMenuOpen((open) => !open)}
+                                        className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-100 transition hover:bg-cyan-500/20"
+                                    >
+                                        Categorie: {activeCategory || 'Choisir'}
+                                    </button>
+
+                                    {isCategoryMenuOpen && (
+                                        <div className="absolute right-0 z-20 mt-2 w-52 max-h-64 overflow-y-auto overflow-x-hidden rounded-xl border border-slate-700 bg-slate-950/95 shadow-2xl backdrop-blur">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setSelectedCategory('');
+                                                    setIsCategoryMenuOpen(false);
+                                                }}
+                                                className="block w-full px-3 py-2 text-left text-sm text-slate-100 transition hover:bg-slate-800"
+                                            >
+                                                Choisir
+                                            </button>
+                                            {availableCategories.map((category) => (
+                                                <button
+                                                    key={category}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setSelectedCategory(category);
+                                                        setIsCategoryMenuOpen(false);
+                                                    }}
+                                                    className="block w-full px-3 py-2 text-left text-sm text-slate-100 transition hover:bg-slate-800"
+                                                >
+                                                    {category}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {!activeCategory ? (
+                                <p className="mt-3 text-sm text-slate-300">Selectionne une categorie pour afficher les favoris.</p>
+                            ) : filteredFavoriteGames.length > 0 ? (
                                 <ul className="mt-3 space-y-2 text-sm text-slate-200">
-                                    {favoriteGames.map((game) => {
+                                    {filteredFavoriteGames.map((game) => {
                                         const resolvedLink = game.link || gameLinks[game.game_name] || '';
 
                                         return (
@@ -281,7 +336,7 @@ function Dashboard() {
                                     })}
                                 </ul>
                             ) : (
-                                <p className="mt-3 text-sm text-slate-300">Aucun jeu favori enregistré pour cet utilisateur.</p>
+                                <p className="mt-3 text-sm text-slate-300">Aucun jeu favori dans cette categorie.</p>
                             )}
                         </div>
                     </>
