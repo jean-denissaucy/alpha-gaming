@@ -77,7 +77,7 @@ export async function createUserRecord({ email, hashedPassword, firstname, lastn
         lastname: String(lastname || '').trim()
     };
 }
-
+// favorite model functions for user favorite games
 export async function addFavoriteGameForUser(userId, gameId) {
     if (!userId || !gameId) return null;
 
