@@ -26,33 +26,35 @@ export async function findUserById(id) {
 
 export async function findFavoriteGamesByUserId(userId) {
     const rows = await query(
-        `SELECT fg.id, fg.categorie, fg.titre_jeu AS game_name, fg.lien AS link
+        `SELECT g.id, g.categorie_id, g.titre_jeu AS game_name, g.lien, c.name AS category_name
          FROM user_favorite_games ufg
-         JOIN favorite_games fg ON fg.id = ufg.game_id
+         JOIN games g ON g.id = ufg.game_id
+         LEFT JOIN categories c ON c.id = g.categorie_id
          WHERE ufg.user_id = ?
-         ORDER BY fg.categorie ASC, fg.titre_jeu ASC`,
+         ORDER BY c.name ASC, g.titre_jeu ASC`,
         [userId]
     );
 
     return rows.map((row) => ({
         id: row.id,
         game_name: row.game_name,
-        category: row.categorie,
+        category: row.category_name,
         ...(row.link ? { link: row.link } : {})
     }));
 }
 
 export async function findAllFavoriteGames() {
     const rows = await query(
-        `SELECT id, categorie, titre_jeu AS game_name, lien AS link
-         FROM favorite_games
-         ORDER BY categorie ASC, titre_jeu ASC`
+        `SELECT id, categorie_id, titre_jeu AS game_name, c.name AS category_name, lien AS link
+         FROM games
+         LEFT JOIN categories c ON c.id = games.categorie_id
+         ORDER BY c.name ASC, games.titre_jeu ASC`
     );
 
     return rows.map((row) => ({
         id: row.id,
         game_name: row.game_name,
-        category: row.categorie,
+        category: row.category_name,
         ...(row.link ? { link: row.link } : {})
     }));
 }

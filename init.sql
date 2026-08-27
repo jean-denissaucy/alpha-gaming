@@ -25,16 +25,23 @@ CREATE TABLE IF NOT EXISTS users (
   UNIQUE KEY uq_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS favorite_games (
+
+
+
+CREATE TABLE IF NOT EXISTS games (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  categorie VARCHAR(100) NOT NULL,
   titre_jeu VARCHAR(150) NOT NULL,
   lien VARCHAR(150) NULL,
   is_external TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  categorie_id INT UNSIGNED NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_favorite_games_categorie_titre (categorie, titre_jeu),
-  KEY idx_favorite_games_categorie (categorie)
+  UNIQUE KEY uq_games_titre (titre_jeu),
+  KEY idx_games_categories (categorie_id),
+  CONSTRAINT fk_games_categories
+    FOREIGN KEY (categorie_id)
+    REFERENCES games(id)
+    ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS user_favorite_games (
