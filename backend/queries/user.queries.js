@@ -45,7 +45,7 @@ export async function findFavoriteGamesByUserId(userId) {
 
 export async function findAllFavoriteGames() {
     const rows = await query(
-        `SELECT id, categorie_id, titre_jeu AS game_name, c.name AS category_name, lien AS link
+        `SELECT games.id, games.categorie_id, games.titre_jeu AS game_name, c.name AS category_name, games.lien AS link
          FROM games
          LEFT JOIN categories c ON c.id = games.categorie_id
          ORDER BY c.name ASC, games.titre_jeu ASC`
