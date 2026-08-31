@@ -2,7 +2,7 @@ import process from 'node:process';
 import { Buffer } from 'node:buffer';
 
 function getBackendApiUrl() {
-    const backendApiUrl = (process.env.BACKEND_API_URL || 'https://alpha-gaming-1.onrender.com/api')
+    const backendApiUrl = (process.env.BACKEND_API_URL || 'https://alpha-gaming.onrender.com/api')
         .trim()
         .replace(/\/$/, '');
 
