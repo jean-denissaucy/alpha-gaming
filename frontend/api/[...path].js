@@ -2,7 +2,9 @@ import process from 'node:process';
 import { Buffer } from 'node:buffer';
 
 function getBackendApiUrl() {
-    const backendApiUrl = (process.env.BACKEND_API_URL || '').trim().replace(/\/$/, '');
+    const backendApiUrl = (process.env.BACKEND_API_URL || 'https://alpha-gaming-1.onrender.com/api')
+        .trim()
+        .replace(/\/$/, '');
 
     if (!backendApiUrl) {
         throw new Error('BACKEND_API_URL manquant dans la configuration Vercel');
