@@ -8,7 +8,12 @@ function getBackendApiUrl() {
         throw new Error('BACKEND_API_URL manquant dans la configuration Vercel');
     }
 
-    return backendApiUrl;
+    const normalizedUrl = new URL(backendApiUrl);
+    if (normalizedUrl.pathname === '/' || normalizedUrl.pathname === '') {
+        normalizedUrl.pathname = '/api';
+    }
+
+    return normalizedUrl.toString().replace(/\/$/, '');
 }
 
 function getBackendPath(req) {

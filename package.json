@@ -1,6 +1,7 @@
 {
   "name": "alpha-gaming",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
     "dev:backend": "npm --prefix backend run dev",
