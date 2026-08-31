@@ -15,8 +15,5 @@ export function resolveApiBaseUrl(env = {}, location = {}) {
 }
 
 export function getApiCandidates(env = {}, location = {}) {
-    const primary = resolveApiBaseUrl(env, location);
-    const fallback = 'https://alpha-gaming-1.onrender.com/api';
-
-    return [primary, fallback].filter((value, index, values) => values.indexOf(value) === index);
+    return [resolveApiBaseUrl(env, location)];
 }

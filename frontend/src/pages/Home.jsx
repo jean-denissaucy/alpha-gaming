@@ -83,7 +83,11 @@ function Home() {
                 const data = await newsService.getLatest(9);
                 if (!isMounted) return;
 
-                const items = Array.isArray(data?.items) ? data.items : [];
+                const items = Array.isArray(data?.data?.items)
+                    ? data.data.items
+                    : Array.isArray(data?.items)
+                        ? data.items
+                        : [];
                 if (items.length > 0) {
                     setFeaturedNews(items);
                     setLastNewsUpdate(new Date());
@@ -142,7 +146,11 @@ function Home() {
         const loadEsport = async () => {
             try {
                 const data = await esportService.getLatest(10);
-                const items = Array.isArray(data?.items) ? data.items : [];
+                const items = Array.isArray(data?.data?.items)
+                    ? data.data.items
+                    : Array.isArray(data?.items)
+                        ? data.items
+                        : [];
 
                 if (items.length > 0) {
                     setLiveEsportMatches(items);

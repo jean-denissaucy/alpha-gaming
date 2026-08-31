@@ -5,7 +5,7 @@ import cors from 'cors';
 import { testConnection } from './config/db.js';
 import authRoutes from './routes/auth.routes.js';
 import newsRoutes from './routes/news.routes.js';
-// import gamesRoutes from './routes/games.routes.js';
+import gamesRoutes from './routes/games.routes.js';
 import { buildErrorResponse, buildSuccessResponse } from './utils/response.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -66,7 +66,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 
 // Routes games publiques
-//app.use('/api/games', gamesRoutes);
+app.use('/api/games', gamesRoutes);
 
 // 404
 app.use((req, res) => res.status(404).json(buildErrorResponse('Route non trouvée', 404)));

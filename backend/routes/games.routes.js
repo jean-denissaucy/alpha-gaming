@@ -1,8 +1,18 @@
 import { Router } from 'express';
-import { } from '../controllers/games.controller.js';
+import gameController from '../controllers/game.controllers.js';
+import authMiddleware from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
-router.get('/games/:id', getLatestQuickGames);
+// Routes publiques
+router.get('/', gameController.getAllGames);
+router.get('/category/:categoryId', gameController.getGamesByCategoryId);
+router.get('/:id', gameController.getGameById);
+
+// Routes protégées
+// Pour créer, modifier ou supprimer un jeu, il faut être connecté.
+router.post('/', authMiddleware, gameController.createGame);
+router.put('/:id', authMiddleware, gameController.updateGame);
+router.delete('/:id', authMiddleware, gameController.deleteGame);
 
 export default router;

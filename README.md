@@ -257,7 +257,7 @@ Cette section documente un deploiement classique pour une application web dynami
    VITE_API_URL=https://yourdomain.com/api
    ```
 
-Pour un frontend heberge sur Vercel, le proxy `frontend/api/[...path].js` peut relayer la route des tests rapides vers `BACKEND_API_URL`. Cette variable doit contenir l'URL publique de l'API sans slash final.
+Pour un frontend heberge sur Vercel, le proxy `frontend/api/[...path].js` relaie toutes les routes `/api/*` vers le backend persistant. Definir `BACKEND_API_URL` dans Vercel avec l'URL publique du backend sans slash final, et definir le meme `JWT_SECRET` uniquement côté backend.
 
 5. **Installer et builder**
    ```bash

@@ -184,8 +184,71 @@ function appendCuratedIfNotDiverse(matches = [], limit = 10) {
     return [...matches, ...curatedToAdd].slice(0, limit);
 }
 
+async function getNewsFromDatabase(limit) {
+    const rows = await query(
+        `SELECT
+            source,
+            titre AS title,
+            extrait AS excerpt,
+            url,
+            categorie AS category,
+            reading_time AS readingTime,
+            published_at AS publishedAt
+         FROM news
+         ORDER BY COALESCE(published_at, created_at) DESC, id DESC
+         LIMIT ${limit}`
+    );
+
+    return rows.map((row) => ({
+        ...row,
+        excerpt: row.excerpt || 'Resume indisponible.'
+    }));
+}
+
+async function getEsportFromDatabase(limit, leagueFilters, excludedTeams) {
+    const conditions = [];
+    const params = [];
+
+    if (leagueFilters.length > 0) {
+        conditions.push(`LOWER(league) IN (${leagueFilters.map(() => '?').join(', ')})`);
+        params.push(...leagueFilters);
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    const rows = await query(
+        `SELECT
+            league,
+            match_title AS match,
+            kickoff_time AS time,
+            href,
+            source,
+            published_at AS publishedAt,
+            is_external AS external
+         FROM live_esport
+         ${whereClause}
+         ORDER BY COALESCE(published_at, created_at) DESC, id DESC
+         LIMIT ${limit}`,
+        params
+    );
+
+    return rows.filter((item) => {
+        if (excludedTeams.length === 0) return true;
+        const normalizedMatch = normalizeTeamName(item.match || '');
+        return !excludedTeams.some((excluded) => normalizedMatch.includes(excluded));
+    });
+}
+
 export async function getLatestNews(req, res) {
-    const limit = Number.parseInt(req.query.limit, 10) || 9;
+    const limit = Math.max(1, Math.min(Number.parseInt(req.query.limit, 10) || 9, 20));
+
+    try {
+        const databaseNews = await getNewsFromDatabase(limit);
+        if (databaseNews.length > 0) {
+            return res.json(buildSuccessResponse({ items: databaseNews, total: databaseNews.length }));
+        }
+    } catch (error) {
+        console.error('News MySQL indisponibles, utilisation du RSS:', error.message);
+    }
 
     try {
         const parsedFeeds = await Promise.allSettled(
@@ -215,22 +278,31 @@ export async function getLatestNews(req, res) {
                 const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
                 return bDate - aDate;
             })
-            .slice(0, Math.max(1, Math.min(limit, 20)));
+            .slice(0, limit);
 
         if (news.length === 0) {
             return res.status(502).json(buildErrorResponse('Aucune actu disponible pour le moment', 502));
         }
 
         return res.json(buildSuccessResponse({ items: news, total: news.length }));
-    } catch (error) {
-        return res.status(500).json(buildErrorResponse('Erreur lors de la recuperation des news', 500));
+    } catch {
+        return res.status(502).json(buildErrorResponse('Aucune actu disponible pour le moment', 502));
     }
 }
 
 export async function getLatestEsport(req, res) {
-    const limit = Number.parseInt(req.query.limit, 10) || 10;
+    const limit = Math.max(1, Math.min(Number.parseInt(req.query.limit, 10) || 10, 20));
     const leagueFilters = parseCsvParam(req.query.league).map((value) => value.toLowerCase());
     const excludedTeams = parseCsvParam(req.query.excludeTeam).map((value) => normalizeTeamName(value));
+
+    try {
+        const databaseMatches = await getEsportFromDatabase(limit, leagueFilters, excludedTeams);
+        if (databaseMatches.length > 0) {
+            return res.json(buildSuccessResponse({ items: databaseMatches, total: databaseMatches.length }));
+        }
+    } catch (error) {
+        console.error('Esport MySQL indisponible, utilisation du RSS:', error.message);
+    }
 
     try {
         const parsedFeeds = await Promise.allSettled(
@@ -258,16 +330,11 @@ export async function getLatestEsport(req, res) {
                 };
             }))
             .filter((item) => item.href)
-            .filter((item) => {
-                if (leagueFilters.length === 0) return true;
-                return leagueFilters.includes((item.league || '').toLowerCase());
-            })
+            .filter((item) => leagueFilters.length === 0 || leagueFilters.includes((item.league || '').toLowerCase()))
             .filter((item) => {
                 if (excludedTeams.length === 0) return true;
-
                 const teams = (item.teams || []).map(normalizeTeamName);
                 const titleNormalized = normalizeTeamName(item.match || '');
-
                 return !excludedTeams.some((excluded) => teams.includes(excluded) || titleNormalized.includes(excluded));
             })
             .sort((a, b) => {
@@ -276,12 +343,10 @@ export async function getLatestEsport(req, res) {
                 return bDate - aDate;
             });
 
-        const boundedLimit = Math.max(1, Math.min(limit, 20));
         const sourceDiversified = diversifyBySource(matches, 4);
         const teamDiversified = diversifyByTeams(sourceDiversified, 2);
-        const baseMatches = (teamDiversified.length >= Math.min(boundedLimit, 5) ? teamDiversified : sourceDiversified);
-        const finalMatches = appendCuratedIfNotDiverse(baseMatches, boundedLimit)
-            .map(({ teams, ...rest }) => rest);
+        const baseMatches = teamDiversified.length >= Math.min(limit, 5) ? teamDiversified : sourceDiversified;
+        const finalMatches = appendCuratedIfNotDiverse(baseMatches, limit).map(({ teams, ...rest }) => rest);
 
         if (finalMatches.length === 0) {
             return res.status(502).json(buildErrorResponse('Aucun live esport disponible pour le moment', 502));
@@ -289,7 +354,7 @@ export async function getLatestEsport(req, res) {
 
         return res.json(buildSuccessResponse({ items: finalMatches, total: finalMatches.length }));
     } catch {
-        return res.status(500).json(buildErrorResponse('Erreur lors de la recuperation du live esport', 500));
+        return res.status(502).json(buildErrorResponse('Aucun live esport disponible pour le moment', 502));
     }
 }
 

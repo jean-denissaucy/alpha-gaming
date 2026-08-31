@@ -99,7 +99,12 @@ const User = {
             ]
         );
 
-        return { id: result.insertId, email, firstname: result.firstname, lastname: result.lastname };
+        return {
+            id: result.insertId,
+            email: String(email || '').trim().toLowerCase(),
+            firstname: String(firstname || '').trim(),
+            lastname: String(lastname || '').trim()
+        };
 
     },
     // Vérifier le mot de passe

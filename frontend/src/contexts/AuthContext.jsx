@@ -4,26 +4,6 @@ import { useState, useEffect } from 'react';
 import { authService } from '../services/api.js';
 import { AuthContext } from './auth-context.js';
 
-function buildUserFromToken(token) {
-    try {
-        const payloadPart = token.split('.')[1];
-        if (!payloadPart) return null;
-
-        const normalized = payloadPart.replace(/-/g, '+').replace(/_/g, '/');
-        // Ajoute le padding manquant pour un base64 valide
-        const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), '=');
-        const decoded = JSON.parse(atob(padded));
-        return {
-            id: decoded.id,
-            email: decoded.email,
-            firstname: 'Joueur',
-            lastname: ''
-        };
-    } catch {
-        return null;
-    }
-}
-
 // Provider qui enveloppe l'application et fournit l'état d'authentification
 export function AuthProvider({ children }) {
     // État pour stocker les informations de l'utilisateur connecté
@@ -53,12 +33,8 @@ export function AuthProvider({ children }) {
             })
             .catch(() => {
                 if (!isMounted) return;
-                const fallbackUser = buildUserFromToken(token);
-                if (fallbackUser) {
-                    setUser(fallbackUser);
-                } else {
-                    localStorage.removeItem('token');
-                }
+                localStorage.removeItem('token');
+                setUser(null);
             })
             .finally(() => {
                 if (isMounted) {

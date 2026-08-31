@@ -13,56 +13,35 @@ async function fetchAPI(endpoint, options = {}) {
         ...(token && { Authorization: `Bearer ${token}` })
     };
 
-    const fallbackResponse = {
-        success: true,
-        data: {
-            message: 'Mode hors ligne activé'
-        }
-    };
-
     try {
-        let lastError = null;
+        const response = await fetch(`${API_URLS[0]}${endpoint}`, {
+            ...options,
+            headers
+        });
 
-        for (const baseUrl of API_URLS) {
+        let payload = null;
+        const text = await response.text();
+
+        if (text) {
             try {
-                const response = await fetch(`${baseUrl}${endpoint}`, {
-                    ...options,
-                    headers
-                });
-
-                let payload = null;
-                const text = await response.text();
-
-                if (text) {
-                    try {
-                        payload = JSON.parse(text);
-                    } catch {
-                        payload = { raw: text };
-                    }
-                }
-
-                if (!response.ok) {
-                    const message = payload?.error || payload?.message || 'Erreur serveur';
-                    throw { status: response.status, message };
-                }
-
-                return payload;
-            } catch (error) {
-                lastError = error;
+                payload = JSON.parse(text);
+            } catch {
+                payload = { raw: text };
             }
         }
 
-        if (lastError?.status) {
-            throw lastError;
+        if (!response.ok) {
+            const message = payload?.error || payload?.message || 'Erreur serveur';
+            throw { status: response.status, message };
         }
 
-        return fallbackResponse;
+        return payload;
     } catch (error) {
         if (error?.status) {
             throw error;
         }
 
-        return fallbackResponse;
+        throw { status: 0, message: 'API indisponible. Vérifiez la connexion au serveur.' };
     }
 }
 
