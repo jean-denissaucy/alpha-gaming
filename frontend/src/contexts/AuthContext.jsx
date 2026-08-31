@@ -50,16 +50,32 @@ export function AuthProvider({ children }) {
     // Fonction de connexion
     const login = async (email, password) => {
         const data = await authService.login(email, password);
-        localStorage.setItem('token', data.token);
-        setUser(data.user);
-        return data;
+        const authData = {
+            ...(data?.data || {}),
+            ...(data?.user ? { user: data.user } : {}),
+            ...(data?.token ? { token: data.token } : {})
+        };
+        if (!authData.token || !authData.user) {
+            throw { status: 502, message: 'Réponse d’authentification invalide du serveur' };
+        }
+        localStorage.setItem('token', authData.token);
+        setUser(authData.user);
+        return authData;
     };
 
     const register = async (userData) => {
         const data = await authService.register(userData);
-        localStorage.setItem('token', data.token);
-        setUser(data.user);
-        return data;
+        const authData = {
+            ...(data?.data || {}),
+            ...(data?.user ? { user: data.user } : {}),
+            ...(data?.token ? { token: data.token } : {})
+        };
+        if (!authData.token || !authData.user) {
+            throw { status: 502, message: 'Réponse d’authentification invalide du serveur' };
+        }
+        localStorage.setItem('token', authData.token);
+        setUser(authData.user);
+        return authData;
     };
     // Fonction de déconnexion
     const logout = () => {

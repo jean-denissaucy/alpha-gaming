@@ -60,7 +60,10 @@ export const register = async (req, res) => {
 // POST /api/auth/login
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password } = req.body || {};
+        if (!email || !password) {
+            return res.status(400).json(buildErrorResponse('Email et mot de passe sont requis', 400));
+        }
         const user = await User.findByEmail(email);
         if (!user || !(await User.verifyPassword(password, user.password))) {
             return res.status(401).json(buildErrorResponse('Identifiants incorrects', 401));
