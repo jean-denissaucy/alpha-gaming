@@ -19,6 +19,7 @@ import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import AdminDashboard from './pages/AdminDashboard.jsx';
 
 function App() {
 
@@ -41,6 +42,9 @@ function App() {
                     {/* Dashboard protégé - nécessite une authentification */}
                     <Route path="/dashboard" element={
                         <PrivateRoute><Dashboard /></PrivateRoute>
+                    } />
+                    <Route path="/admin" element={
+                        <PrivateRoute><AdminDashboard /></PrivateRoute>
                     } />
                 </Route>
 
