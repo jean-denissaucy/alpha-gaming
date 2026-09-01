@@ -2,7 +2,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { testConnection } from './config/db.js';
+import { query, testConnection } from './config/db.js';
 import authRoutes from './routes/auth.routes.js';
 import newsRoutes from './routes/news.routes.js';
 import gamesRoutes from './routes/games.routes.js';
@@ -59,6 +59,16 @@ if (process.env.NODE_ENV !== 'production') {
 // Routes
 app.get('/', (req, res) => {
     res.json(buildSuccessResponse({ message: 'Starter Kit API (ES Modules)', status: 'online' }));
+});
+
+app.get('/health/db', async (req, res) => {
+    try {
+        await query('SELECT 1 AS ok');
+        res.json(buildSuccessResponse({ database: 'connected' }));
+    } catch (error) {
+        console.error('Diagnostic DB:', { code: error.code || 'UNKNOWN', message: error.message });
+        res.status(503).json(buildErrorResponse('Base de données indisponible ou mal configurée', 503));
+    }
 });
 
 // Routes d'authentification

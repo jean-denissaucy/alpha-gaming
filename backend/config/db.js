@@ -34,6 +34,16 @@ export async function query(sql, params = []) {
     return results;
 }
 
+export function getDatabaseConfigStatus() {
+    return {
+        hostConfigured: Boolean(process.env.DB_HOST),
+        userConfigured: Boolean(process.env.DB_USER),
+        passwordConfigured: Boolean(process.env.DB_PASSWORD),
+        databaseConfigured: Boolean(process.env.DB_NAME),
+        port: Number.isInteger(configuredPort) && configuredPort > 0 ? configuredPort : 3306
+    };
+}
+
 // Test de connexion
 export async function testConnection() {
     try {
