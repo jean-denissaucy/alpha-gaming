@@ -16,6 +16,7 @@ import { AuthProvider } from './contexts/AuthContext.jsx';
 // Import des styles globaux (Tailwind)
 import './index.css';
 import './admin.css';
+import './esport.css';
 
 // Création et rendu de l'application dans le DOM
 ReactDOM.createRoot(document.getElementById('root')).render(
