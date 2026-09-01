@@ -70,7 +70,14 @@ function Header() {
                         Esport
                     </button>
                     {isAuthenticated && (
-                        <NavLink to="/dashboard" className={navClass}>Tableau de bord</NavLink>
+                        <>
+                            <NavLink to="/dashboard" className={navClass}>Tableau de bord</NavLink>
+                            {user?.role === 'admin' && (
+                                <NavLink to="/admin" className={({ isActive }) => `${navClass({ isActive })} admin-nav-link`}>
+                                    Admin
+                                </NavLink>
+                            )}
+                        </>
                     )}
                 </nav>
 
