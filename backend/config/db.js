@@ -24,7 +24,10 @@ export function isDatabaseError(error) {
         'ER_ACCESS_DENIED_ERROR',
         'ER_BAD_DB_ERROR',
         'ER_NO_SUCH_TABLE',
-        'ER_TABLEACCESS_DENIED_ERROR'
+        'ER_TABLEACCESS_DENIED_ERROR',
+        'EAI_AGAIN',
+        'ENETUNREACH',
+        'EHOSTUNREACH'
     ].includes(error?.code);
 }
 
