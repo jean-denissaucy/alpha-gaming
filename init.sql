@@ -1,83 +1,48 @@
--- phpMyAdmin SQL Dump
--- version 5.1.3
--- https://www.phpmyadmin.net/
---
--- Hôte : localhost:3306
--- Généré le : lun. 31 août 2026 à 10:52
--- Version du serveur : 5.5.68-MariaDB
--- Version de PHP : 7.4.30
+CREATE DATABASE IF NOT EXISTS `jean-denis-saucy_alpha-gaming` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `jean-denis-saucy_alpha-gaming`;
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Base de données : `jean-denis-saucy_alpha-gaming`
---
-
--- --------------------------------------------------------
-
---
--- Structure de la table `categories`
---
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `user_favorite_games`;
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `tests_rapides`;
+DROP TABLE IF EXISTS `news`;
+DROP TABLE IF EXISTS `live_esport`;
+DROP TABLE IF EXISTS `games`;
+DROP TABLE IF EXISTS `categories`;
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE `categories` (
-  `id` int(11) NOT NULL,
-  `name` varchar(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Déchargement des données de la table `categories`
---
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_categories_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `categories` (`id`, `name`) VALUES
 (1, 'Action'),
 (2, 'Aventure'),
 (3, 'RPG'),
 (4, 'Strategie'),
-(5, 'sport'),
-(6, 'course'),
-(7, 'shooter'),
+(5, 'Sport'),
+(6, 'Course'),
+(7, 'Shooter'),
 (8, 'Plateforme'),
 (9, 'Puzzle'),
 (10, 'Horreur'),
-(11, 'Indie'),
-(12, 'Action'),
-(13, 'Aventure'),
-(14, 'RPG'),
-(15, 'Strategie'),
-(16, 'Sport'),
-(17, 'Course'),
-(18, 'Shooter'),
-(19, 'Plateforme'),
-(20, 'Puzzle'),
-(21, 'Horreur'),
-(22, 'Indie');
-
--- --------------------------------------------------------
-
---
--- Structure de la table `games`
---
+(11, 'Indie');
 
 CREATE TABLE `games` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `titre_jeu` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `lien` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_external` tinyint(1) NOT NULL DEFAULT '1',
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `titre_jeu` varchar(150) NOT NULL,
+  `lien` varchar(255) DEFAULT NULL,
+  `is_external` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `categorie_id` int(10) UNSIGNED NOT NULL
+  `categorie_id` int UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_games_titre` (`titre_jeu`),
+  KEY `idx_games_categorie_id` (`categorie_id`),
+  CONSTRAINT `fk_games_categories` FOREIGN KEY (`categorie_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `games`
---
 
 INSERT INTO `games` (`id`, `titre_jeu`, `lien`, `is_external`, `created_at`, `categorie_id`) VALUES
 (1, 'DOOM: Dark Ages', 'https://bethesda.net/en/game/doom', 1, '2026-08-27 12:21:16', 1),
@@ -191,27 +156,21 @@ INSERT INTO `games` (`id`, `titre_jeu`, `lien`, `is_external`, `created_at`, `ca
 (109, 'Night in the Woods', 'https://nightinthewoods.com/', 1, '2026-08-27 12:21:16', 11),
 (110, 'Undertale', 'https://undertale.com/', 1, '2026-08-27 12:21:16', 11);
 
--- --------------------------------------------------------
-
---
--- Structure de la table `live_esport`
---
-
 CREATE TABLE `live_esport` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `league` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `match_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `kickoff_time` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `href` varchar(155) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `source` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'RSS',
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `league` varchar(120) NOT NULL,
+  `match_title` varchar(255) NOT NULL,
+  `kickoff_time` varchar(12) NOT NULL,
+  `href` varchar(255) NOT NULL,
+  `source` varchar(120) NOT NULL DEFAULT 'RSS',
   `published_at` datetime DEFAULT NULL,
-  `is_external` tinyint(1) NOT NULL DEFAULT '1',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `is_external` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_live_esport_href` (`href`),
+  KEY `idx_live_esport_league` (`league`),
+  KEY `idx_live_esport_published_at` (`published_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `live_esport`
---
 
 INSERT INTO `live_esport` (`id`, `league`, `match_title`, `kickoff_time`, `href`, `source`, `published_at`, `is_external`, `created_at`) VALUES
 (1, 'League of Legends', 'Karmine Corp vs G2', '19:00', 'https://lolesports.com/', 'LoL Esports', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
@@ -225,208 +184,84 @@ INSERT INTO `live_esport` (`id`, `league`, `match_title`, `kickoff_time`, `href`
 (9, 'Rainbow Six', 'BDS vs W7M', '19:45', 'https://www.ubisoft.com/esports/rainbow-six/siege', 'R6 Esports', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
 (10, 'Dota 2', 'Team Spirit vs Gaimin Gladiators', '23:30', 'https://www.dota2.com/esports', 'Dota 2', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31');
 
--- --------------------------------------------------------
-
---
--- Structure de la table `news`
---
-
 CREATE TABLE `news` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `source` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `titre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `extrait` text COLLATE utf8mb4_unicode_ci,
-  `url` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `categorie` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Gaming',
-  `reading_time` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '2 min',
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `source` varchar(120) NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `extrait` text,
+  `url` varchar(255) NOT NULL,
+  `categorie` varchar(80) NOT NULL DEFAULT 'Gaming',
+  `reading_time` varchar(20) NOT NULL DEFAULT '2 min',
   `published_at` datetime DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_news_url` (`url`),
+  KEY `idx_news_published_at` (`published_at`),
+  KEY `idx_news_categorie` (`categorie`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `news`
---
 
 INSERT INTO `news` (`id`, `source`, `titre`, `extrait`, `url`, `categorie`, `reading_time`, `published_at`, `created_at`) VALUES
-(1, 'Alpha Gaming', 'Silksong refait surface: 18 minutes de gameplay diffusees', 'Team Cherry montre enfin un build solide avec de nouveaux biomes, des boss plus agressifs et un systeme de crafting repense.', 'https://www.alpha-gaming.com/silksong-gameplay', 'Inde', '6 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
-(2, 'Alpha Gaming', 'GTA VI: Rockstar confirme une bande-annonce orientee mode online', 'Le studio tease des activites de crew en monde ouvert et une economie dynamique plus ambitieuse que sur GTA Online.', 'https://www.alpha-gaming.com/gta-vi-online', 'AAA', '4 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
-(3, 'Alpha Gaming', 'Le prochain Zelda miserait sur un monde maritime semi-procedural', 'Selon plusieurs insiders, Nintendo experimenterait une navigation plus libre et des iles evolutives a chaque session.', 'https://www.alpha-gaming.com/zelda-rumeur-maritime', 'Nintendo', '5 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31');
-
--- --------------------------------------------------------
-
---
--- Structure de la table `tests_rapides`
---
+(1, 'Alpha Gaming', 'Silksong refait surface: 18 minutes de gameplay diffusées', 'Team Cherry montre enfin un build solide avec de nouveaux biomes, des boss plus agressifs et un système de crafting repensé.', 'https://www.alpha-gaming.com/silksong-gameplay', 'Inde', '6 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
+(2, 'Alpha Gaming', 'GTA VI: Rockstar confirme une bande-annonce orientée mode online', 'Le studio tease des activités de crew en monde ouvert et une économie dynamique plus ambitieuse que sur GTA Online.', 'https://www.alpha-gaming.com/gta-vi-online', 'AAA', '4 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
+(3, 'Alpha Gaming', 'Le prochain Zelda miserait sur un monde maritime semi-procedural', 'Selon plusieurs insiders, Nintendo expérimenterait une navigation plus libre et des îles évolutives à chaque session.', 'https://www.alpha-gaming.com/zelda-rumeur-maritime', 'Nintendo', '5 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31');
 
 CREATE TABLE `tests_rapides` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `titre_jeu` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `titre_jeu` varchar(150) NOT NULL,
   `score` decimal(3,1) NOT NULL,
-  `plateformes` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `verdict` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `lien` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_external` tinyint(1) NOT NULL DEFAULT '1',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `plateformes` varchar(150) NOT NULL,
+  `verdict` varchar(255) NOT NULL,
+  `lien` varchar(255) DEFAULT NULL,
+  `is_external` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_tests_rapides_titre_jeu` (`titre_jeu`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `tests_rapides`
---
 
 INSERT INTO `tests_rapides` (`id`, `titre_jeu`, `score`, `plateformes`, `verdict`, `lien`, `is_external`, `created_at`) VALUES
-(1, 'DOOM: Dark Ages', '9.2', 'PC / Xbox', 'Brutal, fluide, ultra lisible.', 'https://bethesda.net/en/game/doom', 1, '2026-08-25 07:43:02'),
-(2, 'Clair Obscur: Expedition 33', '8.8', 'PC / PS5', 'Direction artistique magistrale.', 'https://www.expedition33.com/', 1, '2026-08-25 07:43:02'),
-(3, 'F1 26', '8.1', 'PC / PS5 / Xbox', 'Carriere plus profonde et nerveuse.', 'https://www.ea.com/games/f1', 1, '2026-08-25 07:43:02'),
-(4, 'Metaphor: ReFantazio', '9.0', 'PC / PS5 / Xbox', 'Un JRPG dense avec une direction artistique marquante.', 'https://metaphor.atlus.com/', 1, '2026-08-25 07:43:02'),
-(5, 'Monster Hunter Wilds', '8.9', 'PC / PS5 / Xbox', 'Des chasses plus spectaculaires et un monde plus vivant.', 'https://www.monsterhunter.com/wilds/', 1, '2026-08-25 07:43:02'),
-(6, 'EA SPORTS FC 26', '8.0', 'PC / PS5 / Xbox', 'Gameplay plus propre, progression mode carriere amelioree.', 'https://www.ea.com/games/ea-sports-fc', 1, '2026-08-25 07:43:02'),
-(7, 'Helldivers 2', '8.7', 'PC / PS5', 'Coop explosive et sensation de guerre totale reussie.', 'https://www.playstation.com/games/helldivers-2/', 1, '2026-08-25 07:43:02'),
-(8, 'Hades II', '9.1', 'PC', 'Roguelike ultra solide, ecriture et rythme exemplaires.', 'https://www.supergiantgames.com/games/hades-ii/', 1, '2026-08-25 07:43:02');
-
--- --------------------------------------------------------
-
---
--- Structure de la table `users`
---
+(1, 'DOOM: Dark Ages', 9.2, 'PC / Xbox', 'Brutal, fluide, ultra lisible.', 'https://bethesda.net/en/game/doom', 1, '2026-08-25 07:43:02'),
+(2, 'Clair Obscur: Expedition 33', 8.8, 'PC / PS5', 'Direction artistique magistrale.', 'https://www.expedition33.com/', 1, '2026-08-25 07:43:02'),
+(3, 'F1 26', 8.1, 'PC / PS5 / Xbox', 'Carrière plus profonde et nerveuse.', 'https://www.ea.com/games/f1', 1, '2026-08-25 07:43:02'),
+(4, 'Metaphor: ReFantazio', 9.0, 'PC / PS5 / Xbox', 'Un JRPG dense avec une direction artistique marquante.', 'https://metaphor.atlus.com/', 1, '2026-08-25 07:43:02'),
+(5, 'Monster Hunter Wilds', 8.9, 'PC / PS5 / Xbox', 'Des chasses plus spectaculaires et un monde plus vivant.', 'https://www.monsterhunter.com/wilds/', 1, '2026-08-25 07:43:02'),
+(6, 'EA SPORTS FC 26', 8.0, 'PC / PS5 / Xbox', 'Gameplay plus propre, progression mode carrière améliorée.', 'https://www.ea.com/games/ea-sports-fc', 1, '2026-08-25 07:43:02'),
+(7, 'Helldivers 2', 8.7, 'PC / PS5', 'Coop explosive et sensation de guerre totale réussie.', 'https://www.playstation.com/games/helldivers-2/', 1, '2026-08-25 07:43:02'),
+(8, 'Hades II', 9.1, 'PC', 'Roguelike ultra solide, écriture et rythme exemplaires.', 'https://www.supergiantgames.com/games/hades-ii/', 1, '2026-08-25 07:43:02');
 
 CREATE TABLE `users` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `firstname` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `lastname` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `firstname` varchar(100) NOT NULL,
+  `lastname` varchar(100) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_users_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `users`
---
 
 INSERT INTO `users` (`id`, `email`, `password`, `firstname`, `lastname`, `created_at`) VALUES
 (1, 'jd@gmail.com', '$2b$10$J3ij4l1Yz2qonWrKiC6BxeNuv35AAOJhCIXsFUQ5Rfko2vRetZD.S', 'jean-denis', 'saucy', '2026-08-25 07:56:11'),
 (2, 'jeandsaucy@gamail.com', '$2b$10$ETJ4txTrkHOtvoZ6SpKDC.b9/4F8ok9YI5Y353WorKLYZDBWnX2bK', 'jean', 'saucy', '2026-08-25 14:00:56');
 
--- --------------------------------------------------------
-
---
--- Structure de la table `user_favorite_games`
---
-
 CREATE TABLE `user_favorite_games` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `game_id` int(10) UNSIGNED NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` int UNSIGNED NOT NULL,
+  `game_id` int UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_user_favorite_games` (`user_id`, `game_id`),
+  KEY `idx_user_favorite_games_user` (`user_id`),
+  KEY `idx_user_favorite_games_game` (`game_id`),
+  CONSTRAINT `fk_user_favorite_games_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_favorite_games_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Index pour les tables déchargées
---
+INSERT INTO `user_favorite_games` (`user_id`, `game_id`, `created_at`) VALUES
+(1, 1, '2026-08-27 12:30:00'),
+(1, 4, '2026-08-27 12:31:00'),
+(2, 11, '2026-08-27 12:35:00');
 
---
--- Index pour la table `categories`
---
-ALTER TABLE `categories`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `games`
---
-ALTER TABLE `games`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_games_titre` (`titre_jeu`),
-  ADD KEY `idx_games_categories` (`categorie_id`);
-
---
--- Index pour la table `live_esport`
---
-ALTER TABLE `live_esport`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_live_esport_href` (`href`),
-  ADD KEY `idx_live_esport_league` (`league`),
-  ADD KEY `idx_live_esport_published_at` (`published_at`);
-
---
--- Index pour la table `news`
---
-ALTER TABLE `news`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_news_url` (`url`),
-  ADD KEY `idx_news_published_at` (`published_at`),
-  ADD KEY `idx_news_categorie` (`categorie`);
-
---
--- Index pour la table `tests_rapides`
---
-ALTER TABLE `tests_rapides`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_tests_rapides_titre_jeu` (`titre_jeu`);
-
---
--- Index pour la table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_users_email` (`email`);
-
---
--- Index pour la table `user_favorite_games`
---
-ALTER TABLE `user_favorite_games`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_user_favorite_games` (`user_id`,`game_id`),
-  ADD KEY `idx_user_favorite_games_user` (`user_id`),
-  ADD KEY `idx_user_favorite_games_game` (`game_id`);
-
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `categories`
---
-ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
-
---
--- AUTO_INCREMENT pour la table `games`
---
-ALTER TABLE `games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
-
---
--- AUTO_INCREMENT pour la table `live_esport`
---
-ALTER TABLE `live_esport`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT pour la table `news`
---
-ALTER TABLE `news`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT pour la table `tests_rapides`
---
-ALTER TABLE `tests_rapides`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT pour la table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT pour la table `user_favorite_games`
---
-ALTER TABLE `user_favorite_games`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- Contraintes pour les tables déchargées
---
+SET FOREIGN_KEY_CHECKS = 1;
 
 --
 -- Contraintes pour la table `games`
