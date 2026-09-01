@@ -2,6 +2,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import { resolveUserFavoriteGames } from '../utils/favorites.js';
+import { isDatabaseError } from '../config/db.js';
 import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 
 const normalizeUser = (user, favoriteGames = []) => {
@@ -53,7 +54,10 @@ export const register = async (req, res) => {
         const token = generateToken(normalizedUser);
         return res.status(201).json(buildSuccessResponse({ message: 'Inscription réussie', user: normalizedUser }, { user: normalizedUser, token }));
     } catch (error) {
-        console.error('Erreur register:', error);
+        console.error('Erreur register:', error.code || 'UNKNOWN', error.message);
+        if (isDatabaseError(error)) {
+            return res.status(503).json(buildErrorResponse('Base de données indisponible ou mal configurée', 503));
+        }
         return res.status(500).json(buildErrorResponse('Erreur serveur', 500));
     }
 };
@@ -72,7 +76,10 @@ export const login = async (req, res) => {
         const token = generateToken(normalizedUser);
         return res.json(buildSuccessResponse({ message: 'Connexion réussie' }, { user: normalizedUser, token }));
     } catch (error) {
-        console.error('Erreur login:', error);
+        console.error('Erreur login:', error.code || 'UNKNOWN', error.message);
+        if (isDatabaseError(error)) {
+            return res.status(503).json(buildErrorResponse('Base de données indisponible ou mal configurée', 503));
+        }
         return res.status(500).json(buildErrorResponse('Erreur serveur', 500));
     }
 };

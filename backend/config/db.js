@@ -1,14 +1,32 @@
 // config/db.js
 import mysql from 'mysql2/promise';
 
+const configuredPort = Number.parseInt(process.env.DB_PORT, 10);
 const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
+    port: Number.isInteger(configuredPort) && configuredPort > 0 ? configuredPort : 3306,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'alpha-gaming',
     waitForConnections: true,
-    connectionLimit: 10
+    connectionLimit: 10,
+    connectTimeout: 10000,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0
 });
+
+export function isDatabaseError(error) {
+    return [
+        'ECONNREFUSED',
+        'ENOTFOUND',
+        'ETIMEDOUT',
+        'PROTOCOL_CONNECTION_LOST',
+        'ER_ACCESS_DENIED_ERROR',
+        'ER_BAD_DB_ERROR',
+        'ER_NO_SUCH_TABLE',
+        'ER_TABLEACCESS_DENIED_ERROR'
+    ].includes(error?.code);
+}
 
 // Fonction utilitaire pour les requêtes
 export async function query(sql, params = []) {
@@ -24,7 +42,7 @@ export async function testConnection() {
         connection.release();
         return true;
     } catch (error) {
-        console.error('Erreur MySQL:', error.message);
+        console.error('Erreur MySQL:', error.code || 'UNKNOWN', error.message);
         return false;
     }
 }
