@@ -10,9 +10,11 @@ import { buildErrorResponse, buildSuccessResponse } from './utils/response.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connexion BDD
+// Connexion BDD : Render doit recevoir les paramètres MySQL de Plesk.
 if (process.env.DB_HOST) {
     testConnection();
+} else {
+    console.error('Configuration MySQL absente : DB_HOST, DB_USER, DB_PASSWORD et DB_NAME sont requis.');
 }
 
 // Middlewares

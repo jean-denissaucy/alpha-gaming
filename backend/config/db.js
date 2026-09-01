@@ -38,11 +38,17 @@ export async function query(sql, params = []) {
 export async function testConnection() {
     try {
         const connection = await pool.getConnection();
-        console.log('MySQL connecté');
+        await connection.query('SELECT 1');
+        console.log(`MySQL connecté (${process.env.DB_HOST || 'localhost'}:${Number.isInteger(configuredPort) && configuredPort > 0 ? configuredPort : 3306}/${process.env.DB_NAME || 'alpha-gaming'})`);
         connection.release();
         return true;
     } catch (error) {
-        console.error('Erreur MySQL:', error.code || 'UNKNOWN', error.message);
+        console.error('Erreur MySQL:', {
+            code: error.code || 'UNKNOWN',
+            host: process.env.DB_HOST || 'localhost',
+            port: Number.isInteger(configuredPort) && configuredPort > 0 ? configuredPort : 3306,
+            database: process.env.DB_NAME || 'alpha-gaming'
+        });
         return false;
     }
 }
