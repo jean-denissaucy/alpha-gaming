@@ -263,20 +263,4 @@ INSERT INTO `user_favorite_games` (`user_id`, `game_id`, `created_at`) VALUES
 
 SET FOREIGN_KEY_CHECKS = 1;
 
---
--- Contraintes pour la table `games`
---
-ALTER TABLE `games`
-  ADD CONSTRAINT `fk_games_categories` FOREIGN KEY (`categorie_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `user_favorite_games`
---
-ALTER TABLE `user_favorite_games`
-  ADD CONSTRAINT `fk_user_favorite_games_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_user_favorite_games_games` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
