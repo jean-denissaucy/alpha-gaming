@@ -27,6 +27,20 @@ const User = {
 
         return users[0] || null;
     },
+    async findAllForAdmin() {
+        return query(`SELECT id, email, firstname, lastname, role, created_at FROM users ORDER BY created_at DESC`);
+    },
+    async updateById(id, { email, firstname, lastname, role }) {
+        const result = await query(
+            `UPDATE users SET email = ?, firstname = ?, lastname = ?, role = ? WHERE id = ?`,
+            [String(email).trim().toLowerCase(), String(firstname).trim(), String(lastname).trim(), role === 'admin' ? 'admin' : 'user', id]
+        );
+        return result.affectedRows > 0;
+    },
+    async deleteById(id) {
+        const result = await query('DELETE FROM users WHERE id = ?', [id]);
+        return result.affectedRows > 0;
+    },
     async findFavoriteGamesByUserId(userId) {
         const rows = await query(
             `SELECT g.id, g.categorie_id, g.titre_jeu AS game_name, g.lien, c.name AS category_name
