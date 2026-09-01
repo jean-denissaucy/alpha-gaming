@@ -6,70 +6,12 @@ import { useAuth } from '../hooks/useAuth.js';
 import BrandLogo from '../components/BrandLogo.jsx';
 import { newsService, esportService } from '../services/api.js';
 
-const fallbackNews = [
-    {
-        title: 'Silksong refait surface: 18 minutes de gameplay diffusées',
-        category: 'Indé',
-        readingTime: '6 min',
-        excerpt: 'Team Cherry montre enfin un build solide avec de nouveaux biomes, des boss plus agressifs et un système de crafting repensé.',
-        source: 'Alpha Gaming',
-        url: null
-    },
-    {
-        title: 'GTA VI: Rockstar confirme une bande-annonce orientée mode online',
-        category: 'AAA',
-        readingTime: '4 min',
-        excerpt: 'Le studio tease des activités de crew en monde ouvert et une économie dynamique plus ambitieuse que sur GTA Online.',
-        source: 'Alpha Gaming',
-        url: null
-    },
-    {
-        title: 'Le prochain Zelda miserait sur un monde maritime semi-procédural',
-        category: 'Nintendo',
-        readingTime: '5 min',
-        excerpt: 'Selon plusieurs insiders, Nintendo expérimenterait une navigation plus libre et des îles évolutives à chaque session.',
-        source: 'Alpha Gaming',
-        url: null
-    }
-];
-
-const fallbackEsportMatches = [
-    { league: 'League européenne de LoL', match: 'Karmine Corp vs G2', time: '19:00', href: 'https://lolesports.com/', external: true },
-    { league: 'Tour des champions VALORANT', match: 'Fnatic vs Heretics', time: '21:30', href: 'https://valorantesports.com/', external: true },
-    { league: 'Majeur Rocket League', match: 'Vitality vs BDS', time: '23:00', href: 'https://esports.rocketleague.com/', external: true },
-    { league: 'Majeur CS2', match: 'NAVI vs FaZe', time: '20:00', href: 'https://www.hltv.org/', external: true },
-    { league: 'Ligue Call of Duty', match: 'OpTic Texas vs Toronto Ultra', time: '22:00', href: 'https://callofdutyleague.com/', external: true },
-    { league: 'Série des champions Overwatch', match: 'Team Falcons vs Crazy Raccoon', time: '18:30', href: 'https://esports.overwatch.com/', external: true },
-    { league: 'Série mondiale Apex Legends', match: 'TSM vs Alliance', time: '20:45', href: 'https://www.ea.com/games/apex-legends/compete', external: true },
-    { league: 'Championnat mondial PUBG', match: 'Gen.G vs Soniqs', time: '21:15', href: 'https://pubgesports.com/', external: true },
-    { league: 'Esport Rainbow Six', match: 'BDS vs W7M', time: '19:45', href: 'https://www.ubisoft.com/esports/rainbow-six/siege', external: true },
-    { league: 'Circuit pro Dota 2', match: 'Team Spirit vs Gaimin Gladiators', time: '23:30', href: 'https://www.dota2.com/esports', external: true }
-];
-
-const esportLeagueLabels = {
-    'League of Legends': 'League européenne de LoL',
-    'VALORANT': 'Tour des champions VALORANT',
-    'Rocket League': 'Majeur Rocket League',
-    'CS2': 'Majeur CS2',
-    'Call of Duty': 'Ligue Call of Duty',
-    'Overwatch': 'Série des champions Overwatch',
-    'Apex Legends': 'Série mondiale Apex Legends',
-    'PUBG': 'Championnat mondial PUBG',
-    'Rainbow Six': 'Esport Rainbow Six',
-    'Dota 2': 'Circuit pro Dota 2',
-    'Esport': 'Esport'
-};
-
-function formatEsportLeagueLabel(league = '') {
-    return esportLeagueLabels[league] || league;
-}
-
 function Home() {
     // Vérification si l'utilisateur est connecté pour adapter les CTA
     const { isAuthenticated } = useAuth();
-    const [featuredNews, setFeaturedNews] = useState(fallbackNews);
+    const [featuredNews, setFeaturedNews] = useState([]);
     const [lastNewsUpdate, setLastNewsUpdate] = useState(null);
-    const [liveEsportMatches, setLiveEsportMatches] = useState(fallbackEsportMatches);
+    const [liveEsportMatches, setLiveEsportMatches] = useState([]);
     const [lastEsportUpdate, setLastEsportUpdate] = useState(null);
 
 
@@ -80,7 +22,7 @@ function Home() {
 
         const loadNews = async () => {
             try {
-                const data = await newsService.getLatest(9);
+                const data = await newsService.getLatest(50);
                 if (!isMounted) return;
 
                 const items = Array.isArray(data?.data?.items)
@@ -94,29 +36,26 @@ function Home() {
                 }
             } catch {
                 if (!isMounted) return;
-                setFeaturedNews(fallbackNews);
+                setFeaturedNews([]);
             }
         };
 
-        const scheduleMondayRefresh = () => {
+        const scheduleDailyRefresh = () => {
             const now = new Date();
             const nextMonday = new Date(now);
-            const day = now.getDay();
-            const daysUntilMonday = ((8 - day) % 7) || 7;
-
-            nextMonday.setDate(now.getDate() + daysUntilMonday);
+            nextMonday.setDate(now.getDate() + 1);
             nextMonday.setHours(0, 0, 0, 0);
 
             const msUntilNextMonday = nextMonday.getTime() - now.getTime();
 
             midnightTimeoutId = setTimeout(async () => {
                 await loadNews();
-                midnightIntervalId = setInterval(loadNews, 7 * 24 * 60 * 60 * 1000);
+                midnightIntervalId = setInterval(loadNews, 24 * 60 * 60 * 1000);
             }, msUntilNextMonday);
         };
 
         loadNews();
-        scheduleMondayRefresh();
+        scheduleDailyRefresh();
 
         return () => {
             isMounted = false;
@@ -144,31 +83,28 @@ function Home() {
                     return;
                 }
 
-                setLiveEsportMatches(fallbackEsportMatches);
+                setLiveEsportMatches([]);
             } catch {
-                setLiveEsportMatches(fallbackEsportMatches);
+                setLiveEsportMatches([]);
             }
         };
 
-        const scheduleMondayRefresh = () => {
+        const scheduleDailyRefresh = () => {
             const now = new Date();
             const nextMonday = new Date(now);
-            const day = now.getDay();
-            const daysUntilMonday = ((8 - day) % 7) || 7;
-
-            nextMonday.setDate(now.getDate() + daysUntilMonday);
+            nextMonday.setDate(now.getDate() + 1);
             nextMonday.setHours(0, 0, 0, 0);
 
             const msUntilNextMonday = nextMonday.getTime() - now.getTime();
 
             midnightTimeoutId = setTimeout(async () => {
                 await loadEsport();
-                midnightIntervalId = setInterval(loadEsport, 7 * 24 * 60 * 60 * 1000);
+                midnightIntervalId = setInterval(loadEsport, 24 * 60 * 60 * 1000);
             }, msUntilNextMonday);
         };
 
         loadEsport();
-        scheduleMondayRefresh();
+        scheduleDailyRefresh();
 
         return () => {
             clearTimeout(midnightTimeoutId);
@@ -340,7 +276,7 @@ function Home() {
                             {liveEsportMatches.slice(0, 3).map((item) => {
                                 const content = (
                                     <>
-                                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-300">{formatEsportLeagueLabel(item.league)}</p>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-300">{item.league || 'Compétition'}</p>
                                         <p className="mt-2 font-semibold text-white">{item.match}</p>
                                         <p className="mt-2 text-sm text-slate-300">Coup d'envoi: {item.time}</p>
                                     </>

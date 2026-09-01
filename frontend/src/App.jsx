@@ -23,6 +23,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import Esport from './pages/Esport.jsx';
 import Presentation from './pages/Presentation.jsx';
+import Games from './pages/Games.jsx';
 
 function App() {
 
@@ -42,6 +43,7 @@ function App() {
                     {/* Page d'accueil accessible à tous */}
                     <Route path="/" element={<Home />} />
                     <Route path="/news" element={<News />} />
+                    <Route path="/games" element={<Games />} />
                     <Route path="/esport" element={<Esport />} />
                     <Route path="/presentation" element={<Presentation />} />
 
