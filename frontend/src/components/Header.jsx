@@ -1,6 +1,6 @@
 // components/Header.jsx - Barre de navigation principale
 
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
 import BrandLogo from './BrandLogo.jsx';
 
@@ -9,8 +9,6 @@ function Header() {
     // Récupération des infos utilisateur et fonction de déconnexion
     const { user, isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
-    const location = useLocation();
-
     // Gestion de la déconnexion avec redirection
     const handleLogout = () => {
         logout();
@@ -23,19 +21,6 @@ function Header() {
     );
 
     const userLabel = user?.firstname || user?.name || 'Utilisateur';
-
-    const handleSectionNavigation = (sectionId) => {
-        if (location.pathname !== '/') {
-            navigate(`/#${sectionId}`);
-            return;
-        }
-
-        const target = document.getElementById(sectionId);
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            window.history.replaceState(null, '', `#${sectionId}`);
-        }
-    };
 
     return (
         <header className="sticky top-0 z-40 border-b border-cyan-400/20 bg-black/80 backdrop-blur-xl">
@@ -50,13 +35,7 @@ function Header() {
                 <nav className="hidden items-center gap-2 sm:flex">
                     <NavLink to="/" className={navClass}>Accueil</NavLink>
                     <NavLink to="/presentation" className={navClass}>Présentation</NavLink>
-                    <button
-                        type="button"
-                        onClick={() => handleSectionNavigation('top-news')}
-                        className="rounded-full px-3 py-1 text-sm font-semibold tracking-wide text-slate-300 transition hover:bg-white/10 hover:text-white"
-                    >
-                        Articles
-                    </button>
+                    <NavLink to="/news" className={navClass}>Actualités</NavLink>
                     <NavLink to="/esport" className={navClass}>Esport</NavLink>
                     {isAuthenticated && (
                         <>

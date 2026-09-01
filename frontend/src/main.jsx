@@ -17,6 +17,7 @@ import { AuthProvider } from './contexts/AuthContext.jsx';
 import './index.css';
 import './admin.css';
 import './esport.css';
+import './news.css';
 
 // Création et rendu de l'application dans le DOM
 ReactDOM.createRoot(document.getElementById('root')).render(

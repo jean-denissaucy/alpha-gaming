@@ -16,6 +16,7 @@ import PrivateRoute from './components/PrivateRoute.jsx';
 
 // Import des pages de l'application
 import Home from './pages/Home.jsx';
+import News from './pages/News.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Dashboard from './pages/Dashboard.jsx';
@@ -40,6 +41,7 @@ function App() {
 
                     {/* Page d'accueil accessible à tous */}
                     <Route path="/" element={<Home />} />
+                    <Route path="/news" element={<News />} />
                     <Route path="/esport" element={<Esport />} />
                     <Route path="/presentation" element={<Presentation />} />
 

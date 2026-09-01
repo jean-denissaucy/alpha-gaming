@@ -190,6 +190,7 @@ CREATE TABLE `news` (
   `titre` varchar(255) NOT NULL,
   `extrait` text,
   `url` varchar(191) NOT NULL,
+  `image` varchar(500) DEFAULT NULL,
   `categorie` varchar(80) NOT NULL DEFAULT 'Gaming',
   `reading_time` varchar(20) NOT NULL DEFAULT '2 min',
   `published_at` datetime DEFAULT NULL,
@@ -200,10 +201,10 @@ CREATE TABLE `news` (
   KEY `idx_news_categorie` (`categorie`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `news` (`id`, `source`, `titre`, `extrait`, `url`, `categorie`, `reading_time`, `published_at`, `created_at`) VALUES
-(1, 'Alpha Gaming', 'Silksong refait surface: 18 minutes de gameplay diffusées', 'Team Cherry montre enfin un build solide avec de nouveaux biomes, des boss plus agressifs et un système de crafting repensé.', 'https://www.alpha-gaming.com/silksong-gameplay', 'Inde', '6 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
-(2, 'Alpha Gaming', 'GTA VI: Rockstar confirme une bande-annonce orientée mode online', 'Le studio tease des activités de crew en monde ouvert et une économie dynamique plus ambitieuse que sur GTA Online.', 'https://www.alpha-gaming.com/gta-vi-online', 'AAA', '4 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
-(3, 'Alpha Gaming', 'Le prochain Zelda miserait sur un monde maritime semi-procedural', 'Selon plusieurs insiders, Nintendo expérimenterait une navigation plus libre et des îles évolutives à chaque session.', 'https://www.alpha-gaming.com/zelda-rumeur-maritime', 'Nintendo', '5 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31');
+INSERT INTO `news` (`id`, `source`, `titre`, `extrait`, `url`, `image`, `categorie`, `reading_time`, `published_at`, `created_at`) VALUES
+(1, 'Alpha Gaming', 'Silksong refait surface: 18 minutes de gameplay diffusées', 'Team Cherry montre enfin un build solide avec de nouveaux biomes, des boss plus agressifs et un système de crafting repensé.', 'https://www.alpha-gaming.com/silksong-gameplay', 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80', 'Inde', '6 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
+(2, 'Alpha Gaming', 'GTA VI: Rockstar confirme une bande-annonce orientée mode online', 'Le studio tease des activités de crew en monde ouvert et une économie dynamique plus ambitieuse que sur GTA Online.', 'https://www.alpha-gaming.com/gta-vi-online', 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80', 'AAA', '4 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
+(3, 'Alpha Gaming', 'Le prochain Zelda miserait sur un monde maritime semi-procedural', 'Selon plusieurs insiders, Nintendo expérimenterait une navigation plus libre et des îles évolutives à chaque session.', 'https://www.alpha-gaming.com/zelda-rumeur-maritime', 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=1200&q=80', 'Nintendo', '5 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31');
 
 CREATE TABLE `tests_rapides` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
