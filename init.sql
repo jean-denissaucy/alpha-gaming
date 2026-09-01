@@ -234,14 +234,15 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `firstname` varchar(100) NOT NULL,
   `lastname` varchar(100) NOT NULL,
+  `role` enum('user','admin') NOT NULL DEFAULT 'user',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_users_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `users` (`id`, `email`, `password`, `firstname`, `lastname`, `created_at`) VALUES
-(1, 'jd@gmail.com', '$2b$10$J3ij4l1Yz2qonWrKiC6BxeNuv35AAOJhCIXsFUQ5Rfko2vRetZD.S', 'jean-denis', 'saucy', '2026-08-25 07:56:11'),
-(2, 'jeandsaucy@gamail.com', '$2b$10$ETJ4txTrkHOtvoZ6SpKDC.b9/4F8ok9YI5Y353WorKLYZDBWnX2bK', 'jean', 'saucy', '2026-08-25 14:00:56');
+INSERT INTO `users` (`id`, `email`, `password`, `firstname`, `lastname`, `role`, `created_at`) VALUES
+(1, 'jd@gmail.com', '$2b$10$J3ij4l1Yz2qonWrKiC6BxeNuv35AAOJhCIXsFUQ5Rfko2vRetZD.S', 'jean-denis', 'saucy', 'admin', '2026-08-25 07:56:11'),
+(2, 'jeandsaucy@gamail.com', '$2b$10$ETJ4txTrkHOtvoZ6SpKDC.b9/4F8ok9YI5Y353WorKLYZDBWnX2bK', 'jean', 'saucy', 'user', '2026-08-25 14:00:56');
 
 CREATE TABLE `user_favorite_games` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,

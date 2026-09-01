@@ -6,8 +6,9 @@ export default function adminMiddleware(req, res, next) {
         .map((email) => email.trim().toLowerCase())
         .filter(Boolean);
     const email = String(req.user?.email || '').trim().toLowerCase();
+    const isAdmin = req.user?.role === 'admin' || configuredAdmins.includes(email);
 
-    if (!email || configuredAdmins.length === 0 || !configuredAdmins.includes(email)) {
+    if (!email || !isAdmin) {
         return res.status(403).json(buildErrorResponse('Accès administrateur requis', 403));
     }
 

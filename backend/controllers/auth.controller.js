@@ -18,6 +18,7 @@ const normalizeUser = (user, favoriteGames = []) => {
         email: user.email,
         firstname,
         lastname,
+        role: user.role || 'user',
         created_at: user.created_at,
         favorite_games: favoriteGames
     };
@@ -33,7 +34,7 @@ const generateToken = (user) => {
     }
 
     return jwt.sign(
-        { id: user.id, email: user.email },
+        { id: user.id, email: user.email, role: user.role || 'user' },
         jwtSecret,
         { expiresIn: jwtExpiresIn }
     );

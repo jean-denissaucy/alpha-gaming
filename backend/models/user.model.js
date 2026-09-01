@@ -6,7 +6,7 @@ const User = {
     // Trouver par email
     async findByEmail(email) {
         const users = await query(
-            `SELECT id, email, password, firstname, lastname, created_at
+            `SELECT id, email, password, firstname, lastname, role, created_at
                 FROM users
                 WHERE email = ?
                 LIMIT 1`,
@@ -18,7 +18,7 @@ const User = {
     // Trouver par ID (sans le password)
     async findById(id) {
         const users = await query(
-            `SELECT id, email, firstname, lastname, created_at
+            `SELECT id, email, firstname, lastname, role, created_at
          FROM users
          WHERE id = ?
          LIMIT 1`,
