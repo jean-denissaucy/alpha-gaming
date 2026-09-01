@@ -41,7 +41,7 @@ CREATE TABLE `games` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_games_titre` (`titre_jeu`),
   KEY `idx_games_categorie_id` (`categorie_id`),
-  CONSTRAINT `fk_games_categories` FOREIGN KEY (`categorie_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `fk_games_categories` FOREIGN KEY (`categorie_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `games` (`id`, `titre_jeu`, `lien`, `is_external`, `created_at`, `categorie_id`) VALUES
