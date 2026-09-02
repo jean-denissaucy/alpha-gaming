@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
 import BrandLogo from '../components/BrandLogo.jsx';
-import { newsService, esportService } from '../services/api.js';
+import { newsService, esportService, testService } from '../services/api.js';
 
 const fallbackNews = [
     {
@@ -71,7 +71,7 @@ function Home() {
     const [lastNewsUpdate, setLastNewsUpdate] = useState(null);
     const [liveEsportMatches, setLiveEsportMatches] = useState(fallbackEsportMatches);
     const [lastEsportUpdate, setLastEsportUpdate] = useState(null);
-
+    const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
         let isMounted = true;
@@ -97,6 +97,20 @@ function Home() {
                 setFeaturedNews(fallbackNews);
             }
         };
+
+        const loadQuickTests = async () => {
+            try {
+                const data = await testService.getLatest(9);
+                if (!isMounted) return;
+
+                const items = Array.isArray(data?.data?.items) ? data.data.items : Array.isArray(data?.items) ? data.items : [];
+                setReviews(items);
+            } catch {
+                if (isMounted) setReviews([]);
+            }
+        };
+
+        loadQuickTests();
 
         const scheduleMondayRefresh = () => {
             const now = new Date();
@@ -288,21 +302,28 @@ function Home() {
                 <div className="grid gap-6 lg:grid-cols-5">
                     <div className="rounded-3xl border border-slate-700/70 bg-slate-900/75 p-6 lg:col-span-3">
                         <div>
-                            <h2 className="text-2xl font-bold uppercase tracking-wide text-white">Actualités</h2>
-                            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-400">Les dernières informations gaming</p>
+                            <h2 className="text-2xl font-bold uppercase tracking-wide text-white">Tests rapides</h2>
+                            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-400">Les plus récents en premier</p>
                         </div>
                         <div className="mt-5 space-y-3">
-                            {featuredNews.length === 0 ? (
-                                <p className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4 text-sm text-slate-300">Aucune actualité disponible pour le moment.</p>
-                            ) : featuredNews.map((review) => {
+                            {reviews.length === 0 ? (
+                                <p className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4 text-sm text-slate-300">
+                                    Aucun test rapide disponible pour le moment.
+                                </p>
+                            ) : reviews.map((review) => {
                                 const content = (
                                     <>
                                         <div className="flex flex-wrap items-center justify-between gap-3">
-                                            <h3 className="font-semibold text-white">{review.title}</h3>
-                                            <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-bold text-cyan-200">{review.category}</span>
+                                            <h3 className="font-semibold text-white">{review.game}</h3>
+                                            <span className="rounded-full bg-red-500/20 px-3 py-1 text-sm font-bold text-red-200">{review.score}/10</span>
                                         </div>
-                                        <p className="mt-2 text-sm text-slate-300">{review.excerpt}</p>
-                                        <p className="mt-3 text-xs uppercase tracking-[0.12em] text-slate-500">Source : {review.source || 'Alpha Gaming'}</p>
+                                        <p className="mt-2 text-sm text-cyan-200">{review.platform}</p>
+                                        <p className="mt-2 text-sm text-slate-300">{review.verdict}</p>
+                                        {review.testedAt && (
+                                            <p className="mt-3 text-xs uppercase tracking-[0.12em] text-slate-500">
+                                                Testé le {new Date(review.testedAt).toLocaleDateString('fr-FR')}
+                                            </p>
+                                        )}
                                     </>
                                 );
 
@@ -335,7 +356,7 @@ function Home() {
                             </span>
                         </div>
                         <ul className="mt-5 space-y-3">
-                            {liveEsportMatches.slice(0, 3).map((item) => {
+                            {liveEsportMatches.map((item) => {
                                 const content = (
                                     <>
                                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-300">{formatEsportLeagueLabel(item.league)}</p>
