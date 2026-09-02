@@ -55,8 +55,7 @@ const User = {
         return rows.map((row) => ({
             id: row.id,
             game_name: row.game_name,
-            categorie_id: row.categorie_id,
-            category: row.category_name || `Catégorie ${row.categorie_id}`,
+            category: row.category_name,
             ...(row.link ? { link: row.link } : {})
         }));
     },
@@ -71,8 +70,7 @@ const User = {
         return rows.map((row) => ({
             id: row.id,
             game_name: row.game_name,
-            categorie_id: row.categorie_id,
-            category: row.category_name || `Catégorie ${row.categorie_id}`,
+            category: row.category_name,
             ...(row.link ? { link: row.link } : {})
         }));
     },

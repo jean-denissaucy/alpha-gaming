@@ -9,11 +9,12 @@ const Game = {
              FROM games g
              LEFT JOIN categories c ON c.id = g.categorie_id
              ORDER BY c.name ASC, g.titre_jeu ASC`
-        );        return rows.map((row) => ({
+        );
+
+        return rows.map((row) => ({
             id: row.id,
             game_name: row.game_name,
-            categorie_id: row.categorie_id,
-            category: row.category_name || `Catégorie ${row.categorie_id}`,
+            category: row.category_name,
             ...(row.link ? { link: row.link } : {})
         }));
     },
@@ -47,11 +48,12 @@ const Game = {
              WHERE g.categorie_id = ?
              ORDER BY g.titre_jeu ASC`,
             [categoryId]
-        );        return rows.map((row) => ({
+        );
+
+        return rows.map((row) => ({
             id: row.id,
             game_name: row.game_name,
-            categorie_id: row.categorie_id,
-            category: row.category_name || `Catégorie ${row.categorie_id}`,
+            category: row.category_name,
             ...(row.link ? { link: row.link } : {})
         }));
     },
