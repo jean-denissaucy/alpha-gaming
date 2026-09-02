@@ -1,6 +1,6 @@
 // pages/Home.jsx - Page d'accueil publique
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
 import BrandLogo from '../components/BrandLogo.jsx';
@@ -13,6 +13,17 @@ function Home() {
     const [lastNewsUpdate, setLastNewsUpdate] = useState(null);
     const [liveEsportMatches, setLiveEsportMatches] = useState([]);
     const [lastEsportUpdate, setLastEsportUpdate] = useState(null);
+    const [newsCarouselIndex, setNewsCarouselIndex] = useState(0);
+    const newsCarouselRef = useRef(null);
+
+    const scrollNewsCarousel = (direction) => {
+        const carousel = newsCarouselRef.current;
+        if (!carousel) return;
+        const nextIndex = Math.max(0, Math.min(featuredNews.length - 1, newsCarouselIndex + direction));
+        const card = carousel.children[nextIndex];
+        card?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        setNewsCarouselIndex(nextIndex);
+    };
 
 
     useEffect(() => {
@@ -229,25 +240,39 @@ function Home() {
                             <h2 className="text-2xl font-bold uppercase tracking-wide text-white">Actualités</h2>
                             <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-400">Les dernières informations gaming</p>
                         </div>
-                        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                        <div className="mt-5">
                             {featuredNews.length === 0 ? (
                                 <p className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4 text-sm text-slate-300">Aucune actualité disponible pour le moment.</p>
-                            ) : featuredNews.map((review) => {
+                            ) : <>
+                                <div className="home-news-carousel-toolbar">
+                                    <span>{Math.min(newsCarouselIndex + 1, featuredNews.length)} / {featuredNews.length}</span>
+                                    <div className="home-news-carousel-controls">
+                                        <button type="button" aria-label="Actualités précédentes" onClick={() => scrollNewsCarousel(-1)} disabled={newsCarouselIndex === 0}>←</button>
+                                        <button type="button" aria-label="Actualités suivantes" onClick={() => scrollNewsCarousel(1)} disabled={newsCarouselIndex >= featuredNews.length - 1}>→</button>
+                                    </div>
+                                </div>
+                                <div ref={newsCarouselRef} className="home-news-carousel">
+                                {featuredNews.map((review) => {
                                 const content = (
                                     <>
-                                        <div className="flex flex-wrap items-center justify-between gap-3">
-                                            <h3 className="font-semibold text-white">{review.title}</h3>
-                                            <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-bold text-cyan-200">{review.category}</span>
+                                        <div className="home-news-horizontal-content">
+                                            {review.image ? <img className="home-news-horizontal-image" src={review.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="home-news-horizontal-image news-card-placeholder" aria-hidden="true">AG</div>}
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex flex-wrap items-center justify-between gap-3">
+                                                    <h3 className="font-semibold text-white">{review.title}</h3>
+                                                    <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-bold text-cyan-200">{review.category}</span>
+                                                </div>
+                                                <p className="mt-2 text-sm text-slate-300">{review.excerpt}</p>
+                                                <p className="mt-3 text-xs uppercase tracking-[0.12em] text-slate-500">Source : {review.source || 'Alpha Gaming'}</p>
+                                            </div>
                                         </div>
-                                        <p className="mt-2 text-sm text-slate-300">{review.excerpt}</p>
-                                        <p className="mt-3 text-xs uppercase tracking-[0.12em] text-slate-500">Source : {review.source || 'Alpha Gaming'}</p>
                                     </>
                                 );
 
-                                return review.href ? (
+                                return (review.href || review.url) ? (
                                     <a
-                                        key={review.game}
-                                        href={review.href}
+                                        key={review.url || review.title}
+                                        href={review.href || review.url}
                                         target={review.external ? '_blank' : undefined}
                                         rel={review.external ? 'noreferrer' : undefined}
                                         className="block rounded-2xl border border-slate-700 bg-slate-950/70 p-4 transition hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-slate-900/90"
@@ -255,11 +280,13 @@ function Home() {
                                         {content}
                                     </a>
                                 ) : (
-                                    <div key={review.game} className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
+                                    <div key={review.game} className="home-news-carousel-card rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
                                         {content}
                                     </div>
                                 );
                             })}
+                                </div>
+                            </>}
                         </div>
                     </div>
 

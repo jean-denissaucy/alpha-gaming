@@ -135,6 +135,81 @@
 		background: #071626;
 	}
 
+	.home-news-carousel-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.75rem;
+		color: rgb(148 163 184);
+		font-size: 0.72rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+
+	.home-news-carousel-controls {
+		display: flex;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.home-news-carousel-controls button {
+		width: 2.25rem;
+		height: 2.25rem;
+		border: 1px solid rgb(var(--primary-rgb) / 0.35);
+		border-radius: 9999px;
+		background: rgb(15 23 42 / 0.8);
+		color: rgb(165 243 252);
+		font-weight: 700;
+		cursor: pointer;
+		transition: all 180ms ease;
+	}
+
+	.home-news-carousel-controls button:disabled {
+		cursor: not-allowed;
+		opacity: 0.35;
+	}
+
+	.home-news-carousel-controls button:hover:not(:disabled) {
+		border-color: rgb(var(--primary-rgb) / 0.8);
+		background: rgb(var(--primary-rgb) / 0.2);
+		transform: translateY(-1px);
+	}
+
+	.home-news-carousel {
+		display: flex;
+		gap: 1rem;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: thin;
+		padding-bottom: 0.5rem;
+	}
+
+	.home-news-carousel-card {
+		flex: 0 0 min(100%, 30rem);
+		min-height: 150px;
+		box-shadow: 0 18px 40px -28px rgb(0 167 255 / 0.55);
+		transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+
+		scroll-snap-align: start;
+	}
+
+	.home-news-horizontal-content {
+		display: flex;
+		align-items: stretch;
+		gap: 1rem;
+	}
+
+	.home-news-horizontal-image {
+		width: 150px;
+		min-width: 150px;
+		height: 110px;
+		object-fit: cover;
+		border-radius: 0.9rem;
+		border: 1px solid rgb(var(--primary-rgb) / 0.22);
+		background: #071626;
+	}
+
 	.news-card-placeholder {
 		display: flex;
 		align-items: center;
@@ -146,6 +221,18 @@
 		letter-spacing: 0.16em;
 	}
 
+
+	@media (max-width: 640px) {
+		.home-news-horizontal-content {
+			align-items: flex-start;
+		}
+
+		.home-news-horizontal-image {
+			width: 92px;
+			min-width: 92px;
+			height: 82px;
+		}
+	}
 
 	.reveal-up {
 		opacity: 0;
