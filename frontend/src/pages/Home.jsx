@@ -254,7 +254,7 @@ function Home() {
                 </div>
 
                 <div className="mt-6 grid gap-5 lg:grid-cols-3">
-                    {featuredNews.map((news, index) => (
+                    {featuredNews.slice(0, 3).map((news, index) => (
                         <article
                             key={`${news.title}-${index}`}
                             className="news-card reveal-up rounded-3xl border border-slate-700/70 bg-slate-900/75 p-6"
