@@ -91,7 +91,7 @@ export const getProfile = async (req, res) => {
             User.findFavoriteGamesByUserId(req.user.id),
             User.findAllFavoriteGames()
         ]);
-        const favoriteGames = resolveUserFavoriteGames(userFavoriteGames, allFavoriteGames);
+        const favoriteGames = userFavoriteGames;
 
         return res.json(buildSuccessResponse({ user: normalizeUser(req.user, favoriteGames) }));
     } catch (error) {

@@ -66,6 +66,7 @@ export const authService = {
 
 export const gamesService = {
     getAll: () => fetchAPI('/games'),
+    getFavorites: () => fetchAPI('/users/favorites'),
     addFavorite: (gameId) => fetchAPI(`/users/favorites/${gameId}`, { method: 'POST' }),
     removeFavorite: (gameId) => fetchAPI(`/users/favorites/${gameId}`, { method: 'DELETE' })
 };
