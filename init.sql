@@ -24,6 +24,7 @@ CREATE TABLE `games` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `titre_jeu` varchar(150) NOT NULL,
   `lien` varchar(191) DEFAULT NULL,
+  `image` varchar(191) DEFAULT NULL,
   `is_external` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `categorie_id` int UNSIGNED NOT NULL,

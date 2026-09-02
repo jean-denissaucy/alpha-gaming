@@ -1,10 +1,19 @@
 // pages/Home.jsx - Page d'accueil publique
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Star, Monitor, Gamepad2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
 import BrandLogo from '../components/BrandLogo.jsx';
-import { newsService, esportService } from '../services/api.js';
+import { newsService, esportService, testsService } from '../services/api.js';
+
+function homeScoreColor(score) {
+    const value = Number.parseInt(score, 10);
+    if (value >= 8) return 'from-emerald-400 to-teal-500';
+    if (value >= 6) return 'from-cyan-400 to-blue-500';
+    if (value >= 4) return 'from-amber-400 to-orange-500';
+    return 'from-rose-500 to-red-600';
+}
 
 function Home() {
     // Vérification si l'utilisateur est connecté pour adapter les CTA
@@ -13,17 +22,7 @@ function Home() {
     const [lastNewsUpdate, setLastNewsUpdate] = useState(null);
     const [liveEsportMatches, setLiveEsportMatches] = useState([]);
     const [lastEsportUpdate, setLastEsportUpdate] = useState(null);
-    const [newsCarouselIndex, setNewsCarouselIndex] = useState(0);
-    const newsCarouselRef = useRef(null);
-
-    const scrollNewsCarousel = (direction) => {
-        const carousel = newsCarouselRef.current;
-        if (!carousel) return;
-        const nextIndex = Math.max(0, Math.min(featuredNews.length - 1, newsCarouselIndex + direction));
-        const card = carousel.children[nextIndex];
-        card?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-        setNewsCarouselIndex(nextIndex);
-    };
+    const [tests, setTests] = useState([]);
 
 
     useEffect(() => {
@@ -123,6 +122,30 @@ function Home() {
         };
     }, []);
 
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadTests = async () => {
+            try {
+                const data = await testsService.getLatest(10);
+                if (!isMounted) return;
+                const items = Array.isArray(data?.data?.items)
+                    ? data.data.items
+                    : Array.isArray(data?.items)
+                        ? data.items
+                        : [];
+                if (items.length > 0) setTests(items);
+            } catch {
+                if (!isMounted) return;
+                setTests([]);
+            }
+        };
+
+        loadTests();
+
+        return () => { isMounted = false; };
+    }, []);
+
     return (
         <div className="relative pb-16">
             <section className="mx-auto max-w-6xl px-6 pt-6">
@@ -192,7 +215,7 @@ function Home() {
 
             <section id="top-news" className="mx-auto mt-6 max-w-6xl px-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                    <h2 className="text-2xl font-bold uppercase tracking-wide text-white sm:text-3xl">Articles à la une</h2>
+                    <h2 className="text-2xl font-bold uppercase tracking-wide text-white sm:text-3xl">Actualités</h2>
                     <span className="rounded-full border border-slate-700 px-3 py-1 text-xs uppercase tracking-[0.18em] text-slate-300">
                         {lastNewsUpdate
                             ? `Maj ${lastNewsUpdate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
@@ -200,93 +223,71 @@ function Home() {
                     </span>
                 </div>
 
-                <div className="mt-6 grid gap-5 lg:grid-cols-3">
-                    {featuredNews.slice(0, 3).map((news, index) => (
-                        <article
-                            key={`${news.title}-${index}`}
-                            className="news-card reveal-up rounded-3xl border border-slate-700/70 bg-slate-900/75 p-6"
-                            style={{ animationDelay: `${index * 120}ms` }}
-                        >
-                            {news.url ? (
-                                <a href={news.url} target="_blank" rel="noreferrer" className="block">
-                                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300">
-                                        {news.category} • {news.readingTime}
-                                    </p>
-                                    {news.image ? <img className="news-card-image" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="news-card-image news-card-placeholder" aria-hidden="true">ALPHA NEWS</div>}
-                                    <h3 className="mt-3 text-xl font-bold text-white">{news.title}</h3>
-                                    <p className="mt-3 text-sm leading-relaxed text-slate-300">{news.excerpt}</p>
-                                    <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Alpha Gaming'}</p>
-                                </a>
-                            ) : (
-                                <>
-                                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300">
-                                        {news.category} • {news.readingTime}
-                                    </p>
-                                    {news.image ? <img className="news-card-image" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="news-card-image news-card-placeholder" aria-hidden="true">ALPHA NEWS</div>}
-                                    <h3 className="mt-3 text-xl font-bold text-white">{news.title}</h3>
-                                    <p className="mt-3 text-sm leading-relaxed text-slate-300">{news.excerpt}</p>
-                                    <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Alpha Gaming'}</p>
-                                </>
-                            )}
-                        </article>
-                    ))}
+                <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                    {featuredNews.slice(0, 3).map((news, index) => {
+                        const cardContent = (
+                            <>
+                                <div className="relative">
+                                    {news.image ? <img className="aspect-[16/9] w-full rounded-xl object-cover" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="flex aspect-[16/9] w-full items-center justify-center rounded-xl bg-slate-800 text-sm font-bold uppercase tracking-[0.2em] text-slate-500">ACTU</div>}
+                                    <span className="absolute left-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-200 backdrop-blur">{news.category || 'Actu'}</span>
+                                </div>
+                                <div className="flex flex-1 flex-col p-5">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300">{news.readingTime || 'Lecture'}</p>
+                                    <h3 className="mt-2 line-clamp-2 text-lg font-bold leading-snug text-white">{news.title}</h3>
+                                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-400">{news.excerpt}</p>
+                                    <p className="mt-auto pt-4 text-xs uppercase tracking-[0.16em] text-slate-500">Source : {news.source || 'Alpha Gaming'}</p>
+                                </div>
+                            </>
+                        );
+
+                        return (
+                            <article
+                                key={`${news.title}-${index}`}
+                                className="group reveal-up flex flex-col overflow-hidden rounded-2xl border border-slate-700/70 bg-slate-900/70 transition hover:-translate-y-1 hover:border-cyan-400/50 hover:shadow-xl hover:shadow-cyan-400/5"
+                                style={{ animationDelay: `${index * 120}ms` }}
+                            >
+                                {news.url ? (
+                                    <a href={news.url} target="_blank" rel="noreferrer" className="flex flex-1 flex-col">{cardContent}</a>
+                                ) : cardContent}
+                            </article>
+                        );
+                    })}
                 </div>
             </section>
 
             <section className="mx-auto mt-8 max-w-6xl px-6">
                 <div className="grid gap-6 lg:grid-cols-5">
                     <div className="rounded-3xl border border-slate-700/70 bg-slate-900/75 p-6 lg:col-span-3">
-                        <div>
-                            <h2 className="text-2xl font-bold uppercase tracking-wide text-white">Actualités</h2>
-                            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-400">Les dernières informations gaming</p>
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h2 className="text-2xl font-bold uppercase tracking-wide text-white">Derniers tests</h2>
+                                <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-400">Notes de la rédaction Gamekult</p>
+                            </div>
+                            <span className="rounded-full border border-slate-700 px-3 py-1 text-xs uppercase tracking-[0.16em] text-slate-300">Gamekult</span>
                         </div>
-                        <div className="mt-5">
-                            {featuredNews.length === 0 ? (
-                                <p className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4 text-sm text-slate-300">Aucune actualité disponible pour le moment.</p>
-                            ) : <>
-                                <div className="home-news-carousel-toolbar">
-                                    <span>{Math.min(newsCarouselIndex + 1, featuredNews.length)} / {featuredNews.length}</span>
-                                    <div className="home-news-carousel-controls">
-                                        <button type="button" aria-label="Actualités précédentes" onClick={() => scrollNewsCarousel(-1)} disabled={newsCarouselIndex === 0}>←</button>
-                                        <button type="button" aria-label="Actualités suivantes" onClick={() => scrollNewsCarousel(1)} disabled={newsCarouselIndex >= featuredNews.length - 1}>→</button>
-                                    </div>
-                                </div>
-                                <div ref={newsCarouselRef} className="home-news-carousel">
-                                {featuredNews.map((review) => {
-                                const content = (
-                                    <>
-                                        <div className="home-news-horizontal-content">
-                                            {review.image ? <img className="home-news-horizontal-image" src={review.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="home-news-horizontal-image news-card-placeholder" aria-hidden="true">AG</div>}
-                                            <div className="min-w-0 flex-1">
-                                                <div className="flex flex-wrap items-center justify-between gap-3">
-                                                    <h3 className="font-semibold text-white">{review.title}</h3>
-                                                    <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-bold text-cyan-200">{review.category}</span>
-                                                </div>
-                                                <p className="mt-2 text-sm text-slate-300">{review.excerpt}</p>
-                                                <p className="mt-3 text-xs uppercase tracking-[0.12em] text-slate-500">Source : {review.source || 'Alpha Gaming'}</p>
-                                            </div>
+                        <div className="mt-5 space-y-3">
+                            {tests.length === 0 ? (
+                                <p className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4 text-sm text-slate-300">Aucun test disponible pour le moment.</p>
+                            ) : tests.slice(0, 10).map((review) => (
+                                <a
+                                    key={review.href || review.title}
+                                    href={review.href}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="group flex items-center gap-4 rounded-2xl border border-slate-700/70 bg-slate-950/60 p-3 transition hover:-translate-y-0.5 hover:border-cyan-400/50 hover:bg-slate-900/80"
+                                >
+                                    {review.image ? <img className="h-20 w-32 shrink-0 rounded-xl object-cover" src={review.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="flex h-20 w-32 shrink-0 items-center justify-center rounded-xl bg-slate-800"><Gamepad2 className="h-6 w-6 text-slate-500" /></div>}
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <h3 className="font-semibold leading-snug text-white transition group-hover:text-cyan-200">{review.title}</h3>
+                                            <span className={`inline-flex shrink-0 items-center gap-1 rounded-xl bg-gradient-to-br ${homeScoreColor(review.score)} px-2.5 py-1 text-sm font-black text-white shadow-lg`}>
+                                                <Star className="h-3.5 w-3.5 fill-current" /> {review.score}/10
+                                            </span>
                                         </div>
-                                    </>
-                                );
-
-                                return (review.href || review.url) ? (
-                                    <a
-                                        key={review.url || review.title}
-                                        href={review.href || review.url}
-                                        target={review.external ? '_blank' : undefined}
-                                        rel={review.external ? 'noreferrer' : undefined}
-                                        className="home-news-carousel-card block rounded-2xl border border-slate-700 bg-slate-950/70 p-4 transition hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-slate-900/90"
-                                    >
-                                        {content}
-                                    </a>
-                                ) : (
-                                    <div key={review.url || review.title} className="home-news-carousel-card rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
-                                        {content}
+                                        <p className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-slate-400"><Monitor className="h-3.5 w-3.5" /> {review.platform || 'Multi'}</p>
                                     </div>
-                                );
-                            })}
-                                </div>
-                            </>}
+                                </a>
+                            ))}
                         </div>
                     </div>
 
@@ -300,7 +301,7 @@ function Home() {
                             </span>
                         </div>
                         <ul className="mt-5 space-y-3">
-                            {liveEsportMatches.slice(0, 3).map((item) => {
+                            {liveEsportMatches.slice(0, 7).map((item) => {
                                 const content = (
                                     <>
                                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-300">{item.league || 'Compétition'}</p>

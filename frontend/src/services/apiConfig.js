@@ -8,7 +8,7 @@ export function resolveApiBaseUrl(env = {}, location = {}) {
     const hostname = (location.hostname || '').toLowerCase();
 
     if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.localhost')) {
-        return 'http://localhost:5000/api';
+        return 'http://localhost:10000/api';
     }
 
     return '/api';

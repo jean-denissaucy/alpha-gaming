@@ -66,6 +66,7 @@ export const authService = {
 
 export const gamesService = {
     getAll: () => fetchAPI('/games'),
+    getFavorites: () => fetchAPI('/users/favorites'),
     addFavorite: (gameId) => fetchAPI(`/users/favorites/${gameId}`, { method: 'POST' }),
     removeFavorite: (gameId) => fetchAPI(`/users/favorites/${gameId}`, { method: 'DELETE' })
 };
@@ -84,4 +85,9 @@ export const esportService = {
 
 export const notesService = {
     getLatest: (limit = 20) => fetchAPI(`/news/notes?limit=${limit}`)
+};
+
+export const testsService = {
+    getLatest: (limit = 20) => fetchAPI(`/news/tests?limit=${limit}`),
+    getPage: (page = 1, limit = 20) => fetchAPI(`/news/tests?page=${page}&limit=${limit}`)
 };

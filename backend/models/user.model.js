@@ -43,7 +43,7 @@ const User = {
     },
     async findFavoriteGamesByUserId(userId) {
         const rows = await query(
-            `SELECT g.id, g.categorie_id, g.titre_jeu AS game_name, g.lien, c.name AS category_name
+            `SELECT g.id, g.categorie_id, g.titre_jeu AS game_name, g.lien AS link, g.image, c.name AS category_name
                  FROM user_favorite_games ufg
                  JOIN games g ON g.id = ufg.game_id
                  LEFT JOIN categories c ON c.id = g.categorie_id
@@ -56,14 +56,14 @@ const User = {
             id: row.id,
             game_name: row.game_name,
             categorie_id: row.categorie_id,
-            categorie_id: row.categorie_id,
+            image: row.image || null,
             category: row.category_name || `Catégorie ${row.categorie_id}`,
             ...(row.link ? { link: row.link } : {})
         }));
     },
     async findAllFavoriteGames() {
         const rows = await query(
-            `SELECT games.id, games.categorie_id, games.titre_jeu AS game_name, c.name AS category_name, games.lien AS link
+            `SELECT games.id, games.categorie_id, games.titre_jeu AS game_name, c.name AS category_name, games.lien AS link, games.image, games.image
             FROM games
             LEFT JOIN categories c ON c.id = games.categorie_id
             ORDER BY c.name ASC, games.titre_jeu ASC`
@@ -73,7 +73,7 @@ const User = {
             id: row.id,
             game_name: row.game_name,
             categorie_id: row.categorie_id,
-            categorie_id: row.categorie_id,
+            image: row.image || null,
             category: row.category_name || `Catégorie ${row.categorie_id}`,
             ...(row.link ? { link: row.link } : {})
         }));

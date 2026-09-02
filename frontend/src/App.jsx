@@ -22,8 +22,9 @@ import Register from './pages/Register.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import Esport from './pages/Esport.jsx';
-import Presentation from './pages/Presentation.jsx';
 import Games from './pages/Games.jsx';
+import Tests from './pages/Tests.jsx';
+import Profile from './pages/Profile.jsx';
 
 function App() {
 
@@ -45,11 +46,14 @@ function App() {
                     <Route path="/news" element={<News />} />
                     <Route path="/games" element={<Games />} />
                     <Route path="/esport" element={<Esport />} />
-                    <Route path="/presentation" element={<Presentation />} />
+                    <Route path="/tests" element={<Tests />} />
 
-                    {/* Dashboard protégé - nécessite une authentification */}
+                    {/* Dashboard et profil protégés - nécessitent une authentification */}
                     <Route path="/dashboard" element={
                         <PrivateRoute><Dashboard /></PrivateRoute>
+                    } />
+                    <Route path="/profile" element={
+                        <PrivateRoute><Profile /></PrivateRoute>
                     } />
                     <Route path="/admin" element={
                         <PrivateRoute><AdminDashboard /></PrivateRoute>

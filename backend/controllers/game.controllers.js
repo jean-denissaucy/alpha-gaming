@@ -46,14 +46,14 @@ const gameController = {
     // Créer un nouveau jeu
     async createGame(req, res) {
         try {
-            const { categoryId, gameName, link } = req.body;
+            const { categoryId, gameName, link, image } = req.body;
 
             // Validation minimale de sécurité
             if (!gameName) {
                 return res.status(400).json({ message: 'Le nom du jeu est obligatoire.' });
             }
 
-            const newGame = await Game.create({ categoryId, gameName, link });
+            const newGame = await Game.create({ categoryId, gameName, link, image });
             return res.status(201).json({
                 message: 'Jeu créé avec succès.',
                 game: newGame
@@ -68,13 +68,13 @@ const gameController = {
     async updateGame(req, res) {
         try {
             const { id } = req.params;
-            const { categoryId, gameName, link } = req.body;
+            const { categoryId, gameName, link, image } = req.body;
 
             if (!gameName) {
                 return res.status(400).json({ message: 'Le nom du jeu est obligatoire.' });
             }
 
-            const isUpdated = await Game.update(id, { categoryId, gameName, link });
+            const isUpdated = await Game.update(id, { categoryId, gameName, link, image });
 
             if (!isUpdated) {
                 return res.status(404).json({ message: 'Jeu non trouvé ou aucune modification apportée.' });
