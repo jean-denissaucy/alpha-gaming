@@ -123,16 +123,6 @@
 
 	.news-card {
 		backdrop-filter: blur(2px);
-		overflow: hidden;
-	}
-
-	.news-card-image {
-		width: calc(100% + 3rem);
-		height: 180px;
-		margin: -1.5rem -1.5rem 1rem;
-		object-fit: cover;
-		border-bottom: 1px solid rgb(var(--primary-rgb) / 0.22);
-		background: #071626;
 	}
 
 	.reveal-up {
