@@ -265,6 +265,7 @@ function Home() {
                                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300">
                                         {news.category} • {news.readingTime}
                                     </p>
+                                    {news.image && <img className="news-card-image" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} />}
                                     <h3 className="mt-3 text-xl font-bold text-white">{news.title}</h3>
                                     <p className="mt-3 text-sm leading-relaxed text-slate-300">{news.excerpt}</p>
                                     <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Alpha Gaming'}</p>
@@ -274,6 +275,7 @@ function Home() {
                                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300">
                                         {news.category} • {news.readingTime}
                                     </p>
+                                    {news.image && <img className="news-card-image" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} />}
                                     <h3 className="mt-3 text-xl font-bold text-white">{news.title}</h3>
                                     <p className="mt-3 text-sm leading-relaxed text-slate-300">{news.excerpt}</p>
                                     <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Alpha Gaming'}</p>
@@ -291,7 +293,7 @@ function Home() {
                             <h2 className="text-2xl font-bold uppercase tracking-wide text-white">Actualités</h2>
                             <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-400">Les dernières informations gaming</p>
                         </div>
-                        <div className="mt-5 space-y-3">
+                        <div className="mt-5 grid gap-3 sm:grid-cols-2">
                             {featuredNews.length === 0 ? (
                                 <p className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4 text-sm text-slate-300">Aucune actualité disponible pour le moment.</p>
                             ) : featuredNews.map((review) => {

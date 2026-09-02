@@ -5,7 +5,7 @@ import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 const parser = new Parser({
     timeout: 9000,
     customFields: {
-        item: ['content:encoded']
+        item: ['content:encoded', 'media:content', 'media:thumbnail', 'media:group']
     }
 });
 
@@ -31,7 +31,36 @@ const CURATED_ESPORT_FALLBACK = [
 ];
 
 function stripHtml(input = '') {
-    return input.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    return String(input || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function extractImage(item = {}) {
+    const media = item['media:content'] || item['media:thumbnail'] || item.enclosure;
+    const candidates = [
+        item.image,
+        item.thumbnail,
+        item.imageUrl,
+        media?.url,
+        media?.$?.url,
+        item['media:group']?.['media:content']?.url,
+        item['media:group']?.['media:thumbnail']?.url
+    ];
+    const image = candidates.find((value) => typeof value === 'string' && /^https?:\/\//i.test(value));
+    return image || null;
+}
+
+function cleanTitle(title = '') {
+    return stripHtml(title).replace(/\s+/g, ' ').trim();
+}
+
+function deduplicate(items = []) {
+    const seen = new Set();
+    return items.filter((item) => {
+        const key = item.url || `${item.source}:${item.title}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
 }
 
 function inferCategory(title = '') {
@@ -197,11 +226,10 @@ async function getNewsFromDatabase(limit) {
          FROM news
          ORDER BY COALESCE(published_at, created_at) DESC, id DESC
          LIMIT ${limit}`
-    );
-
-    return rows.map((row) => ({
+    );    return rows.map((row) => ({
         ...row,
-        excerpt: row.excerpt || 'Resume indisponible.'
+        image: row.image || null,
+        excerpt: row.excerpt || 'Résumé indisponible.'
     }));
 }
 
@@ -258,13 +286,14 @@ export async function getLatestNews(req, res) {
             })
         );
 
-        const news = parsedFeeds
+        const news = deduplicate(parsedFeeds
             .filter((result) => result.status === 'fulfilled')
             .flatMap((result) => result.value.items.map((item) => ({
                 source: result.value.source,
-                title: item.title || 'Alpha Gaming',
-                excerpt: stripHtml(item.contentSnippet || item['content:encoded'] || item.content || '').slice(0, 220) || 'Resume indisponible.',
+                title: cleanTitle(item.title || 'Alpha Gaming'),
+                excerpt: stripHtml(item.contentSnippet || item['content:encoded'] || item.content || '').slice(0, 220) || 'Résumé indisponible.',
                 url: item.link || null,
+                image: extractImage(item),
                 publishedAt: item.isoDate || item.pubDate || null
             })))
             .filter((item) => item.url)
@@ -278,7 +307,7 @@ export async function getLatestNews(req, res) {
                 const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
                 return bDate - aDate;
             })
-            .slice(0, limit);
+            .slice(0, limit));
 
         if (news.length === 0) {
             return res.status(502).json(buildErrorResponse('Aucune actu disponible pour le moment', 502));
