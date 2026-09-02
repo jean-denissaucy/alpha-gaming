@@ -275,12 +275,12 @@ function Home() {
                                         href={review.href || review.url}
                                         target={review.external ? '_blank' : undefined}
                                         rel={review.external ? 'noreferrer' : undefined}
-                                        className="block rounded-2xl border border-slate-700 bg-slate-950/70 p-4 transition hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-slate-900/90"
+                                        className="home-news-carousel-card block rounded-2xl border border-slate-700 bg-slate-950/70 p-4 transition hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-slate-900/90"
                                     >
                                         {content}
                                     </a>
                                 ) : (
-                                    <div key={review.game} className="home-news-carousel-card rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
+                                    <div key={review.url || review.title} className="home-news-carousel-card rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
                                         {content}
                                     </div>
                                 );
@@ -315,7 +315,7 @@ function Home() {
                                             href={item.href}
                                             target={item.external ? '_blank' : undefined}
                                             rel={item.external ? 'noreferrer' : undefined}
-                                            className="block rounded-2xl border border-slate-700 bg-slate-950/70 p-4 transition hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-slate-900/90"
+                                            className="home-news-carousel-card block rounded-2xl border border-slate-700 bg-slate-950/70 p-4 transition hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-slate-900/90"
                                         >
                                             {content}
                                         </a>
