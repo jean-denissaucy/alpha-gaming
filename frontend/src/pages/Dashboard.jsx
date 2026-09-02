@@ -195,7 +195,7 @@ function Dashboard() {
 
     const filteredFavoriteGames = activeCategory
         ? normalizedFavoriteGames.filter((game) => game.category === activeCategory)
-        : normalizedFavoriteGames;
+        : [];
 
     return (
         <div className="relative mx-auto max-w-6xl overflow-visible px-6 py-16 text-slate-100">
@@ -312,7 +312,9 @@ function Dashboard() {
                                 </div>
                             </div>
 
-                            {filteredFavoriteGames.length > 0 ? (
+                            {!activeCategory ? (
+                                <p className="mt-3 text-sm text-slate-300">Selectionne une categorie pour afficher les favoris.</p>
+                            ) : filteredFavoriteGames.length > 0 ? (
                                 <ul className="mt-3 space-y-2 text-sm text-slate-200">
                                     {filteredFavoriteGames.map((game) => {
                                         const resolvedLink = game.link || gameLinks[game.game_name] || '';
