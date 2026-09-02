@@ -4,7 +4,7 @@ USE `jean-denis-saucy_alpha-gaming`;
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `user_favorite_games`;
 DROP TABLE IF EXISTS `users`;
-DROP TABLE IF EXISTS `notes_gaming`;
+DROP TABLE IF EXISTS `tests_rapides`;
 DROP TABLE IF EXISTS `news`;
 DROP TABLE IF EXISTS `live_esport`;
 DROP TABLE IF EXISTS `games`;
@@ -14,22 +14,175 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE `categories` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_categories_name` (`name`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_categories_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `categories` (`id`,`name`) VALUES
-(1,'Action'),(2,'Aventure'),(3,'RPG'),(4,'Strategie'),(5,'Sport'),(6,'Course'),(7,'Shooter'),(8,'Plateforme'),(9,'Puzzle'),(10,'Horreur'),(11,'Indie');
+INSERT INTO `categories` (`id`, `name`) VALUES
+(1, 'Action'),
+(2, 'Aventure'),
+(3, 'RPG'),
+(4, 'Strategie'),
+(5, 'Sport'),
+(6, 'Course'),
+(7, 'Shooter'),
+(8, 'Plateforme'),
+(9, 'Puzzle'),
+(10, 'Horreur'),
+(11, 'Indie');
 
 CREATE TABLE `games` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `titre_jeu` varchar(150) NOT NULL,
-  `lien` varchar(191) DEFAULT NULL,
+  `lien` varchar(255) DEFAULT NULL,
   `is_external` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `categorie_id` int UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_games_titre` (`titre_jeu`), KEY `idx_games_categorie_id` (`categorie_id`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_games_titre` (`titre_jeu`),
+  KEY `idx_games_categorie_id` (`categorie_id`),
   CONSTRAINT `fk_games_categories` FOREIGN KEY (`categorie_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `games` (`id`, `titre_jeu`, `lien`, `is_external`, `created_at`, `categorie_id`) VALUES
+(1, 'DOOM: Dark Ages', 'https://bethesda.net/en/game/doom', 1, '2026-08-27 12:21:16', 1),
+(2, 'Devil May Cry 5', 'https://www.devilmaycry.com/5/us/', 1, '2026-08-27 12:21:16', 1),
+(3, 'Ninja Gaiden 4', 'https://teamninja-studio.com/', 1, '2026-08-27 12:21:16', 1),
+(4, 'Stellar Blade', 'https://www.playstation.com/games/stellar-blade/', 1, '2026-08-27 12:21:16', 1),
+(5, 'God of War Ragnarök', 'https://www.playstation.com/games/god-of-war-ragnarok/', 1, '2026-08-27 12:21:16', 1),
+(6, 'Bayonetta 3', 'https://www.nintendo.com/us/store/products/bayonetta-3-switch/', 1, '2026-08-27 12:21:16', 1),
+(7, 'Sekiro: Shadows Die Twice', 'https://www.sekirothegame.com/', 1, '2026-08-27 12:21:16', 1),
+(8, 'Ghost of Tsushima Director\'s Cut', 'https://www.playstation.com/games/ghost-of-tsushima/', 1, '2026-08-27 12:21:16', 1),
+(9, 'Hi-Fi Rush', 'https://hifi-rush.com/', 1, '2026-08-27 12:21:16', 1),
+(10, 'Returnal', 'https://www.playstation.com/games/returnal/', 1, '2026-08-27 12:21:16', 1),
+(11, 'The Legend of Zelda: Echoes of Wisdom', 'https://www.nintendo.com/', 1, '2026-08-27 12:21:16', 2),
+(12, 'Astro Bot', 'https://www.playstation.com/games/astro-bot/', 1, '2026-08-27 12:21:16', 2),
+(13, 'Uncharted 4', 'https://www.playstation.com/games/uncharted-4-a-thiefs-end/', 1, '2026-08-27 12:21:16', 2),
+(14, 'Indiana Jones and the Great Circle', 'https://indianajones.bethesda.net/', 1, '2026-08-27 12:21:16', 2),
+(15, 'The Last of Us Part II Remastered', 'https://www.playstation.com/games/the-last-of-us-part-ii-remastered/', 1, '2026-08-27 12:21:16', 2),
+(16, 'A Plague Tale: Requiem', 'https://www.asobostudio.com/games/a-plague-tale-requiem', 1, '2026-08-27 12:21:16', 2),
+(17, 'Tchia', 'https://www.tchia.com/', 1, '2026-08-27 12:21:16', 2),
+(18, 'Kena: Bridge of Spirits', 'https://www.kenagame.com/', 1, '2026-08-27 12:21:16', 2),
+(19, 'Prince of Persia: The Lost Crown', 'https://www.ubisoft.com/game/prince-of-persia/the-lost-crown', 1, '2026-08-27 12:21:16', 2),
+(20, 'Life is Strange: Double Exposure', 'https://www.square-enix-games.com/en_US/games/life-is-strange-double-exposure', 1, '2026-08-27 12:21:16', 2),
+(21, 'Baldur\'s Gate 3', 'https://baldursgate3.game/', 1, '2026-08-27 12:21:16', 3),
+(22, 'Final Fantasy VII Rebirth', 'https://www.playstation.com/games/final-fantasy-vii-rebirth/', 1, '2026-08-27 12:21:16', 3),
+(23, 'Dragon\'s Dogma 2', 'https://www.dragons-dogma.com/', 1, '2026-08-27 12:21:16', 3),
+(24, 'Metaphor: ReFantazio', 'https://metaphor.atlus.com/', 1, '2026-08-27 12:21:16', 3),
+(25, 'Elden Ring: Shadow of the Erdtree', 'https://www.elden-ring.com/', 1, '2026-08-27 12:21:16', 3),
+(26, 'Persona 5 Royal', 'https://www.playstation.com/games/persona-5-royal/', 1, '2026-08-27 12:21:16', 3),
+(27, 'Cyberpunk 2077', 'https://www.cyberpunk.net/', 1, '2026-08-27 12:21:16', 3),
+(28, 'Starfield', 'https://www.bethesda.net/en/game/starfield', 1, '2026-08-27 12:21:16', 3),
+(29, 'Dragon Age: The Veilguard', 'https://www.dragonage.com/', 1, '2026-08-27 12:21:16', 3),
+(30, 'Xenoblade Chronicles 3', 'https://www.nintendo.com/games/xenoblade-chronicles-3/', 1, '2026-08-27 12:21:16', 3),
+(31, 'Civilization VII', 'https://www.civilization.com/', 1, '2026-08-27 12:21:16', 4),
+(32, 'Total War: Warhammer III', 'https://www.totalwar.com/', 1, '2026-08-27 12:21:16', 4),
+(33, 'StarCraft II', 'https://starcraft2.com/', 1, '2026-08-27 12:21:16', 4),
+(34, 'Fire Emblem: Three Houses', 'https://www.nintendo.com/games/fire-emblem-three-houses/', 1, '2026-08-27 12:21:16', 4),
+(35, 'XCOM 3', 'https://www.2k.com/xcom/', 1, '2026-08-27 12:21:16', 4),
+(36, 'They Are Billions', 'https://www.they-are-billions.com/', 1, '2026-08-27 12:21:16', 4),
+(37, 'Dota 2', 'https://www.dota2.com/', 1, '2026-08-27 12:21:16', 4),
+(38, 'Heroes of the Storm', 'https://heroesofthestorm.com/', 1, '2026-08-27 12:21:16', 4),
+(39, 'Manor Lords', 'https://www.manorlords.com/', 1, '2026-08-27 12:21:16', 4),
+(40, 'Crusader Kings III', 'https://www.crusaderkings.com/', 1, '2026-08-27 12:21:16', 4),
+(41, 'EA SPORTS FC 26', 'https://www.ea.com/games/ea-sports-fc', 1, '2026-08-27 12:21:16', 5),
+(42, 'NBA 2K25', 'https://www.nba2k.com/', 1, '2026-08-27 12:21:16', 5),
+(43, 'F1 26', 'https://www.ea.com/games/f1', 1, '2026-08-27 12:21:16', 5),
+(44, 'Madden NFL 25', 'https://www.ea.com/games/madden', 1, '2026-08-27 12:21:16', 5),
+(45, 'PES 2025', 'https://www.pesworld.com/', 1, '2026-08-27 12:21:16', 5),
+(46, 'MLB The Show 25', 'https://theshow.com/', 1, '2026-08-27 12:21:16', 5),
+(47, 'UFC 5', 'https://www.ea.com/games/ufc', 1, '2026-08-27 12:21:16', 5),
+(48, 'WWE 2K25', 'https://www.wwe2k.com/', 1, '2026-08-27 12:21:16', 5),
+(49, 'Riders Republic', 'https://riders-republic.ubisoft.com/', 1, '2026-08-27 12:21:16', 5),
+(50, 'Steep', 'https://www.ubisoft.com/en-US/game/steep/', 1, '2026-08-27 12:21:16', 5),
+(51, 'Forza Motorsport 8', 'https://forzamotorsport.net/', 1, '2026-08-27 12:21:16', 6),
+(52, 'Gran Turismo 7', 'https://www.playstation.com/games/gran-turismo-7/', 1, '2026-08-27 12:21:16', 6),
+(53, 'Need for Speed Unbound', 'https://www.ea.com/games/need-for-speed', 1, '2026-08-27 12:21:16', 6),
+(54, 'Mario Kart 8 Deluxe', 'https://www.nintendo.com/games/mario-kart-8-deluxe/', 1, '2026-08-27 12:21:16', 6),
+(55, 'Crash Team Racing Nitro-Fueled', 'https://www.playstation.com/games/crash-team-racing-nitro-fueled/', 1, '2026-08-27 12:21:16', 6),
+(56, 'Sonic Racing', 'https://www.sonicthehedgehog.com/', 1, '2026-08-27 12:21:16', 6),
+(57, 'Ridge Racer Unbounded', 'https://ridgeracer.game/', 1, '2026-08-27 12:21:16', 6),
+(58, 'Assetto Corsa Competizione', 'https://www.assettocorsa.net/', 1, '2026-08-27 12:21:16', 6),
+(59, 'Project Cars 3', 'https://www.projectcarsgame.com/', 1, '2026-08-27 12:21:16', 6),
+(60, 'Wangan Midnight Maximum Tune', 'https://wangan.sega.com/', 1, '2026-08-27 12:21:16', 6),
+(61, 'Call of Duty: Black Ops 6', 'https://www.callofduty.com/', 1, '2026-08-27 12:21:16', 7),
+(62, 'Counter-Strike 2', 'https://www.counter-strike.net/', 1, '2026-08-27 12:21:16', 7),
+(63, 'VALORANT', 'https://playvalorant.com/', 1, '2026-08-27 12:21:16', 7),
+(64, 'Destiny 2', 'https://www.bungie.net/en/Destiny', 1, '2026-08-27 12:21:16', 7),
+(65, 'Rainbow Six Siege', 'https://www.ubisoft.com/en-us/game/rainbow-six/siege', 1, '2026-08-27 12:21:16', 7),
+(66, 'Overwatch 2', 'https://overwatch.blizzard.com/', 1, '2026-08-27 12:21:16', 7),
+(67, 'Apex Legends', 'https://www.ea.com/games/apex-legends', 1, '2026-08-27 12:21:16', 7),
+(68, 'Helldivers 2', 'https://www.playstation.com/games/helldivers-2/', 1, '2026-08-27 12:21:16', 7),
+(69, 'Team Fortress 2', 'https://www.teamfortress.com/', 1, '2026-08-27 12:21:16', 7),
+(70, 'Warzone', 'https://www.callofduty.com/warzone', 1, '2026-08-27 12:21:16', 7),
+(71, 'Astro\'s Playroom', 'https://www.playstation.com/games/astros-playroom/', 1, '2026-08-27 12:21:16', 8),
+(72, 'Super Mario Bros. Wonder', 'https://www.nintendo.com/games/super-mario-bros-wonder/', 1, '2026-08-27 12:21:16', 8),
+(73, 'Donkey Kong Country Returns', 'https://www.nintendo.com/games/donkey-kong-country-returns/', 1, '2026-08-27 12:21:16', 8),
+(74, 'Rayman Legends', 'https://www.ubisoft.com/en-us/game/rayman-legends', 1, '2026-08-27 12:21:16', 8),
+(75, 'Kirby and the Forgotten Land', 'https://www.nintendo.com/games/kirby-and-the-forgotten-land/', 1, '2026-08-27 12:21:16', 8),
+(76, 'Sonic Frontiers', 'https://www.sonicthehedgehog.com/', 1, '2026-08-27 12:21:16', 8),
+(77, 'Celeste', 'https://www.celestegame.com/', 1, '2026-08-27 12:21:16', 8),
+(78, 'Dead Cells', 'https://dead-cells.com/', 1, '2026-08-27 12:21:16', 8),
+(79, 'Hollow Knight', 'https://www.hollowknight.com/', 1, '2026-08-27 12:21:16', 8),
+(80, 'Ori and the Blind Forest', 'https://www.orithegame.com/', 1, '2026-08-27 12:21:16', 8),
+(81, 'Portal 2', 'https://www.valvesoftware.com/en/games/portal2/', 1, '2026-08-27 12:21:16', 9),
+(82, 'The Witness', 'https://the-witness.com/', 1, '2026-08-27 12:21:16', 9),
+(83, 'Tetris Effect', 'https://www.tetriseffect.game/', 1, '2026-08-27 12:21:16', 9),
+(84, 'Baba Is You', 'https://hempuli.itch.io/baba-is-you', 1, '2026-08-27 12:21:16', 9),
+(85, 'Unpacking', 'https://unpackinggame.com/', 1, '2026-08-27 12:21:16', 9),
+(86, 'A Short Hike', 'https://adamgryu.itch.io/a-short-hike', 1, '2026-08-27 12:21:16', 9),
+(87, 'Return of the Obra Dinn', 'https://www.diegeticgames.com/', 1, '2026-08-27 12:21:16', 9),
+(88, 'The Swapper', 'https://theswapper.com/', 1, '2026-08-27 12:21:16', 9),
+(89, 'Outer Wilds', 'https://www.outerwilds.com/', 1, '2026-08-27 12:21:16', 9),
+(90, 'Deus Ex Machina', 'https://deusexmachina.game/', 1, '2026-08-27 12:21:16', 9),
+(91, 'Resident Evil 9', 'https://www.residentevil.com/', 1, '2026-08-27 12:21:16', 10),
+(92, 'Dead Space Remake', 'https://www.ea.com/games/dead-space', 1, '2026-08-27 12:21:16', 10),
+(93, 'Alan Wake 2', 'https://www.alanwake.com/', 1, '2026-08-27 12:21:16', 10),
+(94, 'Evil Within 2', 'https://www.theevilwithin.com/', 1, '2026-08-27 12:21:16', 10),
+(95, 'Outlast 3', 'https://www.outlastgame.com/', 1, '2026-08-27 12:21:16', 10),
+(96, 'Amnesia: The Bunker', 'https://www.amnesiathebunker.com/', 1, '2026-08-27 12:21:16', 10),
+(97, 'Five Nights at Freddy\'s', 'https://www.fivenightsatfreddys.com/', 1, '2026-08-27 12:21:16', 10),
+(98, 'Layers of Fear', 'https://layersoffear.com/', 1, '2026-08-27 12:21:16', 10),
+(99, 'Phasmophobia', 'https://www.phasmophobiagame.com/', 1, '2026-08-27 12:21:16', 10),
+(100, 'The Callisto Protocol', 'https://www.callistoprotocol.com/', 1, '2026-08-27 12:21:16', 10),
+(101, 'Stardew Valley', 'https://www.stardewvalley.net/', 1, '2026-08-27 12:21:16', 11),
+(102, 'Hollow Knight: Silksong', 'https://www.hollowknight.com/silksong/', 1, '2026-08-27 12:21:16', 11),
+(103, 'Hades', 'https://www.supergiantgames.com/games/hades/', 1, '2026-08-27 12:21:16', 11),
+(104, 'Stray', 'https://www.playstation.com/games/stray/', 1, '2026-08-27 12:21:16', 11),
+(105, 'Coffee Talk', 'https://coffeetal.k.com/', 1, '2026-08-27 12:21:16', 11),
+(106, 'Gris', 'https://nomada.studio/gris/', 1, '2026-08-27 12:21:16', 11),
+(107, 'Inside', 'https://www.playinside.com/', 1, '2026-08-27 12:21:16', 11),
+(108, 'Limbo', 'https://www.playlimbo.com/', 1, '2026-08-27 12:21:16', 11),
+(109, 'Night in the Woods', 'https://nightinthewoods.com/', 1, '2026-08-27 12:21:16', 11),
+(110, 'Undertale', 'https://undertale.com/', 1, '2026-08-27 12:21:16', 11);
+
+CREATE TABLE `live_esport` (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `league` varchar(120) NOT NULL,
+  `match_title` varchar(255) NOT NULL,
+  `kickoff_time` varchar(12) NOT NULL,
+  `href` varchar(191) NOT NULL,
+  `source` varchar(120) NOT NULL DEFAULT 'RSS',
+  `published_at` datetime DEFAULT NULL,
+  `is_external` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_live_esport_href` (`href`),
+  KEY `idx_live_esport_league` (`league`),
+  KEY `idx_live_esport_published_at` (`published_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `live_esport` (`id`, `league`, `match_title`, `kickoff_time`, `href`, `source`, `published_at`, `is_external`, `created_at`) VALUES
+(1, 'League of Legends', 'Karmine Corp vs G2', '19:00', 'https://lolesports.com/', 'LoL Esports', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
+(2, 'VALORANT', 'Fnatic vs Heretics', '21:30', 'https://valorantesports.com/', 'VLR', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
+(3, 'Rocket League', 'Vitality vs BDS', '23:00', 'https://esports.rocketleague.com/', 'RL Esports', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
+(4, 'CS2', 'NAVI vs FaZe', '20:00', 'https://www.hltv.org/', 'HLTV', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
+(5, 'Call of Duty', 'OpTic Texas vs Toronto Ultra', '22:00', 'https://callofdutyleague.com/', 'CDL', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
+(6, 'Overwatch', 'Team Falcons vs Crazy Raccoon', '18:30', 'https://esports.overwatch.com/', 'OWCS', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
+(7, 'Apex Legends', 'TSM vs Alliance', '20:45', 'https://www.ea.com/games/apex-legends/compete', 'ALGS', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
+(8, 'PUBG', 'Gen.G vs Soniqs', '21:15', 'https://pubgesports.com/', 'PUBG Esports', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
+(9, 'Rainbow Six', 'BDS vs W7M', '19:45', 'https://www.ubisoft.com/esports/rainbow-six/siege', 'R6 Esports', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31'),
+(10, 'Dota 2', 'Team Spirit vs Gaimin Gladiators', '23:30', 'https://www.dota2.com/esports', 'Dota 2', '2026-08-25 09:44:31', 1, '2026-08-25 07:44:31');
 
 CREATE TABLE `news` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -37,48 +190,44 @@ CREATE TABLE `news` (
   `titre` varchar(255) NOT NULL,
   `extrait` text,
   `url` varchar(191) NOT NULL,
-  `image` varchar(191) DEFAULT NULL,
+  `image` varchar(500) DEFAULT NULL,
   `categorie` varchar(80) NOT NULL DEFAULT 'Gaming',
   `reading_time` varchar(20) NOT NULL DEFAULT '2 min',
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_news_url` (`url`), KEY `idx_news_published_at` (`published_at`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_news_url` (`url`),
+  KEY `idx_news_published_at` (`published_at`),
+  KEY `idx_news_categorie` (`categorie`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `notes_gaming` (
+INSERT INTO `news` (`id`, `source`, `titre`, `extrait`, `url`, `image`, `categorie`, `reading_time`, `published_at`, `created_at`) VALUES
+(1, 'Alpha Gaming', 'Silksong refait surface: 18 minutes de gameplay diffusées', 'Team Cherry montre enfin un build solide avec de nouveaux biomes, des boss plus agressifs et un système de crafting repensé.', 'https://www.alpha-gaming.com/silksong-gameplay', 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80', 'Inde', '6 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
+(2, 'Alpha Gaming', 'GTA VI: Rockstar confirme une bande-annonce orientée mode online', 'Le studio tease des activités de crew en monde ouvert et une économie dynamique plus ambitieuse que sur GTA Online.', 'https://www.alpha-gaming.com/gta-vi-online', 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80', 'AAA', '4 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31'),
+(3, 'Alpha Gaming', 'Le prochain Zelda miserait sur un monde maritime semi-procedural', 'Selon plusieurs insiders, Nintendo expérimenterait une navigation plus libre et des îles évolutives à chaque session.', 'https://www.alpha-gaming.com/zelda-rumeur-maritime', 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=1200&q=80', 'Nintendo', '5 min', '2026-08-25 09:44:31', '2026-08-25 07:44:31');
+
+CREATE TABLE `tests_rapides` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `source` varchar(120) NOT NULL,
-  `titre_jeu` varchar(191) NOT NULL,
-  `extrait` text,
-  `url` varchar(191) NOT NULL,
-  `image` varchar(191) DEFAULT NULL,
-  `score` decimal(3,1) DEFAULT NULL,
-  `plateformes` varchar(150) DEFAULT NULL,
-  `verdict` varchar(255) DEFAULT NULL,
-  `published_at` datetime DEFAULT NULL,
+  `titre_jeu` varchar(150) NOT NULL,
+  `score` decimal(3,1) NOT NULL,
+  `plateformes` varchar(150) NOT NULL,
+  `verdict` varchar(255) NOT NULL,
+  `lien` varchar(255) DEFAULT NULL,
+  `is_external` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_notes_gaming_url` (`url`), KEY `idx_notes_gaming_published_at` (`published_at`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_tests_rapides_titre_jeu` (`titre_jeu`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `live_esport` (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `source` varchar(120) NOT NULL,
-  `game` varchar(80) DEFAULT NULL,
-  `league` varchar(120) NOT NULL,
-  `match_title` varchar(191) NOT NULL,
-  `team_one` varchar(120) DEFAULT NULL,
-  `team_two` varchar(120) DEFAULT NULL,
-  `kickoff_time` datetime DEFAULT NULL,
-  `href` varchar(191) NOT NULL,
-  `image` varchar(191) DEFAULT NULL,
-  `status` varchar(30) NOT NULL DEFAULT 'upcoming',
-  `published_at` datetime DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_live_esport_href` (`href`), KEY `idx_live_esport_kickoff` (`kickoff_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `tests_rapides` (`id`, `titre_jeu`, `score`, `plateformes`, `verdict`, `lien`, `is_external`, `created_at`) VALUES
+(1, 'DOOM: Dark Ages', 9.2, 'PC / Xbox', 'Brutal, fluide, ultra lisible.', 'https://bethesda.net/en/game/doom', 1, '2026-08-25 07:43:02'),
+(2, 'Clair Obscur: Expedition 33', 8.8, 'PC / PS5', 'Direction artistique magistrale.', 'https://www.expedition33.com/', 1, '2026-08-25 07:43:02'),
+(3, 'F1 26', 8.1, 'PC / PS5 / Xbox', 'Carrière plus profonde et nerveuse.', 'https://www.ea.com/games/f1', 1, '2026-08-25 07:43:02'),
+(4, 'Metaphor: ReFantazio', 9.0, 'PC / PS5 / Xbox', 'Un JRPG dense avec une direction artistique marquante.', 'https://metaphor.atlus.com/', 1, '2026-08-25 07:43:02'),
+(5, 'Monster Hunter Wilds', 8.9, 'PC / PS5 / Xbox', 'Des chasses plus spectaculaires et un monde plus vivant.', 'https://www.monsterhunter.com/wilds/', 1, '2026-08-25 07:43:02'),
+(6, 'EA SPORTS FC 26', 8.0, 'PC / PS5 / Xbox', 'Gameplay plus propre, progression mode carrière améliorée.', 'https://www.ea.com/games/ea-sports-fc', 1, '2026-08-25 07:43:02'),
+(7, 'Helldivers 2', 8.7, 'PC / PS5', 'Coop explosive et sensation de guerre totale réussie.', 'https://www.playstation.com/games/helldivers-2/', 1, '2026-08-25 07:43:02'),
+(8, 'Hades II', 9.1, 'PC', 'Roguelike ultra solide, écriture et rythme exemplaires.', 'https://www.supergiantgames.com/games/hades-ii/', 1, '2026-08-25 07:43:02');
 
 CREATE TABLE `users` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -88,17 +237,32 @@ CREATE TABLE `users` (
   `lastname` varchar(100) NOT NULL,
   `role` enum('user','admin') NOT NULL DEFAULT 'user',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_users_email` (`email`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_users_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `users` (`id`, `email`, `password`, `firstname`, `lastname`, `role`, `created_at`) VALUES
+(1, 'jd@gmail.com', '$2b$10$J3ij4l1Yz2qonWrKiC6BxeNuv35AAOJhCIXsFUQ5Rfko2vRetZD.S', 'jean-denis', 'saucy', 'admin', '2026-08-25 07:56:11'),
+(2, 'jeandsaucy@gamail.com', '$2b$10$ETJ4txTrkHOtvoZ6SpKDC.b9/4F8ok9YI5Y353WorKLYZDBWnX2bK', 'jean', 'saucy', 'user', '2026-08-25 14:00:56');
 
 CREATE TABLE `user_favorite_games` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` int UNSIGNED NOT NULL,
   `game_id` int UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_user_favorite_games` (`user_id`,`game_id`),
-  CONSTRAINT `fk_user_favorite_games_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_user_favorite_games_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_user_favorite_games` (`user_id`, `game_id`),
+  KEY `idx_user_favorite_games_user` (`user_id`),
+  KEY `idx_user_favorite_games_game` (`game_id`),
+  CONSTRAINT `fk_user_favorite_games_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_favorite_games_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `user_favorite_games` (`user_id`, `game_id`, `created_at`) VALUES
+(1, 1, '2026-08-27 12:30:00'),
+(1, 4, '2026-08-27 12:31:00'),
+(2, 11, '2026-08-27 12:35:00');
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 COMMIT;

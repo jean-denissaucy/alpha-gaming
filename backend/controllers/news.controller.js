@@ -14,11 +14,6 @@ const FEEDS = [
     { url: 'https://www.jeuxvideo.com/rss/rss.xml', source: 'JeuxVideo.com' }
 ];
 
-const NOTES_FEEDS = [
-    { url: 'https://www.actugaming.net/tests/feed/', source: 'ActuGaming.net' },
-    { url: 'https://www.jeuxvideo.com/rss/rss.xml', source: 'JeuxVideo.com' }
-];
-
 const ESPORT_FEEDS = [
     { url: 'https://www.hltv.org/rss/news', source: 'HLTV', league: 'CS2' },
     { url: 'https://www.vlr.gg/rss', source: 'VLR', league: 'VALORANT' },
@@ -26,7 +21,14 @@ const ESPORT_FEEDS = [
     { url: 'https://dotesports.com/feed', source: 'Dot Esports', league: 'Esport' }
 ];
 
-
+const CURATED_ESPORT_FALLBACK = [
+    { league: 'League européenne de LoL', match: 'G2 vs Fnatic', href: 'https://lolesports.com/', source: 'Curated', external: true },
+    { league: 'Tour des champions VALORANT', match: 'Team Heretics vs Natus Vincere', href: 'https://valorantesports.com/', source: 'Curated', external: true },
+    { league: 'Majeur CS2', match: 'NAVI vs FaZe', href: 'https://www.hltv.org/', source: 'Curated', external: true },
+    { league: 'Majeur Rocket League', match: 'Vitality vs BDS', href: 'https://esports.rocketleague.com/', source: 'Curated', external: true },
+    { league: 'Circuit pro Dota 2', match: 'Team Spirit vs Gaimin Gladiators', href: 'https://www.dota2.com/esports', source: 'Curated', external: true },
+    { league: 'Série mondiale Apex Legends', match: 'TSM vs Alliance', href: 'https://www.ea.com/games/apex-legends/compete', source: 'Curated', external: true }
+];
 
 function stripHtml(input = '') {
     return String(input || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -271,7 +273,7 @@ export async function getLatestNews(req, res) {
     try {
         const databaseNews = await getNewsFromDatabase(limit);
         if (databaseNews.length > 0) {
-            return res.json(buildSuccessResponse({ items: databaseNews, total: databaseNews.length, source: 'database' }));
+            return res.json(buildSuccessResponse({ items: databaseNews, total: databaseNews.length }));
         }
     } catch (error) {
         console.error('News MySQL indisponibles, utilisation du RSS:', error.message);
@@ -326,7 +328,7 @@ export async function getLatestEsport(req, res) {
     try {
         const databaseMatches = await getEsportFromDatabase(limit, leagueFilters, excludedTeams);
         if (databaseMatches.length > 0) {
-            return res.json(buildSuccessResponse({ items: databaseMatches, total: databaseMatches.length, source: 'database' }));
+            return res.json(buildSuccessResponse({ items: databaseMatches, total: databaseMatches.length }));
         }
     } catch (error) {
         console.error('Esport MySQL indisponible, utilisation du RSS:', error.message);
@@ -374,7 +376,7 @@ export async function getLatestEsport(req, res) {
         const sourceDiversified = diversifyBySource(matches, 4);
         const teamDiversified = diversifyByTeams(sourceDiversified, 2);
         const baseMatches = teamDiversified.length >= Math.min(limit, 5) ? teamDiversified : sourceDiversified;
-        const finalMatches = baseMatches.slice(0, limit).map(({ teams, ...rest }) => rest);
+        const finalMatches = appendCuratedIfNotDiverse(baseMatches, limit).map(({ teams, ...rest }) => rest);
 
         if (finalMatches.length === 0) {
             return res.status(502).json(buildErrorResponse('Aucun live esport disponible pour le moment', 502));
@@ -383,16 +385,6 @@ export async function getLatestEsport(req, res) {
         return res.json(buildSuccessResponse({ items: finalMatches, total: finalMatches.length }));
     } catch {
         return res.status(502).json(buildErrorResponse('Aucun live esport disponible pour le moment', 502));
-    }
-}
-
-export async function getLatestNotes(req, res) {
-    const limit = Math.max(1, Math.min(Number.parseInt(req.query.limit, 10) || 20, 50));
-    try {
-        const items = await query(`SELECT titre_jeu AS game, score, plateformes AS platform, verdict, lien AS href, is_external AS external, published_at AS publishedAt FROM notes_gaming ORDER BY COALESCE(published_at, created_at) DESC, id DESC LIMIT ${limit}`);
-        return res.json(buildSuccessResponse({ items, total: items.length, source: 'database' }));
-    } catch {
-        return res.status(500).json(buildErrorResponse('Aucune note disponible pour le moment', 500));
     }
 }
 
@@ -410,7 +402,7 @@ export async function getLatestQuickTests(req, res) {
                 lien AS href,
                 is_external AS external,
                 created_at AS testedAt
-             FROM notes_gaming
+             FROM tests_rapides
              ORDER BY created_at DESC, id DESC
              LIMIT ${boundedLimit}`
         );

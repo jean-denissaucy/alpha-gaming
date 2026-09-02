@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { newsService } from '../services/api.js';
 
-
+const fallback = [{ title: 'Actualités gaming', excerpt: 'Retrouvez les dernières nouvelles du jeu vidéo.', category: 'Gaming', source: 'Alpha Gaming', url: null }];
 
 export default function News() {
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState(fallback);
     const [category, setCategory] = useState('Toutes');
     const [loading, setLoading] = useState(true);
     useEffect(() => { newsService.getLatest(50).then((data) => { const next = data?.data?.items || data?.items || []; if (next.length) setItems(next); }).catch(() => {}).finally(() => setLoading(false)); }, []);

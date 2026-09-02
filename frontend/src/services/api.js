@@ -64,12 +64,6 @@ export const authService = {
     getProfile: () => fetchAPI('/auth/me')
 };
 
-export const gamesService = {
-    getAll: () => fetchAPI('/games'),
-    addFavorite: (gameId) => fetchAPI(`/users/favorites/${gameId}`, { method: 'POST' }),
-    removeFavorite: (gameId) => fetchAPI(`/users/favorites/${gameId}`, { method: 'DELETE' })
-};
-
 export const newsService = {
 
     // Récupération des news gaming actuelles
@@ -82,6 +76,8 @@ export const esportService = {
     getLatest: (limit = 10) => fetchAPI(`/news/esport?limit=${limit}`)
 };
 
-export const notesService = {
-    getLatest: (limit = 20) => fetchAPI(`/news/notes?limit=${limit}`)
+export const testService = {
+
+    // Recuperation des tests rapides depuis la base de donnees
+    getLatest: (limit = 9) => fetchAPI(`/news/tests-rapides?limit=${limit}`)
 };
