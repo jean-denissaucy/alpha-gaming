@@ -20,6 +20,8 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
+import Esport from './pages/Esport.jsx';
+import Presentation from './pages/Presentation.jsx';
 
 function App() {
 
@@ -38,6 +40,8 @@ function App() {
 
                     {/* Page d'accueil accessible à tous */}
                     <Route path="/" element={<Home />} />
+                    <Route path="/esport" element={<Esport />} />
+                    <Route path="/presentation" element={<Presentation />} />
 
                     {/* Dashboard protégé - nécessite une authentification */}
                     <Route path="/dashboard" element={

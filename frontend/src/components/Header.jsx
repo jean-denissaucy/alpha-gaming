@@ -49,12 +49,7 @@ function Header() {
 
                 <nav className="hidden items-center gap-2 sm:flex">
                     <NavLink to="/" className={navClass}>Accueil</NavLink>
-                    <a
-                        href="/presentation.html"
-                        className="rounded-full px-3 py-1 text-sm font-semibold tracking-wide text-slate-300 transition hover:bg-white/10 hover:text-white"
-                    >
-                        Presentation
-                    </a>
+                    <NavLink to="/presentation" className={navClass}>Présentation</NavLink>
                     <button
                         type="button"
                         onClick={() => handleSectionNavigation('top-news')}
@@ -62,13 +57,7 @@ function Header() {
                     >
                         Articles
                     </button>
-                    <button
-                        type="button"
-                        onClick={() => handleSectionNavigation('esport')}
-                        className="rounded-full px-3 py-1 text-sm font-semibold tracking-wide text-slate-300 transition hover:bg-white/10 hover:text-white"
-                    >
-                        Esport
-                    </button>
+                    <NavLink to="/esport" className={navClass}>Esport</NavLink>
                     {isAuthenticated && (
                         <>
                             <NavLink to="/dashboard" className={navClass}>Tableau de bord</NavLink>
