@@ -6,6 +6,16 @@ import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 const router = Router();
 router.use(authMiddleware);
 
+router.get('/', async (req, res) => {
+    try {
+        const items = await User.findFavoriteGamesByUserId(req.user.id);
+        return res.json(buildSuccessResponse({ items }));
+    } catch (error) {
+        console.error('Erreur chargement favoris:', error);
+        return res.status(500).json(buildErrorResponse('Impossible de charger vos favoris', 500));
+    }
+});
+
 router.post('/:gameId', async (req, res) => {
     try {
         const gameId = Number(req.params.gameId);
