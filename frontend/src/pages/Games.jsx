@@ -17,6 +17,17 @@ export default function Games() {
         }).catch((requestError) => setError(requestError.message || 'Catalogue indisponible.')).finally(() => setLoading(false));
     }, []);
 
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        gamesService.getFavorites()
+            .then((data) => {
+                const items = Array.isArray(data?.data?.items) ? data.data.items : Array.isArray(data?.data) ? data.data : [];
+                const favoriteIds = new Set(items.map((game) => Number(game.id)));
+                setGames((current) => current.map((game) => ({ ...game, isFavorite: favoriteIds.has(Number(game.id)) })));
+            })
+            .catch(() => setError('Impossible de charger vos favoris.'));
+    }, [isAuthenticated]);
+
     const categories = useMemo(() => ['Toutes', ...new Set(games.map((game) => game.category).filter(Boolean))], [games]);
     const visible = category === 'Toutes' ? games : games.filter((game) => game.category === category);
 
