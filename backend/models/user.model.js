@@ -43,7 +43,7 @@ const User = {
     },
     async findFavoriteGamesByUserId(userId) {
         const rows = await query(
-            `SELECT g.id, g.categorie_id, g.titre_jeu AS game_name, g.lien AS link, c.name AS category_name
+            `SELECT g.id, g.categorie_id, g.titre_jeu AS game_name, g.lien, c.name AS category_name
                  FROM user_favorite_games ufg
                  JOIN games g ON g.id = ufg.game_id
                  LEFT JOIN categories c ON c.id = g.categorie_id
@@ -55,6 +55,7 @@ const User = {
         return rows.map((row) => ({
             id: row.id,
             game_name: row.game_name,
+            categorie_id: row.categorie_id,
             categorie_id: row.categorie_id,
             category: row.category_name || `Catégorie ${row.categorie_id}`,
             ...(row.link ? { link: row.link } : {})
@@ -71,6 +72,7 @@ const User = {
         return rows.map((row) => ({
             id: row.id,
             game_name: row.game_name,
+            categorie_id: row.categorie_id,
             categorie_id: row.categorie_id,
             category: row.category_name || `Catégorie ${row.categorie_id}`,
             ...(row.link ? { link: row.link } : {})
