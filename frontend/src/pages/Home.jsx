@@ -201,7 +201,7 @@ function Home() {
                                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300">
                                         {news.category} • {news.readingTime}
                                     </p>
-                                    {news.image && <img className="news-card-image" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} />}
+                                    {news.image ? <img className="news-card-image" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="news-card-image news-card-placeholder" aria-hidden="true">ALPHA NEWS</div>}
                                     <h3 className="mt-3 text-xl font-bold text-white">{news.title}</h3>
                                     <p className="mt-3 text-sm leading-relaxed text-slate-300">{news.excerpt}</p>
                                     <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Alpha Gaming'}</p>
@@ -211,7 +211,7 @@ function Home() {
                                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300">
                                         {news.category} • {news.readingTime}
                                     </p>
-                                    {news.image && <img className="news-card-image" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} />}
+                                    {news.image ? <img className="news-card-image" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="news-card-image news-card-placeholder" aria-hidden="true">ALPHA NEWS</div>}
                                     <h3 className="mt-3 text-xl font-bold text-white">{news.title}</h3>
                                     <p className="mt-3 text-sm leading-relaxed text-slate-300">{news.excerpt}</p>
                                     <p className="mt-3 text-xs uppercase tracking-[0.16em] text-slate-400">Source : {news.source || 'Alpha Gaming'}</p>

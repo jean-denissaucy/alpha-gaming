@@ -2,19 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.js';
-import { authService } from '../services/api.js';
+import { authService, gamesService } from '../services/api.js';
 
-const allFavoriteGames = [
-    { category: 'Action', game_name: 'DOOM: Dark Ages', link: 'https://bethesda.net/en/game/doom' },
-    { category: 'RPG', game_name: 'Metaphor: ReFantazio', link: 'https://metaphor.atlus.com/' },
-    { category: 'Aventure', game_name: 'The Legend of Zelda: Echoes of Wisdom', link: 'https://www.nintendo.com/' },
-    { category: 'Sport', game_name: 'EA SPORTS FC 26', link: 'https://www.ea.com/games/ea-sports-fc' },
-    { category: 'Course', game_name: 'Gran Turismo 7', link: 'https://www.gran-turismo.com/' },
-    { category: 'MMO', game_name: 'World of Warcraft', link: 'https://worldofwarcraft.blizzard.com/' },
-    { category: 'FPS', game_name: 'Counter-Strike 2', link: 'https://www.counter-strike.net/cs2' },
-    { category: 'Inde', game_name: 'Hades II', link: 'https://www.supergiantgames.com/games/hades-ii/' },
-    { category: 'Horreur', game_name: 'Resident Evil 4', link: 'https://www.residentevil.com/re4/en-us/' }
-];
+// Les jeux affichés proviennent du catalogue chargé depuis l'API.
 
 const gameLinks = {
     'DOOM: Dark Ages': 'https://bethesda.net/en/game/doom',
@@ -149,6 +139,7 @@ function Dashboard() {
     const [error, setError] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+    const [catalogGames, setCatalogGames] = useState([]);
 
     // Fonction pour charger le profil depuis l'API protégée
     const loadProfile = async () => {
@@ -167,6 +158,10 @@ function Dashboard() {
     // Chargement du profil au montage du composant
     useEffect(() => {
         loadProfile();
+        gamesService.getAll().then((data) => {
+            const items = Array.isArray(data?.data?.items) ? data.data.items : Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
+            setCatalogGames(items);
+        }).catch(() => {});
     }, []);
 
     // Sélection du profil à afficher (depuis l'API ou depuis le contexte)
@@ -178,23 +173,14 @@ function Dashboard() {
         ? new Date(createdAt).toLocaleDateString('fr-FR')
         : 'Non disponible';
 
-    const favoriteGames = Array.isArray(displayUser?.favorite_games) && displayUser.favorite_games.length > 0
-        ? displayUser.favorite_games
-        : allFavoriteGames;
-
-    const normalizedFavoriteGames = favoriteGames.map((game) => ({
-        ...game,
-        category: game.category || game.category_name || `Catégorie ${game.categorie_id || 'inconnue'}`
-    }));
-
     const availableCategories = Array.from(
-        new Set(normalizedFavoriteGames.map((game) => game.category).filter(Boolean))
+        new Set(catalogGames.map((game) => game.category || game.category_name || (game.categorie_id ? `Catégorie ${game.categorie_id}` : '')).filter(Boolean))
     ).sort((a, b) => a.localeCompare(b, 'fr'));
 
     const activeCategory = availableCategories.includes(selectedCategory) ? selectedCategory : '';
 
     const filteredFavoriteGames = activeCategory
-        ? normalizedFavoriteGames.filter((game) => game.category === activeCategory)
+        ? catalogGames.filter((game) => (game.category || game.category_name || `Catégorie ${game.categorie_id}`) === activeCategory)
         : [];
 
     return (
@@ -322,7 +308,7 @@ function Dashboard() {
                                         return (
                                             <li key={game.id ?? `${game.category}-${game.game_name}`} className="flex flex-wrap items-center gap-2">
                                                 <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2 py-1 text-[10px] uppercase tracking-wide text-cyan-200">
-                                                    {game.category || 'Jeu'}
+                                                    {game.category || game.category_name || `Catégorie ${game.categorie_id}`}
                                                 </span>
                                                 {resolvedLink ? (
                                                     <a
@@ -341,7 +327,7 @@ function Dashboard() {
                                     })}
                                 </ul>
                             ) : (
-                                <p className="mt-3 text-sm text-slate-300">Aucun jeu favori dans cette categorie.</p>
+                                <p className="mt-3 text-sm text-slate-300">Aucun jeu dans cette catégorie.</p>
                             )}
                         </div>
                     </>

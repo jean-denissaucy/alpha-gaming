@@ -135,6 +135,18 @@
 		background: #071626;
 	}
 
+	.news-card-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: linear-gradient(135deg, rgb(8 47 73), rgb(30 41 59));
+		color: rgb(103 232 249 / 0.8);
+		font-family: "Orbitron", sans-serif;
+		font-size: 0.8rem;
+		letter-spacing: 0.16em;
+	}
+
+
 	.reveal-up {
 		opacity: 0;
 		transform: translateY(12px);

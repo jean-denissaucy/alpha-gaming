@@ -33,18 +33,38 @@ function stripHtml(input = '') {
 }
 
 function extractImage(item = {}) {
-    const media = item['media:content'] || item['media:thumbnail'] || item.enclosure;
     const candidates = [
         item.image,
         item.thumbnail,
         item.imageUrl,
-        media?.url,
-        media?.$?.url,
-        item['media:group']?.['media:content']?.url,
-        item['media:group']?.['media:thumbnail']?.url
+        item.enclosure,
+        item['media:content'],
+        item['media:thumbnail'],
+        item['media:group']?.['media:content'],
+        item['media:group']?.['media:thumbnail']
     ];
-    const image = candidates.find((value) => typeof value === 'string' && /^https?:\/\//i.test(value));
-    return image || null;
+
+    const findImageUrl = (value) => {
+        if (!value) return null;
+        if (typeof value === 'string') return /^https?:\/\//i.test(value) ? value : null;
+        if (Array.isArray(value)) return value.map(findImageUrl).find(Boolean) || null;
+        if (typeof value === 'object') {
+            return findImageUrl(value.url)
+                || findImageUrl(value.href)
+                || findImageUrl(value.$?.url)
+                || findImageUrl(value.$?.href)
+                || findImageUrl(value['media:content'])
+                || findImageUrl(value['media:thumbnail']);
+        }
+        return null;
+    };
+
+    const directImage = candidates.map(findImageUrl).find(Boolean);
+    if (directImage) return directImage;
+
+    const html = item['content:encoded'] || item.content || '';
+    const htmlImage = String(html).match(/<img[^>]+src=["']([^"']+)["']/i)?.[1];
+    return /^https?:\/\//i.test(htmlImage || '') ? htmlImage : null;
 }
 
 function cleanTitle(title = '') {
@@ -211,6 +231,40 @@ function appendCuratedIfNotDiverse(matches = [], limit = 10) {
     return [...matches, ...curatedToAdd].slice(0, limit);
 }
 
+async function enrichNewsImages(items = []) {
+    if (!items.some((item) => !item.image)) return items;
+
+    const feedResults = await Promise.allSettled(
+        FEEDS.map(async ({ url, source }) => {
+            const feed = await parser.parseURL(url);
+            return { source, items: feed.items || [] };
+        })
+    );
+    const rssByUrl = new Map();
+    const rssByTitle = new Map();
+
+    feedResults
+        .filter((result) => result.status === 'fulfilled')
+        .flatMap((result) => result.value.items.map((item) => ({
+            url: item.link || null,
+            title: cleanTitle(item.title || ''),
+            image: extractImage(item)
+        })))
+        .filter((item) => item.image)
+        .forEach((item) => {
+            if (item.url) rssByUrl.set(item.url, item.image);
+            if (item.title) rssByTitle.set(item.title.toLowerCase(), item.image);
+        });
+
+    return items.map((item) => ({
+        ...item,
+        image: item.image
+            || rssByUrl.get(item.url)
+            || rssByTitle.get(cleanTitle(item.title).toLowerCase())
+            || null
+    }));
+}
+
 async function getNewsFromDatabase(limit) {
     const rows = await query(
         `SELECT
@@ -271,7 +325,8 @@ export async function getLatestNews(req, res) {
     try {
         const databaseNews = await getNewsFromDatabase(limit);
         if (databaseNews.length > 0) {
-            return res.json(buildSuccessResponse({ items: databaseNews, total: databaseNews.length, source: 'database' }));
+            const enrichedNews = await enrichNewsImages(databaseNews);
+            return res.json(buildSuccessResponse({ items: enrichedNews, total: enrichedNews.length, source: 'database' }));
         }
     } catch (error) {
         console.error('News MySQL indisponibles, utilisation du RSS:', error.message);
