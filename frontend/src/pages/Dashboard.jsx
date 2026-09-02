@@ -182,14 +182,19 @@ function Dashboard() {
         ? displayUser.favorite_games
         : allFavoriteGames;
 
+    const normalizedFavoriteGames = favoriteGames.map((game) => ({
+        ...game,
+        category: game.category || game.category_name || `Catégorie ${game.categorie_id || 'inconnue'}`
+    }));
+
     const availableCategories = Array.from(
-        new Set(favoriteGames.map((game) => game.category).filter(Boolean))
+        new Set(normalizedFavoriteGames.map((game) => game.category).filter(Boolean))
     ).sort((a, b) => a.localeCompare(b, 'fr'));
 
     const activeCategory = availableCategories.includes(selectedCategory) ? selectedCategory : '';
 
     const filteredFavoriteGames = activeCategory
-        ? favoriteGames.filter((game) => game.category === activeCategory)
+        ? normalizedFavoriteGames.filter((game) => game.category === activeCategory)
         : [];
 
     return (

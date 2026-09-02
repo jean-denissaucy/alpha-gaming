@@ -220,6 +220,7 @@ async function getNewsFromDatabase(limit) {
             titre AS title,
             extrait AS excerpt,
             url,
+            image,
             categorie AS category,
             reading_time AS readingTime,
             published_at AS publishedAt
@@ -267,7 +268,7 @@ async function getEsportFromDatabase(limit, leagueFilters, excludedTeams) {
 }
 
 export async function getLatestNews(req, res) {
-    const limit = Math.max(1, Math.min(Number.parseInt(req.query.limit, 10) || 9, 20));
+    const limit = Math.max(1, Math.min(Number.parseInt(req.query.limit, 10) || 9, 50));
 
     try {
         const databaseNews = await getNewsFromDatabase(limit);
