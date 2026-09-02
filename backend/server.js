@@ -2,7 +2,9 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import cron from 'node-cron';
 import { query, testConnection } from './config/db.js';
+import { runAllSync } from './jobs/news.cron.js';
 import authRoutes from './routes/auth.routes.js';
 import newsRoutes from './routes/news.routes.js';
 import gamesRoutes from './routes/games.routes.js';
@@ -90,6 +92,25 @@ app.use('/api/admin', adminRoutes);
 
 // 404
 app.use((req, res) => res.status(404).json(buildErrorResponse('Route non trouvée', 404)));
+
+// Tâche planifiée (node-cron) : synchronisation des flux toutes les 24h (04h00).
+if (!process.env.VERCEL) {
+    const CRON_SCHEDULE = process.env.CRON_SCHEDULE || '0 4 * * *';
+    if (cron.validate(CRON_SCHEDULE)) {
+        cron.schedule(CRON_SCHEDULE, async () => {
+            console.log(`[cron] Démarrage de la synchronisation (${new Date().toISOString()})`);
+            try {
+                const report = await runAllSync();
+                console.log('[cron] Synchro terminée:', JSON.stringify(report));
+            } catch (error) {
+                console.error('[cron] Échec global de la synchro:', error);
+            }
+        });
+        console.log(`[cron] Synchronisation planifiée tous les jours à 04h00 (${CRON_SCHEDULE})`);
+    } else {
+        console.error(`[cron] Expression cron invalide: ${CRON_SCHEDULE}`);
+    }
+}
 
 if (!process.env.VERCEL) {
     app.listen(PORT, () => {
