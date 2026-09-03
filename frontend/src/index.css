@@ -337,3 +337,201 @@
 		transform: translateX(120%);
 	}
 }
+
+/* Responsive global : aucun contenu ne doit élargir la fenêtre mobile. */
+html {
+	overflow-x: hidden;
+}
+
+body {
+	margin: 0;
+	overflow-x: hidden;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+	-webkit-tap-highlight-color: transparent;
+}
+
+.mobile-navigation {
+	border-top: 1px solid rgb(34 211 238 / 0.14);
+	background: rgb(2 6 23 / 0.98);
+	box-shadow: 0 22px 40px rgb(0 0 0 / 0.35);
+}
+
+.mobile-nav-list,
+.mobile-account-actions {
+	display: grid;
+	gap: 0.35rem;
+	padding: 0.75rem 1rem;
+}
+
+.mobile-nav-link {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	min-height: 2.9rem;
+	width: 100%;
+	box-sizing: border-box;
+	border: 1px solid transparent;
+	border-radius: 0.8rem;
+	padding: 0.7rem 0.9rem;
+	background: transparent;
+	color: rgb(203 213 225);
+	font-size: 0.95rem;
+	font-weight: 700;
+	text-align: left;
+	text-decoration: none;
+	transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link:focus-visible {
+	border-color: rgb(34 211 238 / 0.22);
+	background: rgb(255 255 255 / 0.06);
+	color: white;
+	outline: none;
+}
+
+.mobile-nav-link-active,
+.mobile-nav-link-primary {
+	border-color: transparent;
+	background: linear-gradient(135deg, rgb(3 105 161), rgb(34 211 238));
+	color: white;
+	box-shadow: 0 10px 22px -14px rgb(34 211 238 / 0.8);
+}
+
+.mobile-nav-link-danger {
+	color: rgb(253 164 175);
+}
+
+.mobile-nav-link-danger:hover,
+.mobile-nav-link-danger:focus-visible {
+	border-color: rgb(244 63 94 / 0.25);
+	background: rgb(244 63 94 / 0.1);
+	color: rgb(254 205 211);
+}
+
+.mobile-navigation-divider {
+	height: 1px;
+	margin: 0 1rem;
+	background: rgb(51 65 85 / 0.7);
+}
+
+@media (max-width: 639px) {
+	.site-header > div:first-child {
+		padding: 0.7rem 1rem;
+	}
+
+	.header-brand-name {
+		max-width: 11rem;
+		font-size: 0.9rem;
+		letter-spacing: 0.1em;
+	}
+
+	main {
+		min-width: 0;
+	}
+
+	.btn {
+		max-width: 100%;
+		white-space: normal;
+		text-align: center;
+	}
+
+	.home-news-horizontal-content {
+		min-width: 0;
+	}
+
+	.home-news-horizontal-content h3,
+	.home-news-horizontal-content p {
+		overflow-wrap: anywhere;
+	}
+
+	.home-news-carousel-toolbar {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+
+	.home-news-carousel {
+		gap: 0.75rem;
+	}
+
+	.home-news-carousel-card {
+		flex-basis: min(88vw, 30rem);
+	}
+}
+
+@media (max-width: 420px) {
+	.home-news-horizontal-content {
+		gap: 0.65rem;
+	}
+
+	.home-news-horizontal-image {
+		width: 76px;
+		min-width: 76px;
+		height: 72px;
+	}
+}
+
+@media (max-width: 380px) {
+	.header-brand-name {
+		max-width: 8.5rem;
+		font-size: 0.78rem;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+body.mobile-menu-open {
+	overflow: hidden;
+}
+
+.mobile-navigation {
+	max-height: calc(100vh - 76px);
+	overflow-y: auto;
+}
+
+@media (max-width: 639px) {
+	/* Réduit les marges latérales sans écraser les composants existants. */
+	.home-news-carousel-card,
+	.news-card,
+	.news-page-card,
+	.esport-card,
+	.admin-panel,
+	.admin-stat {
+		min-width: 0;
+	}
+
+	/* Les grilles Tailwind restent fluides même avec des titres très longs. */
+	.grid > *,
+	.flex > * {
+		min-width: 0;
+	}
+
+	.home-news-horizontal-content {
+		align-items: flex-start;
+	}
+
+	.home-news-horizontal-content > div {
+		min-width: 0;
+	}
+
+	footer p {
+		max-width: 100%;
+		overflow-wrap: anywhere;
+	}
+}

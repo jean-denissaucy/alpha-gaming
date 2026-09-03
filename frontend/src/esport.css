@@ -1,8 +1,10 @@
 .esport-page,
 .presentation-page {
+    width: 100%;
     max-width: 1180px;
     margin: 0 auto;
     padding: 28px 28px 100px;
+    box-sizing: border-box;
 }
 .esport-hero {
     position: relative;
@@ -27,6 +29,7 @@
 }
 .esport-hero-content {
     position: relative;
+    min-width: 0;
     max-width: 670px;
 }
 .esport-eyebrow {
@@ -159,8 +162,10 @@
     letter-spacing: 0.12em;
 }
 .esport-card h3 {
+    min-width: 0;
     font: 700 18px Orbitron;
     color: #fff;
+    overflow-wrap: anywhere;
     line-height: 1.35;
     margin: 9px 0 25px;
 }
@@ -172,6 +177,7 @@
     font-size: 11px;
     border-top: 1px solid rgba(105, 180, 218, 0.12);
     padding-top: 13px;
+    overflow-wrap: anywhere;
 }
 .esport-loading {
     padding: 50px;
@@ -211,6 +217,11 @@
     line-height: 1.6;
 }
 @media (max-width: 800px) {
+    .esport-page,
+    .presentation-page {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
     .esport-hero {
         padding: 38px 25px;
     }
@@ -233,6 +244,40 @@
     .esport-page,
     .presentation-page {
         padding: 18px 15px 70px;
+    }
+    .esport-hero {
+        min-height: 0;
+        padding: 30px 20px 105px;
+        border-radius: 18px;
+    }
+    .esport-hero h1 {
+        font-size: clamp(30px, 11vw, 48px);
+    }
+    .esport-hero p {
+        font-size: 15px;
+    }
+    .esport-hero-meta {
+        gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .esport-orb {
+        bottom: 22px;
+        right: 20px;
+        font-size: 42px;
+    }
+    .esport-filters {
+        justify-content: flex-start;
+        gap: 6px;
+    }
+    .esport-filters button,
+    .esport-filter-count {
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-wrap: anywhere;
+    }
+    .esport-card {
+        padding: 16px;
     }
     .esport-grid,
     .presentation-grid {
@@ -326,4 +371,50 @@
 .esport-card-modern:hover .esport-card-league-icon {
     background: rgba(45, 191, 231, 0.25);
     color: #8ee6ff;
+}
+
+/* Ajustements mobiles : les cartes et filtres restent lisibles sans débordement. */
+@media (max-width: 639px) {
+    .esport-page {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .esport-section {
+        margin-top: 32px;
+    }
+
+    .esport-section h2 {
+        font-size: clamp(20px, 7vw, 28px);
+        line-height: 1.2;
+    }
+
+    .esport-filters {
+        align-items: stretch;
+    }
+
+    .esport-filters button,
+    .esport-filter-count {
+        min-height: 38px;
+        max-width: 100%;
+        white-space: normal;
+        text-align: left;
+    }
+
+    .esport-filter-count {
+        width: 100%;
+    }
+
+    .esport-card-top {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .esport-live-badge {
+        white-space: nowrap;
+    }
+
+    .esport-card-footer {
+        align-items: flex-start;
+    }
 }

@@ -87,7 +87,7 @@ export default function Tests() {
                                 className="group relative overflow-hidden rounded-2xl border border-slate-700/70 bg-slate-900/70 transition hover:-translate-y-1 hover:border-cyan-400/50 hover:shadow-xl hover:shadow-cyan-400/5"
                             >
                                 <a href={item.href} target="_blank" rel="noreferrer" className="block">
-                                    <div className="relative aspect-[16/9] overflow-hidden">
+                                    <div className="relative aspect-[2/3] overflow-hidden">
                                         {item.image ? (
                                             <img src={item.image} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-105" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                                         ) : (
