@@ -1,41 +1,18 @@
 # Backend - Alpha Gaming
 
-API REST Node.js/Express pour l'application Alpha Gaming.
+API REST Node.js/Express de l'application Alpha Gaming.
 
-## Table des matieres
+## Responsabilités
 
-- [Role](#role)
-- [Stack](#stack)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Demarrage](#demarrage)
-- [Endpoints API](#endpoints-api)
-- [Structure](#structure)
-
-## Role
-
-- Authentification utilisateur avec JWT
-- Exposition des endpoints de news gaming, tests rapides et esport
-- Connexion MySQL pour gestion des utilisateurs
-- Gestion des favoris relies aux utilisateurs (`favorite_games` + `user_favorite_games`)
-- Lecture des tests rapides depuis la table MySQL `tests_rapides`
-- Gestion CORS avec liste d'origines autorisees
-- Service RSS pour recuperer les actualites
-
-## Stack
-
-- **Node.js**: Runtime JavaScript
-- **Express 5**: Framework web
-- **MySQL 8**: Base de donnees (mysql2)
-- **jsonwebtoken**: Gestion JWT
-- **bcrypt**: Hachage des mots de passe
-- **rss-parser**: Parsing des flux RSS
-- **dotenv**: Gestion des variables d'environnement
-- **cors**: Gestion des requetes cross-origin
+- Authentification et profils utilisateur avec JWT.
+- Gestion des rôles `user` et `admin`.
+- Accès MySQL aux utilisateurs, jeux, catégories et favoris.
+- Exposition des actualités, notes de jeux et contenus esports.
+- Synchronisation des flux RSS avec `rss-parser` et `node-cron`.
 
 ## Installation
 
-Depuis le dossier backend:
+Depuis `backend/` :
 
 ```bash
 npm install
@@ -43,161 +20,92 @@ npm install
 
 ## Configuration
 
-Creer un fichier `backend/.env` a la racine du dossier backend:
+Créer `backend/.env` :
 
 ```env
 PORT=5000
+NODE_ENV=development
 DB_HOST=localhost
+DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=
-DB_NAME=alpha-gaming
-JWT_SECRET=your-secret-key-here-min-32-chars
+DB_NAME=jean-denis-saucy_alpha-gaming
+JWT_SECRET=remplacer_par_un_secret_aleatoire
 JWT_EXPIRES_IN=7d
 CORS_ORIGINS=http://localhost:5173
 ```
 
-### Parametre de configuration
+Les secrets de production doivent rester dans les variables d'environnement et ne doivent pas être versionnés.
 
-| Param | Type | Description |
-|-------|------|-------------|
-| PORT | number | Port d'ecoute du serveur (defaut: 5000) |
-| DB_HOST | string | Hote MySQL (defaut: localhost) |
-| DB_USER | string | Utilisateur MySQL (defaut: root) |
-| DB_PASSWORD | string | Mot de passe MySQL (defaut: vide) |
-| DB_NAME | string | Nom de la base de donnees |
-| JWT_SECRET | string | Cle secrete JWT (min 32 caracteres pour prod) |
-| JWT_EXPIRES_IN | string | Duree de validite du token (ex: 7d, 24h) |
-| CORS_ORIGINS | string | Origines autorisees (separees par des virgules) |
+| Variable | Rôle |
+|---|---|
+| `PORT` | Port d'écoute, 5000 par défaut |
+| `DB_HOST`, `DB_PORT` | Adresse et port MySQL |
+| `DB_USER`, `DB_PASSWORD`, `DB_NAME` | Accès à la base |
+| `JWT_SECRET` | Signature des tokens |
+| `JWT_EXPIRES_IN` | Durée de validité du JWT |
+| `CORS_ORIGINS` | Origines autorisées séparées par des virgules |
+| `CRON_SCHEDULE` | Expression cron personnalisée, `0 4 * * *` par défaut |
 
-## Demarrage
-
-### Mode developpement
+## Démarrage
 
 ```bash
 npm run dev
-```
- 
-Le serveur redemarrera automatiquement a chaque changement (watch mode).
-
-### Mode production
-
-```bash
 npm start
 ```
 
-### Tests
+Le serveur écoute sur `http://localhost:5000` par défaut.
+
+## Tests
 
 ```bash
-node --test tests/*.test.js
+npm test
 ```
 
-Note: le script `npm test` est actuellement un placeholder dans `package.json`.
-
-Le serveur demarre sur `http://localhost:5000` (ou le PORT configure).
-
-## Endpoints API
-
-### Authentification
-
-- **POST** `/api/auth/register` - Creer un compte utilisateur
-- **POST** `/api/auth/login` - Se connecter (retourne JWT)
-- **GET** `/api/auth/me` - Recuperer le profil courant (JWT requis)
-	- Retourne aussi `favorite_games` (favoris utilisateur, ou catalogue complet si aucun favori utilisateur)
-
-### News
-
-- **GET** `/api/news` - Recuperer les actualites gaming
-- **GET** `/api/news/esport` - Recuperer les actualites esport
-- **GET** `/api/news/tests-rapides?limit=9` - Recuperer les tests rapides depuis MySQL (limite de 1 a 20)
-
-## Structure
-
-```
-backend/
-├── config/
-│   └── db.js             # Configuration et pool MySQL
-├── controllers/
-│   ├── auth.controller.js    # Logique authentification
-│   └── news.controller.js    # Logique news
-├── middlewares/
-│   └── auth.middleware.js    # Verification JWT
-├── models/
-│   └── user.model.js         # Modele utilisateur
-├── routes/
-│   ├── auth.routes.js        # Routes /api/auth
-│   └── news.routes.js        # Routes /api/news
-├── db.js                 # Connexion MySQL
-├── server.js             # Point d'entree
-├── .env                  # Variables d'environnement (a creer)
-├── package.json
-└── README.md
-```
-
-## Notes importantes
-
-- La base de donnees doit etre initialisee via `init.sql` a la racine du projet (base par defaut creee: `alpha-gaming`)
-- Les tokens JWT sont valides pendant la duree specifiee par `JWT_EXPIRES_IN`
-- CORS_ORIGINS accepte plusieurs origines separees par des virgules
-- JWT_SECRET doit etre une chaine longue et aleatoire en production
-
-```bash
-npm run dev
-```
-
-API disponible par defaut sur http://localhost:5000.
-
-## Deploiement production
-
-### Variables d'environnement
-
-Copier .env.example vers .env, puis definir:
-
-- PORT
-- DB_HOST
-- DB_USER
-- DB_PASSWORD
-- DB_NAME
-- JWT_SECRET
-- JWT_EXPIRES_IN
-- CORS_ORIGINS
-
-### Demarrage production
-
-```bash
-npm install
-npm run start
-```
-
-### Recommandations exploitation
-
-- Utiliser un reverse proxy (Nginx/Apache) devant Node
-- Forcer HTTPS
-- Restreindre CORS_ORIGINS a l'URL frontend de production
-- Sauvegarder la base MySQL regulierement
+Le script utilise le test runner natif de Node.js et exécute les tests présents dans `tests/`.
 
 ## Endpoints
 
-- GET /: etat API
-- POST /api/auth/register: creation de compte
-- POST /api/auth/login: connexion
-- GET /api/auth/me: profil utilisateur (token requis)
-- GET /api/news: actualites gaming
-- GET /api/news/esport: actualites/matchs esport
-- GET /api/news/tests-rapides: tests rapides dynamiques depuis MySQL
+### Authentification
 
-## Structure utile
+- `POST /api/auth/register` : créer un compte avec `email`, `firstname`, `lastname` et `password`.
+- `POST /api/auth/login` : obtenir un JWT.
+- `GET /api/auth/me` : récupérer le profil courant et ses favoris avec `Authorization: Bearer <token>`.
 
-- server.js: bootstrap Express, CORS, routes
-- config/db.js: connexion MySQL
-- controllers/auth.controller.js: logique register/login/me
-- controllers/news.controller.js: logique flux RSS et lecture des tests rapides
-- routes/auth.routes.js: routes auth
-- routes/news.routes.js: routes news
-- middlewares/auth.middleware.js: validation JWT
+### Contenus
 
-## Depannage rapide
+- `GET /api/news` : actualités gaming.
+- `GET /api/news/esport` : contenus esports.
+- `GET /api/news/notes` : notes de jeux.
+- `GET /api/news/tests` : compatibilité de lecture des tests.
+- `GET /api/games` : catalogue des jeux et catégories.
 
-- Erreur CORS: verifier CORS_ORIGINS
-- Erreur auth register/login: verifier JWT_SECRET et schema users
-- Erreur DB Unknown database: verifier DB_NAME et reexecuter init.sql
-- Tests rapides absents: verifier que la table `tests_rapides` est initialisee avec `init.sql`
+### Favoris
+
+- `GET /api/users/favorites` : favoris de l'utilisateur connecté.
+- `POST /api/users/favorites/:gameId` : ajouter un jeu.
+- `DELETE /api/users/favorites/:gameId` : retirer un jeu.
+
+### Administration
+
+Les routes `/api/admin/*` nécessitent un JWT et un rôle administrateur, ou une adresse présente dans `ADMIN_EMAILS`.
+
+### Diagnostic
+
+- `GET /` : état de l'API.
+- `GET /health/db` : vérification de la connexion MySQL.
+
+## Structure
+
+```text
+backend/
+├── config/db.js             # Pool et connexion MySQL
+├── controllers/             # Logique métier
+├── jobs/news.cron.js        # Synchronisation RSS
+├── middlewares/             # Authentification et administration
+├── models/                  # Accès aux données
+├── queries/                 # Requêtes SQL centralisées
+├── routes/                  # Routes REST
+├── tests/                   # Tests Node.js
+└── server.js                # Point d'entrée Express
+```
