@@ -165,7 +165,7 @@ function Home() {
                                 <span className="block text-cyan-300">Gaming</span>
                             </h1>
                             <p className="mt-4 max-w-2xl text-base text-slate-300 sm:text-lg">
-                                Tests, articles, sorties, esports et coups de coeur de la semaine. Une vitrine néon pensée comme un vrai hub média.
+                                Tests, articles, sorties, esports et coups de coeur de la semaine.
                             </p>
 
                             <div className="mt-8 flex flex-wrap gap-4">

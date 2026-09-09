@@ -61,7 +61,7 @@ export default function Tests() {
             <section className="news-hero">
                 <span className="esport-eyebrow"><i /> ALPHA GAMING TESTS</span>
                 <h1>Les tests <span>de la rédaction.</span></h1>
-                <p>Toutes les notes attribuées par la rédaction Gamekult, avec la plateforme et la jaquette de chaque jeu testé.</p>
+                <p>Toutes les notes attribuées par la rédaction Gamekult.</p>
             </section>
 
             <div className="news-filters my-6">

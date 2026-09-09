@@ -71,7 +71,7 @@ export default function Games() {
             <section className="news-hero">
                 <span className="esport-eyebrow"><i /> ALPHA GAMING LIBRARY</span>
                 <h1>Le catalogue <span>gaming.</span></h1>
-                <p>Retrouvez tous les jeux, leur catégorie et leur univers. Ajoutez vos favoris depuis chaque carte.</p>
+                <p>Retrouvez tous les jeux, leur catégorie et leur univers.</p>
                 {!isAuthenticated && <p className="mt-3 text-amber-200">Connectez-vous pour utiliser les favoris.</p>}
             </section>
 

@@ -45,17 +45,9 @@ function Register() {
     return (
         <div className="mx-auto max-w-6xl px-6 py-16 text-slate-100">
             <div className="grid w-full gap-10 lg:grid-cols-2">
-                {/* Colonne gauche - Informations sur le starter kit */}
+                {/* Colonne gauche - Titre */}
                 <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur">
                     <h1 className="text-3xl font-semibold text-white">Créez votre compte</h1>
-                    <p className="mt-3 text-sm text-slate-300">
-                        Rejoignez le starter kit et accédez au tableau de bord protégé.
-                    </p>
-                    <ul className="mt-6 space-y-3 text-sm text-slate-300">
-                        <li>Session JWT sécurisée</li>
-                        <li>Endpoint profil prêt</li>
-                        <li>Interface Tailwind prête</li>
-                    </ul>
                 </div>
 
                 {/* Colonne droite - Formulaire d'inscription */}

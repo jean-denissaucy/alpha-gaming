@@ -51,14 +51,6 @@ function Login() {
                     {/* Colonne gauche - Informations */}
                     <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur">
                         <h1 className="text-3xl font-semibold text-white">Connexion</h1>
-                        <p className="mt-3 text-sm text-slate-300">
-                            Accede au tableau de bord avec tes identifiants.
-                        </p>
-                        <ul className="mt-6 space-y-3 text-sm text-slate-300">
-                            <li>Session securisee avec JWT</li>
-                            <li>Acces aux routes protegees</li>
-                            <li>Interface React + Tailwind</li>
-                        </ul>
                     </div>
 
                     {/* Colonne droite - Formulaire de connexion */}
