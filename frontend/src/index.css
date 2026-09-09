@@ -338,14 +338,17 @@
 	}
 }
 
-/* Responsive global : aucun contenu ne doit élargir la fenêtre mobile. */
+/* Responsive global : aucun contenu ne doit élargir la fenêtre mobile.
+   Important : le clipping horizontal est appliqué uniquement sur <html>
+   (il est propagé au viewport). Ne PAS remettre overflow sur <body> :
+   cela ferait de body un conteneur de scroll et casserait le header
+   sticky (la navbar ne suivrait plus quand on descend dans la page). */
 html {
 	overflow-x: hidden;
 }
 
 body {
 	margin: 0;
-	overflow-x: hidden;
 }
 
 button,
