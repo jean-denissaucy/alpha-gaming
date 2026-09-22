@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import { isDatabaseError } from '../config/db.js';
 import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
+import { validateRegistration } from '../utils/validation.js';
 
 // Normalise les données utilisateur pour uniformiser le format renvoyé au frontend.
 const normalizeUser = (user, favoriteGames = []) => {
@@ -43,10 +44,14 @@ const generateToken = (user) => {
 // Crée un compte utilisateur, vérifie l'unicité de l'email puis renvoie le token d'authentification.
 export const register = async (req, res) => {
     try {
-        const { email, password, firstname, lastname } = req.body;
-        if (!email || !password || !firstname || !lastname) {
-            return res.status(400).json(buildErrorResponse('Tous les champs sont requis', 400));
+        // Validation serveur systématique : le frontend valide déjà, mais on ne fait jamais confiance
+        // aux données reçues (format email, longueur du mot de passe, tailles des champs).
+        const validation = validateRegistration(req.body || {});
+        if (!validation.isValid) {
+            return res.status(400).json(buildErrorResponse(validation.errors.join(' '), 400));
         }
+        const { email, password, firstname, lastname } = validation.values;
+
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
             return res.status(409).json(buildErrorResponse('Email déjà utilisé', 409));

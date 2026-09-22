@@ -322,6 +322,17 @@ function parseCsvParam(value) {
         .filter(Boolean);
 }
 
+// Borne une limite SQL à un entier positif. Défense en profondeur : même si un appelant oublie de
+// valider req.query.limit, l'interpolation dans LIMIT ne peut plus injecter autre chose qu'un entier.
+// Strict : seule une chaîne purement numérique (ou un number) est acceptée, sinon on retombe sur fallback.
+export function sanitizeLimit(value, fallback, max) {
+    const raw = typeof value === 'number' ? String(Math.trunc(value)) : String(value ?? '').trim();
+    if (!/^\d+$/.test(raw)) return fallback;
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed < 1) return fallback;
+    return Math.min(parsed, max);
+}
+
 // Limite le nombre de matchs par équipe pour garder un fil plus équilibré et plus lisible.
 function diversifyByTeams(matches = [], maxPerTeam = 2) {
     const selected = [];
@@ -416,6 +427,7 @@ function isFresh(lastUpdate) {
 
 // Lit les actualités depuis MySQL, triées par date de publication, pour servir le cache local.
 async function getNewsFromDatabase(limit) {
+    const safeLimit = sanitizeLimit(limit, 9, 50);
     const rows = await query(
         `SELECT
             source,
@@ -428,7 +440,7 @@ async function getNewsFromDatabase(limit) {
             published_at AS publishedAt
          FROM news
          ORDER BY COALESCE(published_at, created_at) DESC, id DESC
-         LIMIT ${limit}`
+         LIMIT ${safeLimit}`
     ); return rows.map((row) => ({
         ...row,
         image: row.image || null,
@@ -438,6 +450,7 @@ async function getNewsFromDatabase(limit) {
 
 // Récupère les matchs esport déjà stockés en base avec filtres sur les ligues et les équipes.
 async function getEsportFromDatabase(limit, leagueFilters, excludedTeams) {
+    const safeLimit = sanitizeLimit(limit, 10, 20);
     const conditions = [];
     const params = [];
 
@@ -459,7 +472,7 @@ async function getEsportFromDatabase(limit, leagueFilters, excludedTeams) {
          FROM live_esport
          ${whereClause}
          ORDER BY COALESCE(published_at, created_at) DESC, id DESC
-         LIMIT ${limit}`,
+         LIMIT ${safeLimit}`,
         params
     );
 
@@ -827,7 +840,7 @@ export async function getLatestNotes(req, res) {
     try {
         const lastUpdate = await getTableLastUpdate('notes_gaming');
         if (isFresh(lastUpdate)) {
-            const items = await query(`SELECT titre_jeu AS game, score, plateformes AS platform, verdict, url AS href, image, published_at AS publishedAt FROM notes_gaming ORDER BY COALESCE(published_at, created_at) DESC, id DESC LIMIT ${limit}`);
+            const items = await query(`SELECT titre_jeu AS game, score, plateformes AS platform, verdict, url AS href, image, published_at AS publishedAt FROM notes_gaming ORDER BY COALESCE(published_at, created_at) DESC, id DESC LIMIT ${sanitizeLimit(limit, 20, 50)}`);
             if (items.length > 0) {
                 return res.json(buildSuccessResponse({ items, total: items.length, source: 'database' }));
             }
@@ -857,7 +870,7 @@ export async function getLatestQuickTests(req, res) {
                 created_at AS testedAt
              FROM notes_gaming
              ORDER BY created_at DESC, id DESC
-             LIMIT ${boundedLimit}`
+             LIMIT ${sanitizeLimit(boundedLimit, 9, 20)}`
         );
 
         return res.json(buildSuccessResponse({ items, total: items.length }));

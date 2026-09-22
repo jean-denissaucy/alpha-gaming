@@ -23,13 +23,33 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Même validation que le serveur : feedback immédiat avant l'appel API.
+        const trimmedEmail = email.trim();
+        if (password.length < 8) {
+            setError('Le mot de passe doit contenir au moins 8 caractères.');
+            return;
+        }
+        if (!/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
+            setError('Le format de l\'email est invalide.');
+            return;
+        }
+        if (!firstname.trim() || !lastname.trim()) {
+            setError('Le prénom et le nom sont requis.');
+            return;
+        }
+
         // Réinitialisation de l'erreur et activation du loader
         setError('');
         setLoading(true);
 
         try {
-            // Appel de la fonction d'inscription depuis le contexte
-            await register({ firstname, lastname, email, password });
+            // Appel de la fonction d'inscription depuis le contexte (champs normalisés comme côté serveur)
+            await register({
+                firstname: firstname.trim(),
+                lastname: lastname.trim(),
+                email: trimmedEmail,
+                password
+            });
 
             // Redirection vers le dashboard après succès
             navigate('/dashboard', { replace: true });
@@ -101,6 +121,7 @@ function Register() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            minLength={8}
                             placeholder="Au moins 8 caractères"
                         />
                     </div>

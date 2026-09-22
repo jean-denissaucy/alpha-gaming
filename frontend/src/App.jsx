@@ -11,8 +11,9 @@ import MainLayout from './layouts/MainLayout.jsx';
 import AuthLayout from './layouts/AuthLayout.jsx';
 import BackgroundAnimation from './components/BackgroundAnimation.jsx';
 
-// Import du composant de protection des routes
+// Import des composants de protection des routes
 import PrivateRoute from './components/PrivateRoute.jsx';
+import AdminRoute from './components/AdminRoute.jsx';
 
 // Import des pages de l'application
 import Home from './pages/Home.jsx';
@@ -56,7 +57,11 @@ function App() {
                         <PrivateRoute><Profile /></PrivateRoute>
                     } />
                     <Route path="/admin" element={
-                        <PrivateRoute><AdminDashboard /></PrivateRoute>
+                        // Double protection : connexion requise PUIS rôle admin obligatoire.
+                        // Un utilisateur standard est redirigé vers son dashboard.
+                        <PrivateRoute>
+                            <AdminRoute><AdminDashboard /></AdminRoute>
+                        </PrivateRoute>
                     } />
                 </Route>
 

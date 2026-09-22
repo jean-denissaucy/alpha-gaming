@@ -1,6 +1,12 @@
 // controllers/game.controller.js
 import Game from '../models/game.model.js';
 
+// Vérifie que categoryId est un entier positif valide (évite les erreurs de clé étrangère obscures en 500).
+function isValidCategoryId(categoryId) {
+    const parsed = Number(categoryId);
+    return Number.isInteger(parsed) && parsed > 0;
+}
+
 const gameController = {
     // Récupère la liste complète des jeux avec leur catégorie pour le front office.
     async getAllGames(req, res) {
@@ -49,11 +55,17 @@ const gameController = {
             const { categoryId, gameName, link, image } = req.body;
 
             // Validation minimale de sécurité
-            if (!gameName) {
+            if (!gameName || !String(gameName).trim()) {
                 return res.status(400).json({ message: 'Le nom du jeu est obligatoire.' });
             }
+            if (String(gameName).trim().length > 150) {
+                return res.status(400).json({ message: 'Le nom du jeu ne doit pas dépasser 150 caractères.' });
+            }
+            if (!isValidCategoryId(categoryId)) {
+                return res.status(400).json({ message: 'La catégorie du jeu est invalide.' });
+            }
 
-            const newGame = await Game.create({ categoryId, gameName, link, image });
+            const newGame = await Game.create({ categoryId: Number(categoryId), gameName, link, image });
             return res.status(201).json({
                 message: 'Jeu créé avec succès.',
                 game: newGame
@@ -70,11 +82,17 @@ const gameController = {
             const { id } = req.params;
             const { categoryId, gameName, link, image } = req.body;
 
-            if (!gameName) {
+            if (!gameName || !String(gameName).trim()) {
                 return res.status(400).json({ message: 'Le nom du jeu est obligatoire.' });
             }
+            if (String(gameName).trim().length > 150) {
+                return res.status(400).json({ message: 'Le nom du jeu ne doit pas dépasser 150 caractères.' });
+            }
+            if (!isValidCategoryId(categoryId)) {
+                return res.status(400).json({ message: 'La catégorie du jeu est invalide.' });
+            }
 
-            const isUpdated = await Game.update(id, { categoryId, gameName, link, image });
+            const isUpdated = await Game.update(id, { categoryId: Number(categoryId), gameName, link, image });
 
             if (!isUpdated) {
                 return res.status(404).json({ message: 'Jeu non trouvé ou aucune modification apportée.' });
