@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import usePageTitle from '../hooks/usePageTitle.js';
 import { Star, Monitor, ExternalLink, Gamepad2, Heart, ArrowLeft, ArrowRight } from 'lucide-react';
 import { testsService } from '../services/api.js';
 
@@ -13,6 +14,8 @@ function scoreBadge(score) {
 }
 
 export default function Tests() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Tests de jeux');
     const [items, setItems] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);

@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import usePageTitle from '../hooks/usePageTitle.js';
 import { newsService } from '../services/api.js';
 
 
 
 export default function News() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Actualités');
     const [items, setItems] = useState([]);
     const [category, setCategory] = useState('Toutes');
     const [loading, setLoading] = useState(true);

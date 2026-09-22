@@ -3,8 +3,11 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
+import usePageTitle from '../hooks/usePageTitle.js';
 
 function Login() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Connexion');
     // États pour gérer les champs du formulaire
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -56,11 +59,14 @@ function Login() {
                     {/* Colonne droite - Formulaire de connexion */}
                     <form onSubmit={handleSubmit} className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur">
 
-                        {/* Champ email */}
+                        {/* Champ email — label associé (RGAA 11.1) + autocomplete (RGAA 11.13) */}
                         <div>
-                            <label className="text-xs uppercase tracking-wide text-slate-400">Email</label>
+                            <label htmlFor="login-email" className="text-xs uppercase tracking-wide text-slate-400">Email</label>
                             <input
+                                id="login-email"
+                                name="email"
                                 type="email"
+                                autoComplete="email"
                                 className="input mt-2"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -71,9 +77,12 @@ function Login() {
 
                         {/* Champ mot de passe */}
                         <div className="mt-4">
-                            <label className="text-xs uppercase tracking-wide text-slate-400">Mot de passe</label>
+                            <label htmlFor="login-password" className="text-xs uppercase tracking-wide text-slate-400">Mot de passe</label>
                             <input
+                                id="login-password"
+                                name="password"
                                 type="password"
+                                autoComplete="current-password"
                                 className="input mt-2"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -82,9 +91,9 @@ function Login() {
                             />
                         </div>
 
-                        {/* Affichage de l'erreur si présente */}
+                        {/* Affichage de l'erreur si présente — annoncé automatiquement par les lecteurs d'écran (RGAA 11.10) */}
                         {error && (
-                            <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                            <div role="alert" className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                                 {error}
                             </div>
                         )}

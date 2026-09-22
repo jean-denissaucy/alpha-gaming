@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import usePageTitle from '../hooks/usePageTitle.js';
 import {
     Users, Gamepad2, Newspaper, Trophy, AlertCircle, CheckCircle, X, Plus,
     ArrowRight, ArrowLeft, Search, Pencil, Trash2, ExternalLink, Image as ImageIcon
@@ -27,6 +28,8 @@ async function adminFetch(path, options = {}) {
 }
 
 export default function AdminDashboard() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Administration');
     const [stats, setStats] = useState(null);
     const [games, setGames] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -212,11 +215,18 @@ export default function AdminDashboard() {
 
         {gameModalOpen && (
             <div className="admin-modal-backdrop" onClick={closeGameModal}>
-                <section className="admin-modal admin-modal-game" onClick={(e) => e.stopPropagation()}>
+                {/* Modale accessible (RGAA 7.1 / 7.3) : role=dialog + aria-modal + libellé relié au titre */}
+                <section
+                    className="admin-modal admin-modal-game"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="game-modal-title"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <div className="admin-modal-header">
                         <div>
                             <span className="admin-label">CATALOGUE</span>
-                            <h2>{editingId ? 'Modifier un jeu' : 'Ajouter un jeu'}</h2>
+                            <h2 id="game-modal-title">{editingId ? 'Modifier un jeu' : 'Ajouter un jeu'}</h2>
                         </div>
                         <button className="admin-modal-close" onClick={closeGameModal} aria-label="Fermer"><X className="h-5 w-5" /></button>
                     </div>
@@ -252,20 +262,28 @@ export default function AdminDashboard() {
 
         {usersOpen && (
             <div className="admin-modal-backdrop" onClick={() => setUsersOpen(false)}>
-                <section className="admin-modal" onClick={(e) => e.stopPropagation()}>
+                {/* Modale accessible (RGAA 7.1 / 7.3) */}
+                <section
+                    className="admin-modal"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="users-modal-title"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <div className="admin-modal-header">
                         <div>
                             <span className="admin-label">COMPTES</span>
-                            <h2>Gestion des utilisateurs <em>{users.length}</em></h2>
+                            <h2 id="users-modal-title">Gestion des utilisateurs <em>{users.length}</em></h2>
                         </div>
                         <button className="admin-modal-close" onClick={() => setUsersOpen(false)} aria-label="Fermer"><X className="h-5 w-5" /></button>
                     </div>
                     {editingUser ? (
                         <form className="admin-user-form" onSubmit={saveUser}>
-                            <input required value={editingUser.firstname} placeholder="Prénom" onChange={(e) => setEditingUser({ ...editingUser, firstname: e.target.value })} />
-                            <input required value={editingUser.lastname} placeholder="Nom" onChange={(e) => setEditingUser({ ...editingUser, lastname: e.target.value })} />
-                            <input required type="email" value={editingUser.email} placeholder="Email" onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })} />
-                            <select value={editingUser.role || 'user'} onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}>
+                            {/* aria-label car pas de label visible : les champs restent nommés pour les lecteurs d'écran (RGAA 11.1) */}
+                            <input required aria-label="Prénom" value={editingUser.firstname} placeholder="Prénom" onChange={(e) => setEditingUser({ ...editingUser, firstname: e.target.value })} />
+                            <input required aria-label="Nom" value={editingUser.lastname} placeholder="Nom" onChange={(e) => setEditingUser({ ...editingUser, lastname: e.target.value })} />
+                            <input required type="email" aria-label="Email" value={editingUser.email} placeholder="Email" onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })} />
+                            <select aria-label="Rôle du compte" value={editingUser.role || 'user'} onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}>
                                 <option value="user">Utilisateur</option>
                                 <option value="admin">Administrateur</option>
                             </select>
@@ -279,8 +297,8 @@ export default function AdminDashboard() {
                                     <span className="admin-avatar admin-avatar-small">{(item.firstname || 'U').slice(0, 1).toUpperCase()}</span>
                                     <div><strong>{item.firstname} {item.lastname}</strong><small>{item.email}</small></div>
                                     <span className={`admin-role admin-role-${item.role}`}>{item.role || 'user'}</span>
-                                    <button title="Modifier" onClick={() => setEditingUser(item)}><Pencil className="h-4 w-4" /></button>
-                                    <button className="admin-delete" title="Supprimer" onClick={() => removeUser(item.id)}><Trash2 className="h-4 w-4" /></button>
+                                    <button aria-label={`Modifier ${item.firstname} ${item.lastname}`} title="Modifier" onClick={() => setEditingUser(item)}><Pencil className="h-4 w-4" /></button>
+                                    <button className="admin-delete" aria-label={`Supprimer ${item.firstname} ${item.lastname}`} title="Supprimer" onClick={() => removeUser(item.id)}><Trash2 className="h-4 w-4" /></button>
                                 </div>
                             ))}
                         </div>

@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Heart, Gamepad2, ExternalLink, Mail, Calendar, User, ShieldCheck, LogOut } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
+import usePageTitle from '../hooks/usePageTitle.js';
 import { authService, gamesService } from '../services/api.js';
 
 export default function Profile() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Mon profil');
     const { user, logout } = useAuth();
     const [profile, setProfile] = useState(null);
     const [favorites, setFavorites] = useState([]);

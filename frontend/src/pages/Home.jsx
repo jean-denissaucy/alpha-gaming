@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Monitor, Gamepad2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
+import usePageTitle from '../hooks/usePageTitle.js';
 import BrandLogo from '../components/BrandLogo.jsx';
 import { newsService, esportService, testsService } from '../services/api.js';
 
@@ -16,6 +17,8 @@ function homeScoreColor(score) {
 }
 
 function Home() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Actualités gaming, tests et esport');
     // Vérification si l'utilisateur est connecté pour adapter les CTA
     const { isAuthenticated } = useAuth();
     const [featuredNews, setFeaturedNews] = useState([]);

@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShieldCheck, Eye, Trash2, Lock } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
+import usePageTitle from '../hooks/usePageTitle.js';
 
 function Register() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Créer un compte');
     // États pour gérer les champs du formulaire
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
@@ -127,11 +130,14 @@ function Register() {
                     onSubmit={handleSubmit}
                     className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur"
                 >
-                    {/* Champs prénom et nom sur la même ligne */}
+                    {/* Champs prénom et nom — labels associés (RGAA 11.1) + autocomplete (RGAA 11.13) */}
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div>
-                            <label className="text-xs uppercase tracking-wide text-slate-400">Prénom</label>
+                            <label htmlFor="register-firstname" className="text-xs uppercase tracking-wide text-slate-400">Prénom</label>
                             <input
+                                id="register-firstname"
+                                name="firstname"
+                                autoComplete="given-name"
                                 className="input mt-2"
                                 value={firstname}
                                 onChange={(e) => setFirstname(e.target.value)}
@@ -140,8 +146,11 @@ function Register() {
                             />
                         </div>
                         <div>
-                            <label className="text-xs uppercase tracking-wide text-slate-400">Nom</label>
+                            <label htmlFor="register-lastname" className="text-xs uppercase tracking-wide text-slate-400">Nom</label>
                             <input
+                                id="register-lastname"
+                                name="lastname"
+                                autoComplete="family-name"
                                 className="input mt-2"
                                 value={lastname}
                                 onChange={(e) => setLastname(e.target.value)}
@@ -153,9 +162,12 @@ function Register() {
 
                     {/* Champ email */}
                     <div className="mt-4">
-                        <label className="text-xs uppercase tracking-wide text-slate-400">Email</label>
+                        <label htmlFor="register-email" className="text-xs uppercase tracking-wide text-slate-400">Email</label>
                         <input
+                            id="register-email"
+                            name="email"
                             type="email"
+                            autoComplete="email"
                             className="input mt-2"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -166,9 +178,12 @@ function Register() {
 
                     {/* Champ mot de passe */}
                     <div className="mt-4">
-                        <label className="text-xs uppercase tracking-wide text-slate-400">Mot de passe</label>
+                        <label htmlFor="register-password" className="text-xs uppercase tracking-wide text-slate-400">Mot de passe</label>
                         <input
+                            id="register-password"
+                            name="password"
                             type="password"
+                            autoComplete="new-password"
                             className="input mt-2"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -197,9 +212,9 @@ function Register() {
                         </label>
                     </div>
 
-                    {/* Affichage de l'erreur si présente */}
+                    {/* Affichage de l'erreur si présente — annoncé automatiquement par les lecteurs d'écran (RGAA 11.10) */}
                     {error && (
-                        <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                        <div role="alert" className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                             {error}
                         </div>
                     )}

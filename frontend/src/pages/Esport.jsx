@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import usePageTitle from '../hooks/usePageTitle.js';
 import { Trophy, Clock, Radio, ExternalLink, Flame, Rocket, Target, Zap, Swords, Shield, Medal, Crosshair, Radar, Gamepad2, Activity, ChevronRight } from 'lucide-react';
 import { esportService } from '../services/api.js';
 
@@ -24,6 +25,8 @@ function normalizeLeague(value = '') {
 }
 
 export default function Esport() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Esport');
     const [events, setEvents] = useState([]);
     const [filter, setFilter] = useState('Toutes');
     const [loading, setLoading] = useState(true);

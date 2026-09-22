@@ -8,11 +8,20 @@ function MainLayout() {
     return (
         <div className="min-h-screen bg-transparent text-slate-100">
 
+            {/* Lien d'évitement : permet aux utilisateurs de clavier et lecteurs d'écran de sauter
+                directement au contenu principal sans parcourir toute la navigation (RGAA 12.7). */}
+            <a
+                href="#contenu-principal"
+                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-xl focus:border focus:border-cyan-400 focus:bg-slate-950 focus:px-5 focus:py-3 focus:font-semibold focus:text-cyan-200"
+            >
+                Aller au contenu principal
+            </a>
+
             {/* Barre de navigation fixe en haut */}
             <Header />
 
             {/* Contenu principal de la page (injecté par les routes) */}
-            <main className="relative min-h-[calc(100vh-140px)]">
+            <main id="contenu-principal" className="relative min-h-[calc(100vh-140px)]">
                 <div
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-x-6 top-6 bottom-6 rounded-[2.2rem] bg-linear-to-br from-cyan-500/14 via-slate-900/20 to-blue-500/12"

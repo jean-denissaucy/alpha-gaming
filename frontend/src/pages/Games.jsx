@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import usePageTitle from '../hooks/usePageTitle.js';
 import { Heart, ExternalLink, Gamepad2, ArrowRight, ArrowLeft } from 'lucide-react';
 import { gamesService } from '../services/api.js';
 import { useAuth } from '../hooks/useAuth.js';
@@ -6,6 +7,8 @@ import { useAuth } from '../hooks/useAuth.js';
 const PAGE_SIZE = 25;
 
 export default function Games() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Catalogue de jeux');
     const [games, setGames] = useState([]);
     const [category, setCategory] = useState('Toutes');
     const [page, setPage] = useState(1);

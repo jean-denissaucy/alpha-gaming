@@ -100,6 +100,21 @@
 			border-color: rgb(var(--primary-rgb) / 0.8);
 		}
 
+	/* RGAA 10.7 : le prise de focus doit être visible sur TOUS les éléments focusables.
+	   On utilise :focus-visible pour ne pas gêner les clics souris tout en garantissant
+	   un contour visible à la navigation clavier (Tab). */
+	:focus-visible {
+		outline: 2px solid rgb(var(--primary-light-rgb));
+		outline-offset: 2px;
+		border-radius: 0.25rem;
+	}
+
+	.input:focus-visible {
+		outline: 2px solid rgb(var(--primary-light-rgb));
+		outline-offset: 2px;
+		border-color: rgb(var(--primary-rgb) / 0.8);
+	}
+
 	.hero-glow {
 		background-image:
 			linear-gradient(120deg, rgb(var(--primary-rgb) / 0.24), transparent 48%),

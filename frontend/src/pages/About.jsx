@@ -7,6 +7,7 @@ import {
     UserCheck, Trash2, Download, Mail, Server, Scale, Eye, ExternalLink, Code2, Clock,
     Accessibility, CheckCircle2
 } from 'lucide-react';
+import usePageTitle from '../hooks/usePageTitle.js';
 
 // Sources RSS d'actualités utilisées par le backend (voir backend/controllers/news.controller.js).
 const NEWS_SOURCES = [
@@ -87,6 +88,9 @@ function SourceGrid({ sources }) {
 }
 
 function About() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('À propos - Sources et RGPD');
+
     return (
         <div className="mx-auto max-w-6xl px-6 py-16 text-slate-100">
 
@@ -267,22 +271,25 @@ function About() {
                     <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-4">
                         <strong className="block text-emerald-200">✓ Mises en place sur le site</strong>
                         <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-slate-300">
+                            <li>Lien d'évitement « Aller au contenu principal » visible à la prise de focus (Tab).</li>
+                            <li>Chaque page possède un <strong className="text-white">titre d'onglet dynamique</strong> qui décrit son contenu.</li>
                             <li>Toutes les images portent une alternative textuelle pertinente (ou vide si décorative).</li>
-                            <li>Chaque page possède un titre et la langue du document est déclarée (français).</li>
+                            <li>Les étiquettes de formulaires sont <strong className="text-white">reliées aux champs</strong> et l'auto-complétion est activée (email, nom, prénom).</li>
+                            <li>Le <strong className="text-white">focus clavier est toujours visible</strong> (contour lumineux sur toute la navigation Tab).</li>
+                            <li>Les erreurs de formulaire sont <strong className="text-white">annoncées automatiquement</strong> par les lecteurs d'écran.</li>
                             <li>Les boutons sans texte (icônes seules) ont un libellé accessible via <code className="text-cyan-200">aria-label</code>.</li>
-                            <li>Les zones de navigation sont identifiées (<code className="text-cyan-200">aria-label</code> sur les <code className="text-cyan-200">nav</code>).</li>
+                            <li>Les modales d'administration sont correctement identifiées (<code className="text-cyan-200">role=dialog</code>).</li>
                             <li>Le contenu strictement décoratif (vidéo de fond, particules) est masqué aux lecteurs d'écran.</li>
-                            <li>Les formulaires utilisent des champs avec étiquettes et validation claire des erreurs.</li>
-                            <li>La navigation au clavier est possible : l'ordre des éléments suit l'ordre visuel.</li>
+                            <li>La langue du document est déclarée (français) et la structure respecte la hiérarchie des titres.</li>
                         </ul>
                     </div>
                     <div className="rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4">
                         <strong className="block text-amber-200">△ Améliorations prévues</strong>
                         <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-slate-300">
-                            <li>Audit complet des 106 critères du RGAA (contrastes, focus visible sur tous les composants).</li>
+                            <li>Audit complet des 106 critères du RGAA (contrastes, gestion du focus dans les modales).</li>
                             <li>Vérification systématique des contrastes de texte sur le fond animé (images, vidéos).</li>
                             <li>Message explicite lors d'un changement de contenu dynamique (chargements).</li>
-                            <li>Plan du site et lien d'évitement (« aller au contenu ») en haut de page.</li>
+                            <li>Plan du site.</li>
                             <li>Vidéo de fond avec alternative statique pour les connexions lentes.</li>
                         </ul>
                     </div>

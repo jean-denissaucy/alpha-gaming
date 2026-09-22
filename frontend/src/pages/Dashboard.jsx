@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth.js';
+import usePageTitle from '../hooks/usePageTitle.js';
 import { authService, gamesService } from '../services/api.js';
 
 // Les jeux affichés proviennent du catalogue chargé depuis l'API.
@@ -130,6 +131,8 @@ const gameLinks = {
 };
 
 function Dashboard() {
+    // Titre de page dynamique (RGAA 8.6)
+    usePageTitle('Mon tableau de bord');
     // Récupération de l'utilisateur et de la fonction logout depuis le contexte
     const { user, logout } = useAuth();
 
