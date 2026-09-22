@@ -278,7 +278,8 @@ function About() {
                             <li>Le <strong className="text-white">focus clavier est toujours visible</strong> (contour lumineux sur toute la navigation Tab).</li>
                             <li>Les erreurs de formulaire sont <strong className="text-white">annoncées automatiquement</strong> par les lecteurs d'écran.</li>
                             <li>Les boutons sans texte (icônes seules) ont un libellé accessible via <code className="text-cyan-200">aria-label</code>.</li>
-                            <li>Les modales d'administration sont correctement identifiées (<code className="text-cyan-200">role=dialog</code>).</li>
+                            <li>Les modales d'administration piègent le focus (Tab enfermé, Échap ferme) et le restituent à la fermeture.</li>
+                            <li>Les écrans de chargement sont annoncés automatiquement aux lecteurs d'écran.</li>
                             <li>Le contenu strictement décoratif (vidéo de fond, particules) est masqué aux lecteurs d'écran.</li>
                             <li>La langue du document est déclarée (français) et la structure respecte la hiérarchie des titres.</li>
                         </ul>
