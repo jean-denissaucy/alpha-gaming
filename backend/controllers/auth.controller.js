@@ -5,6 +5,22 @@ import { isDatabaseError } from '../config/db.js';
 import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 import { validateRegistration } from '../utils/validation.js';
 
+// Emails promus administrateurs via la variable d'environnement ADMIN_EMAILS.
+// Doit rester STRICTEMENT identique à la logique de middlewares/admin.middleware.js :
+// le frontend doit voir le même rôle que celui que le backend applique réellement.
+const getConfiguredAdminEmails = () => (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+
+// Rôle effectif : admin si le rôle SQL est 'admin' OU si l'email est dans ADMIN_EMAILS.
+const resolveRole = (user) => {
+    if (!user) return 'user';
+    const email = String(user.email || '').trim().toLowerCase();
+    if (user.role === 'admin' || getConfiguredAdminEmails().includes(email)) return 'admin';
+    return user.role || 'user';
+};
+
 // Normalise les données utilisateur pour uniformiser le format renvoyé au frontend.
 const normalizeUser = (user, favoriteGames = []) => {
     if (!user) return null;
@@ -19,7 +35,7 @@ const normalizeUser = (user, favoriteGames = []) => {
         email: user.email,
         firstname,
         lastname,
-        role: user.role || 'user',
+        role: resolveRole(user),
         created_at: user.created_at,
         favorite_games: favoriteGames
     };
