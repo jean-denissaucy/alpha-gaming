@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ShieldCheck, Eye, Trash2, Lock } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
 
 function Register() {
@@ -10,6 +11,9 @@ function Register() {
     const [lastname, setLastname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    // Consentement RGPD : obligatoire avant de pouvoir créer le compte.
+    const [rgpdConsent, setRgpdConsent] = useState(false);
 
     // États pour gérer les erreurs et le chargement
     const [error, setError] = useState('');
@@ -22,6 +26,12 @@ function Register() {
     // Gestion de la soumission du formulaire d'inscription
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Consentement RGPD requis avant toute création de compte.
+        if (!rgpdConsent) {
+            setError('Vous devez accepter la politique de protection des données pour créer votre compte.');
+            return;
+        }
 
         // Même validation que le serveur : feedback immédiat avant l'appel API.
         const trimmedEmail = email.trim();
@@ -65,9 +75,51 @@ function Register() {
     return (
         <div className="mx-auto max-w-6xl px-6 py-16 text-slate-100">
             <div className="grid w-full gap-10 lg:grid-cols-2">
-                {/* Colonne gauche - Titre */}
+                {/* Colonne gauche - Titre + information RGPD affichée AVANT la création du compte */}
                 <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur">
                     <h1 className="text-3xl font-semibold text-white">Créez votre compte</h1>
+
+                    <p className="mt-4 text-sm leading-relaxed text-slate-300">
+                        Avant de continuer, voici comment vos données personnelles sont utilisées, conformément au RGPD.
+                    </p>
+
+                    <div className="mt-6 space-y-4">
+                        <div className="flex items-start gap-3">
+                            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
+                            <p className="text-sm text-slate-300">
+                                <strong className="text-white">Données collectées :</strong> email, prénom, nom et un mot de passe
+                                (stocké uniquement sous forme hashée, illisible même par l'équipe du site).
+                            </p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <Lock className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
+                            <p className="text-sm text-slate-300">
+                                <strong className="text-white">Utilisation :</strong> uniquement pour gérer votre compte et vos jeux
+                                favoris. Aucune donnée n'est vendue ni transmise à des tiers.
+                            </p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <Eye className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
+                            <p className="text-sm text-slate-300">
+                                <strong className="text-white">Vos droits :</strong> accès, rectification, portabilité et suppression
+                                de votre compte et de vos favoris à tout moment.
+                            </p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <Trash2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
+                            <p className="text-sm text-slate-300">
+                                <strong className="text-white">Conservation :</strong> vos données sont effacées lors de la suppression
+                                de votre compte. Aucun cookie publicitaire n'est utilisé.
+                            </p>
+                        </div>
+                    </div>
+
+                    <p className="mt-6 text-sm text-slate-400">
+                        Le détail complet est sur la page{' '}
+                        <Link to="/a-propos" className="font-semibold text-cyan-300 underline decoration-cyan-400/40 underline-offset-2 hover:text-cyan-200">
+                            À propos — RGPD
+                        </Link>.
+                    </p>
                 </div>
 
                 {/* Colonne droite - Formulaire d'inscription */}
@@ -124,6 +176,25 @@ function Register() {
                             minLength={8}
                             placeholder="Au moins 8 caractères"
                         />
+                    </div>
+
+                    {/* Consentement RGPD obligatoire avant la création du compte */}
+                    <div className="mt-6 flex items-start gap-3">
+                        <input
+                            id="rgpd-consent"
+                            type="checkbox"
+                            checked={rgpdConsent}
+                            onChange={(e) => setRgpdConsent(e.target.checked)}
+                            required
+                            className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-cyan-400"
+                        />
+                        <label htmlFor="rgpd-consent" className="cursor-pointer text-sm leading-relaxed text-slate-300">
+                            J'ai lu la politique de protection des données et j'accepte que mes informations
+                            (email, prénom, nom) soient utilisées pour gérer mon compte, conformément au RGPD.{' '}
+                            <Link to="/a-propos" className="font-semibold text-cyan-300 underline decoration-cyan-400/40 underline-offset-2 hover:text-cyan-200">
+                                En savoir plus
+                            </Link>
+                        </label>
                     </div>
 
                     {/* Affichage de l'erreur si présente */}
