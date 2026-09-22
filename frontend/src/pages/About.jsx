@@ -4,7 +4,8 @@
 import { Link } from 'react-router-dom';
 import {
     Newspaper, Trophy, ClipboardCheck, Globe, Rss, ShieldCheck, Database, Lock,
-    UserCheck, Trash2, Download, Mail, Server, Scale, Eye, ExternalLink, Code2, Clock
+    UserCheck, Trash2, Download, Mail, Server, Scale, Eye, ExternalLink, Code2, Clock,
+    Accessibility, CheckCircle2
 } from 'lucide-react';
 
 // Sources RSS d'actualités utilisées par le backend (voir backend/controllers/news.controller.js).
@@ -237,6 +238,72 @@ function About() {
                     <a href="https://www.cnil.fr" target="_blank" rel="noreferrer" className="font-semibold text-cyan-300 underline decoration-cyan-400/40 underline-offset-2 hover:text-cyan-200">
                         CNIL <ExternalLink className="inline h-3 w-3" />
                     </a>.
+                </p>
+            </SectionCard>
+
+            {/* ======================= RGAA ======================= */}
+            <header className="mb-8 mt-14">
+                <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-400/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-sky-200">
+                    <Accessibility className="h-3.5 w-3.5" /> Accessibilité
+                </span>
+                <h2 className="mt-4 text-3xl font-semibold text-white">Déclaration d'accessibilité (RGAA)</h2>
+                <p className="mt-3 max-w-3xl text-slate-300">
+                    Alpha Gaming s'efforce de respecter les critères du <strong className="text-white">RGAA 4.1</strong>{' '}
+                    (Référentiel Général d'Amélioration de l'Accessibilité), le référentiel français issu des normes{' '}
+                    <strong className="text-white">WCAG 2.1</strong> niveau AA et de la norme européenne EN 301 549.
+                </p>
+            </header>
+
+            {/* État de conformité */}
+            <SectionCard className="mb-8">
+                <h3 className="flex items-center gap-3 text-xl font-semibold text-white">
+                    <CheckCircle2 className="h-5 w-5 text-sky-300" /> État de conformité
+                </h3>
+                <p className="mt-4 text-slate-300">
+                    Ce site est <strong className="text-white">partiellement conforme</strong> : une partie des critères du RGAA 4.1
+                    niveau AA est respectée, mais le site n'a pas encore fait l'objet d'un audit complet.
+                </p>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-4">
+                        <strong className="block text-emerald-200">✓ Mises en place sur le site</strong>
+                        <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-slate-300">
+                            <li>Toutes les images portent une alternative textuelle pertinente (ou vide si décorative).</li>
+                            <li>Chaque page possède un titre et la langue du document est déclarée (français).</li>
+                            <li>Les boutons sans texte (icônes seules) ont un libellé accessible via <code className="text-cyan-200">aria-label</code>.</li>
+                            <li>Les zones de navigation sont identifiées (<code className="text-cyan-200">aria-label</code> sur les <code className="text-cyan-200">nav</code>).</li>
+                            <li>Le contenu strictement décoratif (vidéo de fond, particules) est masqué aux lecteurs d'écran.</li>
+                            <li>Les formulaires utilisent des champs avec étiquettes et validation claire des erreurs.</li>
+                            <li>La navigation au clavier est possible : l'ordre des éléments suit l'ordre visuel.</li>
+                        </ul>
+                    </div>
+                    <div className="rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4">
+                        <strong className="block text-amber-200">△ Améliorations prévues</strong>
+                        <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-slate-300">
+                            <li>Audit complet des 106 critères du RGAA (contrastes, focus visible sur tous les composants).</li>
+                            <li>Vérification systématique des contrastes de texte sur le fond animé (images, vidéos).</li>
+                            <li>Message explicite lors d'un changement de contenu dynamique (chargements).</li>
+                            <li>Plan du site et lien d'évitement (« aller au contenu ») en haut de page.</li>
+                            <li>Vidéo de fond avec alternative statique pour les connexions lentes.</li>
+                        </ul>
+                    </div>
+                </div>
+            </SectionCard>
+
+            {/* Contact accessibilité */}
+            <SectionCard className="mb-8">
+                <h3 className="flex items-center gap-3 text-xl font-semibold text-white">
+                    <Mail className="h-5 w-5 text-sky-300" /> Signaler un problème d'accessibilité
+                </h3>
+                <p className="mt-4 text-sm leading-relaxed text-slate-300">
+                    Si vous rencontrez une difficulté pour utiliser le site (navigation au clavier, lecteur d'écran, contrastes…),
+                    signalez-la à l'administrateur du site : votre retour sera pris en compte dans les prochaines mises à jour.
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                    Si vous n'obtenez pas de réponse satisfaisante, vous pouvez saisir le{' '}
+                    <a href="https://formulaire.defenseurdesdroits.fr/" target="_blank" rel="noreferrer" className="font-semibold text-cyan-300 underline decoration-cyan-400/40 underline-offset-2 hover:text-cyan-200">
+                        Défenseur des droits <ExternalLink className="inline h-3 w-3" />
+                    </a>{' '}
+                    ou son délégué, conformément à l'article 11 de la loi n° 2005-102 du 11 février 2005.
                 </p>
             </SectionCard>
 
