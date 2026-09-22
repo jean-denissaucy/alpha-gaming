@@ -25,6 +25,7 @@ router.get('/stats', async (req, res) => {
         }));
     } catch (error) {
         console.error('Erreur statistiques admin:', error.code || 'UNKNOWN', error.message);
+    debugger;
         return res.status(503).json(buildErrorResponse('Données administrateur indisponibles', 503));
     }
 });
