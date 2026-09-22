@@ -34,7 +34,8 @@ function App() {
     const { loading } = useAuth();
 
     // Affichage d'un écran de chargement pendant la vérification de l'authentification
-    if (loading) return <div><p>Chargement...</p></div>;
+    // role=status : le message de chargement est annoncé aux lecteurs d'écran (RGAA 7.3)
+    if (loading) return <div role="status"><p>Chargement...</p></div>;
 
     return (
         <>

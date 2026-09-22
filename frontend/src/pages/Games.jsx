@@ -85,7 +85,7 @@ export default function Games() {
             </div>
 
             {loading ? (
-                <p className="news-loading">Chargement du catalogue…</p>
+                <p className="news-loading" role="status">Chargement du catalogue…</p>
             ) : error ? (
                 <p className="text-rose-300">{error}</p>
             ) : (

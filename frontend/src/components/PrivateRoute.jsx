@@ -14,7 +14,8 @@ function PrivateRoute({ children }) {
 
     // Affichage d'un loader pendant la vérification de l'authentification
     if (loading) {
-        return <div><p>Chargement...</p></div>;
+        // role=status : annoncé aux lecteurs d'écran (RGAA 7.3)
+        return <div role="status"><p>Chargement...</p></div>;
     }
 
     // Si non authentifié, redirection vers la page de login

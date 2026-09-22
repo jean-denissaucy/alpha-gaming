@@ -11,7 +11,10 @@ export default function useFocusTrap(isActive, onClose) {
     // Référence à poser sur le conteneur de la modale.
     const containerRef = useRef(null);
     const onCloseRef = useRef(onClose);
-    onCloseRef.current = onClose;
+
+    useEffect(() => {
+        onCloseRef.current = onClose;
+    }, [onClose]);
 
     useEffect(() => {
         if (!isActive || !containerRef.current) return undefined;

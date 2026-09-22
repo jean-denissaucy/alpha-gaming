@@ -16,7 +16,8 @@ function AdminRoute({ children }) {
 
     // Pendant la vérification du token, on ne décide rien encore
     if (loading) {
-        return <div><p>Chargement...</p></div>;
+        // role=status : annoncé aux lecteurs d'écran (RGAA 7.3)
+        return <div role="status"><p>Chargement...</p></div>;
     }
 
     // Sécurité double : il faut être connecté ET avoir le rôle admin

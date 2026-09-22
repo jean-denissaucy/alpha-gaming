@@ -76,7 +76,7 @@ export default function Tests() {
             <p className="mb-4 text-sm text-slate-400">{total} tests · {totalPages} pages</p>
 
             {loading ? (
-                <p className="news-loading">Chargement des tests…</p>
+                <p className="news-loading" role="status">Chargement des tests…</p>
             ) : error ? (
                 <p className="text-rose-300">{error}</p>
             ) : (

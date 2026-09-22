@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import usePageTitle from '../hooks/usePageTitle.js';
+import useFocusTrap from '../hooks/useFocusTrap.js';
 import {
     Users, Gamepad2, Newspaper, Trophy, AlertCircle, CheckCircle, X, Plus,
     ArrowRight, ArrowLeft, Search, Pencil, Trash2, ExternalLink, Image as ImageIcon
@@ -45,6 +46,10 @@ export default function AdminDashboard() {
     const [users, setUsers] = useState([]);
     const [usersOpen, setUsersOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
+
+    // RGAA 7.3 : focus piégé dans les modales (Tab enfermé, Échap ferme, focus restitué à la fermeture).
+    const gameModalRef = useFocusTrap(gameModalOpen, closeGameModal);
+    const usersModalRef = useFocusTrap(usersOpen, () => setUsersOpen(false));
 
     const load = async () => {
         setLoading(true);
@@ -217,6 +222,8 @@ export default function AdminDashboard() {
             <div className="admin-modal-backdrop" onClick={closeGameModal}>
                 {/* Modale accessible (RGAA 7.1 / 7.3) : role=dialog + aria-modal + libellé relié au titre */}
                 <section
+                    ref={gameModalRef}
+                    tabIndex={-1}
                     className="admin-modal admin-modal-game"
                     role="dialog"
                     aria-modal="true"
@@ -264,6 +271,8 @@ export default function AdminDashboard() {
             <div className="admin-modal-backdrop" onClick={() => setUsersOpen(false)}>
                 {/* Modale accessible (RGAA 7.1 / 7.3) */}
                 <section
+                    ref={usersModalRef}
+                    tabIndex={-1}
                     className="admin-modal"
                     role="dialog"
                     aria-modal="true"
