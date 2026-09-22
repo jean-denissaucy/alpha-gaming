@@ -221,12 +221,12 @@ function About() {
                     <Lock className="h-5 w-5 text-emerald-300" /> Vos droits
                 </h3>
                 <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                    {GDPR_RIGHTS.map(({ Icon, label, description }) => (
-                        <div key={label} className="flex items-start gap-3 rounded-2xl border border-slate-700/70 bg-slate-900/50 p-4">
-                            <Icon className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
+                    {GDPR_RIGHTS.map((right) => (
+                        <div key={right.label} className="flex items-start gap-3 rounded-2xl border border-slate-700/70 bg-slate-900/50 p-4">
+                            <right.Icon className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
                             <span>
-                                <strong className="block text-white">{label}</strong>
-                                <span className="mt-1 block text-sm text-slate-400">{description}</span>
+                                <strong className="block text-white">{right.label}</strong>
+                                <span className="mt-1 block text-sm text-slate-400">{right.description}</span>
                             </span>
                         </div>
                     ))}
