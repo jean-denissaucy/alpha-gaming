@@ -14,6 +14,7 @@ import BackgroundAnimation from './components/BackgroundAnimation.jsx';
 // Import des composants de protection des routes
 import PrivateRoute from './components/PrivateRoute.jsx';
 import AdminRoute from './components/AdminRoute.jsx';
+import AccessibilityWidget from './components/AccessibilityWidget.jsx';
 
 // Import des pages de l'application
 import Home from './pages/Home.jsx';
@@ -40,6 +41,8 @@ function App() {
     return (
         <>
             <BackgroundAnimation />
+            {/* Bouton flottant « Accessibilité » : options RGAA activables par l'utilisateur */}
+            <AccessibilityWidget />
             <Routes>
                 {/* Routes publiques avec Header + Footer */}
                 <Route element={<MainLayout />}>

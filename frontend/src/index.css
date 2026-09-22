@@ -100,6 +100,74 @@
 			border-color: rgb(var(--primary-rgb) / 0.8);
 		}
 
+	/* ==========================================================================
+	   RGAA : options d'accessibilité activables via le bouton « Accessibilité »
+	   (components/AccessibilityWidget.jsx pose les classes sur <html>).
+	   ========================================================================== */
+
+	/* Option 1 — Agrandir le texte : la racine passe de 100% à 118%, tous les
+	   textes en rem augmentent proportionnellement (RGAA 10.4). */
+	html.a11y-big-text {
+		font-size: 118%;
+	}
+
+	/* Option 2 — Contraste renforcé : éclaircit les textes gris sur fond sombre
+	   pour dépasser le seuil de 4.5:1 (RGAA 3.2). */
+	html.a11y-contrast body {
+		color: rgb(241 245 249);
+	}
+
+	html.a11y-contrast .text-slate-300,
+	html.a11y-contrast .text-slate-400 {
+		color: rgb(226 232 240) !important;
+	}
+
+	html.a11y-contrast .text-slate-500 {
+		color: rgb(203 213 225) !important;
+	}
+
+	html.a11y-contrast .input::placeholder {
+		color: rgb(203 213 225);
+	}
+
+	/* Option 3 — Réduire les animations : masque la vidéo de fond et les particules
+	   et neutralise les animations CSS (RGAA 13.8, aide les troubles vestibulaires). */
+	html.a11y-no-motion .site-bg-video,
+	html.a11y-no-motion .site-particle {
+		display: none !important;
+	}
+
+	html.a11y-no-motion *,
+	html.a11y-no-motion *::before,
+	html.a11y-no-motion *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+
+	/* Option 4 — Souligner les liens : rend chaque lien identifiable sans la couleur (RGAA 3.6). */
+	html.a11y-underline-links a {
+		text-decoration: underline !important;
+		text-underline-offset: 2px;
+	}
+
+	/* Réglage système « mouvement réduit » : appliqué même sans toucher au bouton. */
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+			scroll-behavior: auto !important;
+		}
+
+		.site-bg-video {
+			display: none;
+		}
+	}
+
 	/* RGAA 10.7 : le prise de focus doit être visible sur TOUS les éléments focusables.
 	   On utilise :focus-visible pour ne pas gêner les clics souris tout en garantissant
 	   un contour visible à la navigation clavier (Tab). */

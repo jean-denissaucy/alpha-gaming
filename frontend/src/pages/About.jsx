@@ -271,6 +271,7 @@ function About() {
                     <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-4">
                         <strong className="block text-emerald-200">✓ Mises en place sur le site</strong>
                         <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-slate-300">
+                            <li>Un <strong className="text-white">bouton « Accessibilité »</strong> (en bas à droite de chaque page) permet d'activer : texte agrandi, contraste renforcé, réduction des animations et soulignement des liens. Vos choix sont enregistrés sur votre appareil.</li>
                             <li>Lien d'évitement « Aller au contenu principal » visible à la prise de focus (Tab).</li>
                             <li>Chaque page possède un <strong className="text-white">titre d'onglet dynamique</strong> qui décrit son contenu.</li>
                             <li>Toutes les images portent une alternative textuelle pertinente (ou vide si décorative).</li>
