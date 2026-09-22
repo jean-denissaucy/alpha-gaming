@@ -17,6 +17,7 @@ import AdminRoute from './components/AdminRoute.jsx';
 
 // Import des pages de l'application
 import Home from './pages/Home.jsx';
+import About from './pages/About.jsx';
 import News from './pages/News.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -48,6 +49,7 @@ function App() {
                     <Route path="/games" element={<Games />} />
                     <Route path="/esport" element={<Esport />} />
                     <Route path="/tests" element={<Tests />} />
+                    <Route path="/a-propos" element={<About />} />
 
                     {/* Dashboard et profil protégés - nécessitent une authentification */}
                     <Route path="/dashboard" element={

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Home, Newspaper, Gamepad2, ClipboardCheck, Trophy, User, Shield, LogIn, LogOut, UserPlus, ChevronDown, Menu, X } from 'lucide-react';
+import { Home, Newspaper, Gamepad2, ClipboardCheck, Trophy, User, Shield, LogIn, LogOut, UserPlus, ChevronDown, Menu, X, Info } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
 import BrandLogo from './BrandLogo.jsx';
 
@@ -12,7 +12,8 @@ const NAV_ITEMS = [
     { to: '/news', label: 'Actualités', Icon: Newspaper },
     { to: '/games', label: 'Jeux', Icon: Gamepad2 },
     { to: '/tests', label: 'Test', Icon: ClipboardCheck },
-    { to: '/esport', label: 'Esport', Icon: Trophy }
+    { to: '/esport', label: 'Esport', Icon: Trophy },
+    { to: '/a-propos', label: 'À propos', Icon: Info }
 ];
 
 function Header() {
