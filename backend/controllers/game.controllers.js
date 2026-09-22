@@ -2,7 +2,7 @@
 import Game from '../models/game.model.js';
 
 const gameController = {
-    // Récupérer tous les jeux
+    // Récupère la liste complète des jeux avec leur catégorie pour le front office.
     async getAllGames(req, res) {
         try {
             const games = await Game.findAll();
@@ -13,7 +13,7 @@ const gameController = {
         }
     },
 
-    // Récupérer un jeu par son ID
+    // Récupère un jeu précis en fonction de son identifiant.
     async getGameById(req, res) {
         try {
             const { id } = req.params;
@@ -30,7 +30,7 @@ const gameController = {
         }
     },
 
-    // Récupérer les jeux d'une catégorie
+    // Filtre les jeux selon la catégorie demandée.
     async getGamesByCategoryId(req, res) {
         try {
             const { categoryId } = req.params;
@@ -43,7 +43,7 @@ const gameController = {
         }
     },
 
-    // Créer un nouveau jeu
+    // Crée un jeu avec les données reçues dans le corps de la requête.
     async createGame(req, res) {
         try {
             const { categoryId, gameName, link, image } = req.body;
@@ -64,7 +64,7 @@ const gameController = {
         }
     },
 
-    // Modifier un jeu existant
+    // Met à jour les informations d'un jeu existant.
     async updateGame(req, res) {
         try {
             const { id } = req.params;
@@ -87,7 +87,7 @@ const gameController = {
         }
     },
 
-    // Supprimer un jeu
+    // Supprime un jeu après vérification de son existence.
     async deleteGame(req, res) {
         try {
             const { id } = req.params;

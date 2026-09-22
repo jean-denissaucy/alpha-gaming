@@ -2,6 +2,8 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js'; // .js ! ⬅️
 import { buildErrorResponse } from '../utils/response.js';
+
+// Vérifie la présence et la validité du JWT dans l'en-tête Authorization.
 const authMiddleware = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;

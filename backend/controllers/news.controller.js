@@ -12,6 +12,7 @@ const parser = new Parser({
     }
 });
 
+// Flux RSS utilisés pour alimenter les actualités gaming et les événements esport.
 const FEEDS = [
     { url: 'https://www.actugaming.net/feed/', source: 'ActuGaming.net' },
     { url: 'https://www.jeuxvideo.com/rss/rss.xml', source: 'JeuxVideo.com' },
@@ -20,6 +21,7 @@ const FEEDS = [
     { url: 'https://www.pushstart.fr/feed/', source: 'Push Start' }
 ];
 
+// Sources externes utilisées pour construire le fil d'actualité esport et les ligues associées.
 const ESPORT_FEEDS = [
     { url: 'https://www.hltv.org/rss/news', source: 'HLTV', league: 'CS2' },
     { url: 'https://www.vlr.gg/rss', source: 'VLR', league: 'VALORANT' },
@@ -32,6 +34,7 @@ const STALE_AFTER_MS = 22 * 60 * 60 * 1000; // 22h (le cron passe toutes les 24h
 
 
 
+// Convertit les entités HTML typiques en caractères lisibles pour éviter d'afficher du texte encodé.
 function decodeEntities(input = '') {
     const entities = {
         '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#039;': "'", '&apos;': "'", '&nbsp;': ' ',
@@ -44,10 +47,12 @@ function decodeEntities(input = '') {
         .replace(/&[a-zA-Z#0-9]+;/g, (match) => entities[match] || match);
 }
 
+// Supprime les balises HTML et normalise les espaces pour garder un texte propre dans les titres et extraits.
 function stripHtml(input = '') {
     return decodeEntities(String(input || '').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
 
+// Tente de récupérer l'image du flux RSS ou du contenu HTML, en supportant plusieurs structures de données.
 function extractImage(item = {}) {
     const candidates = [
         item.image,
@@ -87,6 +92,7 @@ function cleanTitle(title = '') {
     return stripHtml(title).replace(/\s+/g, ' ').trim();
 }
 
+// Évite les doublons entre plusieurs sources RSS en se basant sur l'URL ou le titre.
 function deduplicate(items = []) {
     const seen = new Set();
     return items.filter((item) => {
@@ -97,6 +103,7 @@ function deduplicate(items = []) {
     });
 }
 
+// Déduit une catégorie visuelle à partir du titre pour mieux organiser les actualités.
 function inferCategory(title = '') {
     const normalized = title.toLowerCase();
 
@@ -107,12 +114,14 @@ function inferCategory(title = '') {
     return 'Jeux vidéo';
 }
 
+// Estime une durée de lecture approximative pour l'affichage des cards d'actualité.
 function estimateReadingTime(text = '') {
     const words = text.split(/\s+/).filter(Boolean).length;
     const minutes = Math.max(2, Math.round(words / 180));
     return `${minutes} min`;
 }
 
+// Associe un match à une ligue ou à un championnat selon le titre du contenu RSS.
 function inferLeague(title = '', fallbackLeague = 'Esport') {
     const normalized = title.toLowerCase();
 
@@ -129,6 +138,7 @@ function inferLeague(title = '', fallbackLeague = 'Esport') {
     return fallbackLeague;
 }
 
+// Formate l'heure de début d'un match pour un affichage lisible côté front.
 function formatKickoffTime(dateValue) {
     if (!dateValue) return 'Heure a confirmer';
 
@@ -138,6 +148,7 @@ function formatKickoffTime(dateValue) {
     return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 }
 
+// Convertit une date JavaScript en format MySQL pour stocker correctement les timestamps.
 function toMysqlDatetime(dateValue) {
     const date = dateValue ? new Date(dateValue) : new Date();
     if (Number.isNaN(date.getTime())) return null;
@@ -145,6 +156,7 @@ function toMysqlDatetime(dateValue) {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 
+// Coupe les chaînes trop longues pour respecter les limitations des colonnes MySQL.
 function truncate(value = '', max = 180) {
     return String(value).length > max ? `${String(value).slice(0, max - 1)}…` : String(value);
 }
@@ -158,6 +170,7 @@ function truncate(value = '', max = 180) {
    réexécuté toutes les 24h, ça met à jour au lieu de dupliquer.
    ========================================================================== */
 
+// Enregistre les actualités dans MySQL avec une clé unique sur l'URL pour éviter les doublons.
 export async function persistNewsItems(items = []) {
     let saved = 0;
     for (const item of items) {
@@ -188,6 +201,7 @@ export async function persistNewsItems(items = []) {
     return saved;
 }
 
+// Stocke les tests Gamekult dans notes_gaming en lots pour éviter de saturer le serveur MySQL.
 export async function persistTestItems(items = []) {
     // Insertion groupée par lots : indispensable pour persister ~3000 tests sans 3000 requêtes.
     const rows = items
@@ -228,6 +242,7 @@ export async function persistTestItems(items = []) {
     return saved;
 }
 
+// Enregistre les matchs esport en base en remplaçant les lignes déjà existantes selon le lien.
 export async function persistEsportItems(items = []) {
     let saved = 0;
     for (const item of items) {
@@ -258,6 +273,7 @@ export async function persistEsportItems(items = []) {
     return saved;
 }
 
+// Décompose un titre de match en équipes en détectant les séparateurs classiques comme "vs" ou "contre".
 function extractTeams(matchTitle = '') {
     const cleaned = matchTitle
         .replace(/\[[^\]]+\]/g, ' ')
@@ -287,6 +303,7 @@ function extractTeams(matchTitle = '') {
     return [];
 }
 
+// Normalise le nom d'une équipe pour comparer des chaînes avec des accents, symboles et espaces supprimés.
 function normalizeTeamName(team = '') {
     return team
         .toLowerCase()
@@ -295,6 +312,7 @@ function normalizeTeamName(team = '') {
         .trim();
 }
 
+// Transforme un paramètre CSV de type "a,b,c" en tableau exploitable dans les filtres de requête.
 function parseCsvParam(value) {
     if (!value || typeof value !== 'string') return [];
 
@@ -304,6 +322,7 @@ function parseCsvParam(value) {
         .filter(Boolean);
 }
 
+// Limite le nombre de matchs par équipe pour garder un fil plus équilibré et plus lisible.
 function diversifyByTeams(matches = [], maxPerTeam = 2) {
     const selected = [];
     const teamUsage = new Map();
@@ -328,6 +347,7 @@ function diversifyByTeams(matches = [], maxPerTeam = 2) {
     return selected;
 }
 
+// Évite d'afficher trop de matchs venant d'une seule source RSS.
 function diversifyBySource(matches = [], maxPerSource = 4) {
     const selected = [];
     const sourceUsage = new Map();
@@ -345,6 +365,7 @@ function diversifyBySource(matches = [], maxPerSource = 4) {
     return selected;
 }
 
+// Complète les images manquantes d'actualités en consultant les flux RSS déjà parsés.
 async function enrichNewsImages(items = []) {
     if (!items.some((item) => !item.image)) return items;
 
@@ -379,6 +400,7 @@ async function enrichNewsImages(items = []) {
     }));
 }
 
+// Vérifie la dernière mise à jour d'une table pour décider si le contenu est encore frais ou périmé.
 async function getTableLastUpdate(table) {
     try {
         const rows = await query(`SELECT MAX(COALESCE(updated_at, created_at)) AS lastUpdate FROM \`${table}\``);
@@ -392,6 +414,7 @@ function isFresh(lastUpdate) {
     return Boolean(lastUpdate) && (Date.now() - new Date(lastUpdate).getTime()) < STALE_AFTER_MS;
 }
 
+// Lit les actualités depuis MySQL, triées par date de publication, pour servir le cache local.
 async function getNewsFromDatabase(limit) {
     const rows = await query(
         `SELECT
@@ -406,13 +429,14 @@ async function getNewsFromDatabase(limit) {
          FROM news
          ORDER BY COALESCE(published_at, created_at) DESC, id DESC
          LIMIT ${limit}`
-    );    return rows.map((row) => ({
+    ); return rows.map((row) => ({
         ...row,
         image: row.image || null,
         excerpt: row.excerpt || 'Résumé indisponible.'
     }));
 }
 
+// Récupère les matchs esport déjà stockés en base avec filtres sur les ligues et les équipes.
 async function getEsportFromDatabase(limit, leagueFilters, excludedTeams) {
     const conditions = [];
     const params = [];
@@ -448,12 +472,13 @@ async function getEsportFromDatabase(limit, leagueFilters, excludedTeams) {
                 : 'Heure a confirmer'
         }))
         .filter((item) => {
-        if (excludedTeams.length === 0) return true;
-        const normalizedMatch = normalizeTeamName(item.match || '');
-        return !excludedTeams.some((excluded) => normalizedMatch.includes(excluded));
-    });
+            if (excludedTeams.length === 0) return true;
+            const normalizedMatch = normalizeTeamName(item.match || '');
+            return !excludedTeams.some((excluded) => normalizedMatch.includes(excluded));
+        });
 }
 
+// Charge le HTML d'une page web avec gestion des redirections et timeout.
 async function fetchHtml(url, redirectCount = 0) {
     return new Promise((resolve, reject) => {
         const follow = redirectCount < 5;
@@ -483,6 +508,7 @@ async function fetchHtml(url, redirectCount = 0) {
     });
 }
 
+// Extrait les cartes de test d'une page Gamekult en récupérant titre, lien, image, score et plateforme.
 function scrapeGamekultTests(html = '') {
     const cardPattern = /<article class="ed__review-h__mdb[\s\S]*?<\/article>/g;
     const cards = html.match(cardPattern) || [];
@@ -505,10 +531,12 @@ function scrapeGamekultTests(html = '') {
     }).filter((item) => item.title && item.href);
 }
 
+// Normalise un nom de jeu pour comparer facilement avec le catalogue interne de la base.
 function slugify(value = '') {
     return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '');
 }
 
+// Marque les tests trouvés lorsqu'ils correspondent à un jeu présent dans le catalogue de la BDD.
 function matchGameToCatalog(tests = [], catalogTitles = []) {
     const catalogSlugs = catalogTitles.map((title) => slugify(title)).filter(Boolean);
 
@@ -531,6 +559,7 @@ let gamekultCache = {
     pages: 0
 };
 
+// Ajoute les résultats d'une page à la liste globale sans enregistrer les doublons de liens.
 function scrapePage(items, html) {
     const scraped = scrapeGamekultTests(html);
     const seen = new Set(items.map((item) => item.href));
@@ -542,6 +571,7 @@ function scrapePage(items, html) {
     });
 }
 
+// Charge le catalogue complet de tests Gamekult en plusieurs pages, avec cache pour éviter de scrapper à chaque requête.
 async function fetchGamekultTests(maxPages = GAMEKULT_MAX_PAGES) {
     const now = Date.now();
     if (gamekultCache.items.length > 0 && now - gamekultCache.at < GAMEKULT_CACHE_TTL) {
@@ -588,7 +618,7 @@ async function fetchGamekultTests(maxPages = GAMEKULT_MAX_PAGES) {
         pages: lastPageWithContent
     };
     return gamekultCache;
-}export async function getGamekultTests(req, res) {
+} export async function getGamekultTests(req, res) {
     const limit = Math.max(1, Math.min(Number.parseInt(req.query.limit, 10) || 20, 20));
     const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
 
@@ -615,9 +645,9 @@ async function fetchGamekultTests(maxPages = GAMEKULT_MAX_PAGES) {
                 if (isFresh(lastUpdate)) return;
                 persistTestItems(all).then((saved) => {
                     if (saved > 0) console.log(`[notes_gaming] ${saved} tests enregistrés (catalogue complet)`);
-                }).catch(() => {});
+                }).catch(() => { });
             })
-            .catch(() => {});
+            .catch(() => { });
 
         return res.json(buildSuccessResponse({ items, total, page: safePage, limit, totalPages, source: 'gamekult' }));
     } catch (error) {
@@ -626,6 +656,7 @@ async function fetchGamekultTests(maxPages = GAMEKULT_MAX_PAGES) {
     }
 }
 
+// Charge les dernières actualités : en base si elle est fraîche, sinon on relève les flux RSS et on rafraîchit.
 export async function getLatestNews(req, res) {
     const limit = Math.max(1, Math.min(Number.parseInt(req.query.limit, 10) || 9, 50));
 
@@ -668,7 +699,7 @@ export async function getLatestNews(req, res) {
         if (rssItems.length > 0) {
             persistNewsItems(rssItems).then((saved) => {
                 if (saved > 0) console.log(`[news] ${saved} actualités enregistrées`);
-            }).catch(() => {});
+            }).catch(() => { });
         }
 
         const news = deduplicate(parsedFeeds
@@ -704,6 +735,7 @@ export async function getLatestNews(req, res) {
     }
 }
 
+// Récupère les matchs esport de plusieurs flux et applique un filtrage sur les ligues et les équipes exclues.
 export async function getLatestEsport(req, res) {
     const limit = Math.max(1, Math.min(Number.parseInt(req.query.limit, 10) || 10, 20));
     const leagueFilters = parseCsvParam(req.query.league).map((value) => value.toLowerCase());
@@ -771,7 +803,7 @@ export async function getLatestEsport(req, res) {
         if (matches.length > 0) {
             persistEsportItems(matches).then((saved) => {
                 if (saved > 0) console.log(`[live_esport] ${saved} événements enregistrés`);
-            }).catch(() => {});
+            }).catch(() => { });
         }
 
         const sourceDiversified = diversifyBySource(matches, 4);
@@ -789,6 +821,7 @@ export async function getLatestEsport(req, res) {
     }
 }
 
+// Sert les tests Gamekult depuis la base si elle est récente, sinon lance le scraping complet du site.
 export async function getLatestNotes(req, res) {
     const limit = Math.max(1, Math.min(Number.parseInt(req.query.limit, 10) || 20, 50));
     try {

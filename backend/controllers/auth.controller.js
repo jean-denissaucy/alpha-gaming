@@ -4,6 +4,7 @@ import User from '../models/user.model.js';
 import { isDatabaseError } from '../config/db.js';
 import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
 
+// Normalise les données utilisateur pour uniformiser le format renvoyé au frontend.
 const normalizeUser = (user, favoriteGames = []) => {
     if (!user) return null;
 
@@ -23,7 +24,7 @@ const normalizeUser = (user, favoriteGames = []) => {
     };
 };
 
-// Génère un token JWT
+// Génère un token JWT signé avec le secret de l'application pour sécuriser les sessions.
 const generateToken = (user) => {
     const jwtSecret = process.env.JWT_SECRET || process.env.JTW_secret;
     const jwtExpiresIn = process.env.JWT_EXPIRES_IN || process.env.JTW_EXPIRES_IN || '7d';
@@ -39,6 +40,7 @@ const generateToken = (user) => {
     );
 };
 // POST /api/auth/register
+// Crée un compte utilisateur, vérifie l'unicité de l'email puis renvoie le token d'authentification.
 export const register = async (req, res) => {
     try {
         const { email, password, firstname, lastname } = req.body;
@@ -62,6 +64,7 @@ export const register = async (req, res) => {
     }
 };
 // POST /api/auth/login
+// Vérifie les identifiants et renvoie le token JWT si la connexion est valide.
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body || {};
@@ -84,6 +87,7 @@ export const login = async (req, res) => {
     }
 };
 // GET /api/auth/me
+// Récupère le profil de l'utilisateur authentifié et ses jeux favoris.
 export const getProfile = async (req, res) => {
     try {
         const favoriteGames = await User.findFavoriteGamesByUserId(req.user.id);

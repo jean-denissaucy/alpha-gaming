@@ -1,5 +1,5 @@
 // components/Footer.jsx
-// components/Footer.jsx - Pied de page de l'application
+// Pied de page global affiché sur toutes les pages principales du site.
 
 function Footer() {
     return (

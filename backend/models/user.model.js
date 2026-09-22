@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { query } from '../config/db.js';
 
 const User = {
-    // Trouver par email
+    // Recherche un utilisateur par son email pour la connexion ou la validation d'inscription.
     async findByEmail(email) {
         const users = await query(
             `SELECT id, email, password, firstname, lastname, role, created_at
@@ -15,7 +15,7 @@ const User = {
 
         return users[0] || null;
     },
-    // Trouver par ID (sans le password)
+    // Récupère un utilisateur sans exposer son mot de passe.
     async findById(id) {
         const users = await query(
             `SELECT id, email, firstname, lastname, role, created_at
@@ -102,7 +102,7 @@ const User = {
 
         return (result.affectedRows || 0) > 0;
     },
-    // Créer un utilisateur
+    // Crée un nouvel utilisateur avec mot de passe hashé avant l'insertion en base.
     async create({ email, password, firstname, lastname }) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -125,7 +125,7 @@ const User = {
         };
 
     },
-    // Vérifier le mot de passe
+    // Vérifie si le mot de passe saisi correspond au hash stocké en base.
     async verifyPassword(plainPassword, hashedPassword) {
         return bcrypt.compare(plainPassword, hashedPassword);
     }

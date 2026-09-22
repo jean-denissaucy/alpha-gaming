@@ -6,6 +6,7 @@ import { Home, Newspaper, Gamepad2, ClipboardCheck, Trophy, User, Shield, LogIn,
 import { useAuth } from '../hooks/useAuth.js';
 import BrandLogo from './BrandLogo.jsx';
 
+// Définition des liens principaux du menu de navigation du site.
 const NAV_ITEMS = [
     { to: '/', label: 'Accueil', Icon: Home },
     { to: '/news', label: 'Actualités', Icon: Newspaper },
@@ -38,7 +39,7 @@ function Header() {
         return () => document.body.classList.remove('mobile-menu-open');
     }, [mobileMenuOpen]);
 
-    // Gestion de la déconnexion avec redirection
+    // Gestion de la déconnexion avec redirection vers la page de login.
     const handleLogout = () => {
         setMenuOpen(false);
         setMobileMenuOpen(false);
@@ -52,7 +53,7 @@ function Header() {
         navigate(path);
     };
 
-    // Lien actif : reprend la couleur et le padding du bouton Inscription (.btn .btn-primary).
+    // Style différent pour le lien actif pour indiquer clairement la page courante.
     const navClass = ({ isActive }) => (
         isActive
             ? 'inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-sky-700 to-cyan-400 px-[1.2rem] py-[0.6rem] text-sm font-bold tracking-wide text-cyan-50 shadow-[0_10px_25px_-14px_rgba(34,211,238,0.7)]'

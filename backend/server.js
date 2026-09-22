@@ -1,4 +1,6 @@
 // server.js
+// Point d'entrée principal du backend Express.
+// Il initialise l'API, configure les middlewares, branche les routes et lance le cron de synchronisation.
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
@@ -14,6 +16,8 @@ import { buildErrorResponse, buildSuccessResponse } from './utils/response.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Vérifie la configuration de la base avant de démarrer les fonctionnalités qui en dépendent.
+
 // Connexion BDD : Render doit recevoir les paramètres MySQL de Plesk.
 if (process.env.DB_HOST) {
     testConnection();
@@ -22,6 +26,7 @@ if (process.env.DB_HOST) {
 }
 
 // Middlewares
+// Autorise les origines locales et celles configurées dans les variables d'environnement.
 const envAllowedOrigins = (process.env.CORS_ORIGINS || '')
     .split(',')
     .map((origin) => origin.trim())
@@ -60,11 +65,12 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-// Routes
+// Routes publiques de santé et de base de l'application.
 app.get('/', (req, res) => {
     res.json(buildSuccessResponse({ message: 'Starter Kit API (ES Modules)', status: 'online' }));
 });
 
+// Vérifie si la base MySQL est bien accessible avant d'autoriser les demandes métier.
 app.get('/health/db', async (req, res) => {
     try {
         await query('SELECT 1 AS ok');

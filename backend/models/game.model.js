@@ -3,14 +3,14 @@ import { query } from '../config/db.js';
 
 const Game = {
 
-    // Trouver tous les jeux (avec le nom de leur catégorie)
+    // Récupère tous les jeux avec leur catégorie pour alimenter les pages de consultation.
     async findAll() {
         const rows = await query(
             `SELECT g.id, g.categorie_id, g.titre_jeu AS game_name, g.lien AS link, g.image, c.name AS category_name
              FROM games g
              LEFT JOIN categories c ON c.id = g.categorie_id
              ORDER BY c.name ASC, g.titre_jeu ASC`
-        );        return rows.map((row) => ({
+        ); return rows.map((row) => ({
             id: row.id,
             game_name: row.game_name,
             categorie_id: row.categorie_id,
@@ -20,7 +20,7 @@ const Game = {
         }));
     },
 
-    // Trouver un jeu par son ID
+    // Récupère un jeu précis à partir de son identifiant.
     async findById(id) {
         const games = await query(
             `SELECT id, categorie_id, titre_jeu AS game_name, lien AS link, image
@@ -41,7 +41,7 @@ const Game = {
         };
     },
 
-    // Trouver les jeux appartenant à une catégorie spécifique
+    // Renvoie les jeux associés à une catégorie donnée pour les filtres de navigation.
     async findByCategoryId(categoryId) {
         const rows = await query(
             `SELECT g.id, g.categorie_id, g.titre_jeu AS game_name, g.lien AS link, g.image, c.name AS category_name
@@ -50,7 +50,7 @@ const Game = {
              WHERE g.categorie_id = ?
              ORDER BY g.titre_jeu ASC`,
             [categoryId]
-        );        return rows.map((row) => ({
+        ); return rows.map((row) => ({
             id: row.id,
             game_name: row.game_name,
             categorie_id: row.categorie_id,
@@ -60,7 +60,7 @@ const Game = {
         }));
     },
 
-    // Créer un nouveau jeu
+    // Insère un nouveau jeu dans la table games après nettoyage des valeurs reçues.
     async create({ categoryId, gameName, link, image }) {
         const result = await query(
             `INSERT INTO games (categorie_id, titre_jeu, lien, image)
@@ -82,7 +82,7 @@ const Game = {
         };
     },
 
-    // Mettre à jour un jeu
+    // Met à jour les informations d'un jeu existant en base.
     async update(id, { categoryId, gameName, link, image }) {
         if (!id) return false;
 
@@ -102,7 +102,7 @@ const Game = {
         return (result.affectedRows || 0) > 0;
     },
 
-    // Supprimer un jeu
+    // Supprime un jeu en fonction de son identifiant.
     async delete(id) {
         if (!id) return false;
 

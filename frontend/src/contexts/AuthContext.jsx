@@ -6,17 +6,17 @@ import { AuthContext } from './auth-context.js';
 
 // Provider qui enveloppe l'application et fournit l'état d'authentification
 export function AuthProvider({ children }) {
-    // État pour stocker les informations de l'utilisateur connecté
+    // Stocke les infos du profil utilisateur connecté.
     const [user, setUser] = useState(null);
 
-    // État pour gérer le chargement initial (vérification du token)
+    // Indique si la vérification initiale du token est en cours.
     const [loading, setLoading] = useState(() => !!localStorage.getItem('token'));
 
-    // Vérification de l'authentification au chargement de l'application
+    // Au démarrage, on tente de restaurer la session à partir du token local.
     useEffect(() => {
         let isMounted = true;
 
-        // Récupération du token JWT depuis le localStorage
+        // Récupération du token JWT depuis le localStorage.
         const token = localStorage.getItem('token');
 
         if (!token) {
@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
         };
     }, []);
 
-    // Fonction de connexion
+    // Connexion utilisateur : enregistre le token et met à jour le profil courant.
     const login = async (email, password) => {
         const data = await authService.login(email, password);
         const authData = {
@@ -63,6 +63,7 @@ export function AuthProvider({ children }) {
         return authData;
     };
 
+    // Inscription utilisateur : même logique que la connexion après création du compte.
     const register = async (userData) => {
         const data = await authService.register(userData);
         const authData = {
@@ -77,16 +78,16 @@ export function AuthProvider({ children }) {
         setUser(authData.user);
         return authData;
     };
-    // Fonction de déconnexion
+    // Déconnexion : supprime le token local et remet l'utilisateur courant à null.
     const logout = () => {
 
-        // Suppression du token
+        // Suppression du token.
         localStorage.removeItem('token');
 
-        // Réinitialisation de l'état utilisateur
+        // Réinitialisation de l'état utilisateur.
         setUser(null);
     };
-    // Fourniture du contexte à tous les composants enfants
+    // Fournit le contexte complet à tous les composants enfants.
     return (
         <AuthContext.Provider value={{
             user,                      // Informations de l'utilisateur connecté

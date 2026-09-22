@@ -3,11 +3,11 @@
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/auth-context.js';
 
-// Hook qui permet d'utiliser le contexte d'authentification dans n'importe quel composant
+// Expose simplement l'état d'authentification à tous les composants du front.
 export function useAuth() {
     const context = useContext(AuthContext);
 
-    // Vérification que le hook est bien utilisé dans un AuthProvider
+    // Sécurité : ce hook ne doit être utilisé que sous le AuthProvider du projet.
     if (!context) {
         throw new Error('useAuth doit être utilisé dans un AuthProvider');
     }

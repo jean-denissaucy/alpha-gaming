@@ -1,5 +1,6 @@
 import { buildErrorResponse } from '../utils/response.js';
 
+// Restreint l'accès aux routes admin aux comptes autorisés ou à l'email administrateur configuré.
 export default function adminMiddleware(req, res, next) {
     const configuredAdmins = (process.env.ADMIN_EMAILS || '')
         .split(',')
