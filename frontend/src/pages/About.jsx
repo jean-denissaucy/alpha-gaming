@@ -54,6 +54,7 @@ const INFRA = [
     { name: 'MySQL (Plesk)', role: 'Base de données des comptes, jeux et contenus.' }
 ];
 
+// Bloc visuel réutilisable pour encadrer une section de contenu avec un style cohérent.
 function SectionCard({ children, className = '' }) {
     return (
         <div className={`rounded-3xl border border-cyan-400/15 bg-slate-950/80 p-8 shadow-[0_24px_60px_-32px_rgba(0,167,255,0.38)] backdrop-blur ${className}`}>
@@ -62,6 +63,7 @@ function SectionCard({ children, className = '' }) {
     );
 }
 
+// Affiche une grille de liens vers les sources externes, avec description et icône de référence.
 function SourceGrid({ sources }) {
     return (
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -87,8 +89,9 @@ function SourceGrid({ sources }) {
     );
 }
 
+// Page publique de présentation du projet : sources, infrastructure, RGPD et accessibilité.
 function About() {
-    // Titre de page dynamique (RGAA 8.6)
+    // Titre de page dynamique (RGAA 8.6) pour qu'il reste explicite dans l'onglet du navigateur.
     usePageTitle('À propos - Sources et RGPD');
 
     return (
@@ -169,6 +172,7 @@ function About() {
             </SectionCard>
 
             {/* ======================= RGPD ======================= */}
+            {/* Cette partie informe les visiteurs des données collectées et de leurs droits. */}
             <header className="mb-8 mt-14">
                 <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-emerald-200">
                     <ShieldCheck className="h-3.5 w-3.5" /> RGPD
@@ -246,6 +250,7 @@ function About() {
             </SectionCard>
 
             {/* ======================= RGAA ======================= */}
+            {/* Cette section présente l'état d'accessibilité et les mesures mises en place. */}
             <header className="mb-8 mt-14">
                 <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-400/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-sky-200">
                     <Accessibility className="h-3.5 w-3.5" /> Accessibilité
