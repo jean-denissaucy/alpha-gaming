@@ -1,5 +1,17 @@
 // controllers/game.controller.js
 import Game from '../models/game.model.js';
+import { isDatabaseError } from '../config/db.js';
+
+// Réponse d'erreur homogène : 503 si la base est momentanément indisponible
+// (réveil du service Render, redéploiement…), 500 sinon. Évite les 500 bruts
+// qui masquent la cause réelle côté frontend.
+function sendServerError(res, error, context) {
+    console.error(`Erreur ${context}:`, error.code || 'UNKNOWN', error.message);
+    if (isDatabaseError(error)) {
+        return res.status(503).json({ message: 'Base de données momentanément indisponible. Réessayez dans quelques secondes.' });
+    }
+    return res.status(500).json({ message: 'Une erreur interne est survenue.' });
+}
 
 // Vérifie que categoryId est un entier positif valide (évite les erreurs de clé étrangère obscures en 500).
 function isValidCategoryId(categoryId) {
@@ -22,8 +34,7 @@ const gameController = {
             const games = await Game.findAll();
             return res.status(200).json(games);
         } catch (error) {
-            console.error('Erreur lors de la récupération des jeux:', error);
-            return res.status(500).json({ message: 'Une erreur interne est survenue.' });
+            return sendServerError(res, error, 'lors de la récupération des jeux');
         }
     },
 
@@ -39,8 +50,7 @@ const gameController = {
 
             return res.status(200).json(game);
         } catch (error) {
-            console.error('Erreur lors de la récupération du jeu:', error);
-            return res.status(500).json({ message: 'Une erreur interne est survenue.' });
+            return sendServerError(res, error, 'lors de la récupération du jeu');
         }
     },
 
@@ -52,8 +62,7 @@ const gameController = {
 
             return res.status(200).json(games);
         } catch (error) {
-            console.error('Erreur lors de la récupération des jeux par catégorie:', error);
-            return res.status(500).json({ message: 'Une erreur interne est survenue.' });
+            return sendServerError(res, error, 'lors de la récupération des jeux par catégorie');
         }
     },
 
@@ -83,8 +92,7 @@ const gameController = {
                 game: newGame
             });
         } catch (error) {
-            console.error('Erreur lors de la création du jeu:', error);
-            return res.status(500).json({ message: 'Une erreur interne est survenue.' });
+            return sendServerError(res, error, 'lors de la création du jeu');
         }
     },
 
@@ -116,8 +124,7 @@ const gameController = {
 
             return res.status(200).json({ message: 'Jeu mis à jour avec succès.' });
         } catch (error) {
-            console.error('Erreur lors de la mise à jour du jeu:', error);
-            return res.status(500).json({ message: 'Une erreur interne est survenue.' });
+            return sendServerError(res, error, 'lors de la mise à jour du jeu');
         }
     },
 
@@ -133,8 +140,7 @@ const gameController = {
 
             return res.status(200).json({ message: 'Jeu supprimé avec succès.' });
         } catch (error) {
-            console.error('Erreur lors de la suppression du jeu:', error);
-            return res.status(500).json({ message: 'Une erreur interne est survenue.' });
+            return sendServerError(res, error, 'lors de la suppression du jeu');
         }
     }
 };
