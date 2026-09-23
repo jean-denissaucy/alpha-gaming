@@ -47,7 +47,7 @@ CREATE TABLE `news` (
   `reading_time` varchar(20) NOT NULL DEFAULT '2 min',
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`), UNIQUE KEY `uq_news_url` (`url`), KEY `idx_news_published_at` (`published_at`), KEY `idx_news_category_published` (`categorie`,`published_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -63,7 +63,7 @@ CREATE TABLE `notes_gaming` (
   `verdict` varchar(255) DEFAULT NULL,
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`), UNIQUE KEY `uq_notes_gaming_url` (`url`), KEY `idx_notes_gaming_published_at` (`published_at`), KEY `idx_notes_gaming_score` (`score`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -81,7 +81,7 @@ CREATE TABLE `live_esport` (
   `status` varchar(30) NOT NULL DEFAULT 'upcoming',
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`), UNIQUE KEY `uq_live_esport_href` (`href`), KEY `idx_live_esport_kickoff` (`kickoff_time`), KEY `idx_live_esport_status_kickoff` (`status`,`kickoff_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
