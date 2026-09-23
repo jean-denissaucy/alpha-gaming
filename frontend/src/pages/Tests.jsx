@@ -67,7 +67,7 @@ export default function Tests() {
                 <p>Toutes les notes attribuées par la rédaction Gamekult.</p>
             </section>
 
-            <div className="news-filters my-6">
+            <div className="news-filters news-filters-center my-6">
                 {platforms.map((entry) => (
                     <button className={platform === entry ? 'active' : ''} onClick={() => setPlatform(entry)} key={entry}>{entry}</button>
                 ))}
