@@ -35,7 +35,16 @@ const GAMES = {
         ['Phantom Blade Zero', null],
         ['Lost Soul Aside', 13],
         ['Beast of Reincarnation', null],
-        ['Dying Light: The Beast', 14]
+        ['Dying Light: The Beast', 14],
+        ['Marvel’s Spider-Man 2', 15],
+        ['Terminator 2D: No Fate', 14],
+        ['Ninja Gaiden: Ragebound', 15],
+        ['Shadow Labyrinth', 12],
+        ['Freedom Wars Remastered', 14],
+        ['Tomb Raider IV-VI Remastered', 13],
+        ['MindsEye', 8],
+        ['Assassin’s Creed Black Flag Resynced', null],
+        ['My Hero Academia: All’s Justice', null]
     ],
     2: [ // Aventure
         ['Split Fiction', 17],
@@ -48,7 +57,9 @@ const GAMES = {
         ['Subnautica 2', null],
         ['Fable', null],
         ['Big Walk', null],
-        ['Sword of the Sea', 15]
+        ['Sword of the Sea', 15],
+        ['Lost Records: Bloom & Rage', 14],
+        ['The Last of Us Part II Remastered', 15]
     ],
     3: [ // RPG
         ['Clair Obscur: Expedition 33', 18],
@@ -59,14 +70,27 @@ const GAMES = {
         ['Vampire: The Masquerade - Bloodlines 2', 12],
         ['The Blood of Dawnwalker', null],
         ['Moonlighter 2: The Endless Vault', null],
-        ['Tainted Grail: The Fall of Avalon', 15]
+        ['Tainted Grail: The Fall of Avalon', 15],
+        ['Tales of Graces f Remastered', 14],
+        ['Atelier Yumia: The Alchemist of Memories & the Envisioned Land', 14],
+        ['Trails in the Sky 1st Chapter', 16],
+        ['RAIDOU Remastered: The Mystery of the Soulless Army', 15],
+        ['DRAGON QUEST I & II HD-2D Remake', 16],
+        ['OCTOPATH TRAVELER 0', 15],
+        ['Digimon Story Time Stranger', 15],
+        ['Rune Factory: Guardians of Azuma', 13],
+        ['SaGa Frontier 2 Remaster', 13],
+        ['Persona 5: The Phantom X', 12]
     ],
     4: [ // Strategie
         ['The Alters', 16],
         ['Tempest Rising', 15],
         ['Cataclismo', 14],
         ['Anno 117: Pax Romana', 16],
-        ['Age of Darkness: Final Stand', 13]
+        ['Age of Darkness: Final Stand', 13],
+        ['Two Point Museum', 15],
+        ['Jurassic World Evolution 3', 14],
+        ['Fata Deum', 12]
     ],
     5: [ // Sport
         ['EA SPORTS FC 26', 14],
@@ -81,12 +105,20 @@ const GAMES = {
         ['F1 26', null],
         ['MotoGP 26', null],
         ['WWE 2K25', 14],
-        ['PGA TOUR 2K25', 14]
+        ['PGA TOUR 2K25', 14],
+        ['Rugby 25', 12],
+        ['Everybody’s Golf: Hot Shots', 12],
+        ['Out of the Park Baseball 26', 14],
+        ['skate.', 13]
     ],
     6: [ // Course
         ['Sonic Racing: CrossWorlds', 15],
         ['Forza Horizon 6', null],
-        ['Tokyo Xtreme Racer', 14]
+        ['Tokyo Xtreme Racer', 14],
+        ['Assetto Corsa EVO', 14],
+        ['Wreckfest 2', 13],
+        ['Haste', 15],
+        ['NASCAR 25', 12]
     ],
     7: [ // Shooter
         ['DOOM: The Dark Ages', 16],
@@ -98,7 +130,13 @@ const GAMES = {
         ['Sniper Elite: Resistance', 14],
         ['Gears of War: Reloaded', 13],
         ['Halo: Campaign Evolved', null],
-        ['Marathon', null]
+        ['Marathon', null],
+        ['Killing Floor 3', 12],
+        ['Wildgate', 15],
+        ['FragPunk', 13],
+        ['Arena Breakout: Infinite', 12],
+        ['Mecha BREAK', 12],
+        ['Abyssus', 15]
     ],
     8: [ // Plateforme
         ['Hollow Knight: Silksong', 18],
@@ -106,7 +144,8 @@ const GAMES = {
         ['Ender Magnolia: Bloom in the Mist', 16],
         ['ABSOLUM', 16],
         ['Yooka-Replaylee', 15],
-        ['Mouse: P.I. For Hire', null]
+        ['Mouse: P.I. For Hire', null],
+        ['Pac-Man World 2 Re-PAC', 13]
     ],
     9: [ // Puzzle
         ['Blue Prince', 17],
@@ -114,14 +153,19 @@ const GAMES = {
         ['Lumines Arise', null],
         ['The Roottrees are Dead', 16],
         ['A Game About Digging A Hole', 13],
-        ['Is This Seat Taken?', 14]
+        ['Is This Seat Taken?', 14],
+        ['Bionic Bay', 15]
     ],
     10: [ // Horreur
         ['SILENT HILL f', 16],
         ['Routine', 14],
         ['Resident Evil Requiem', null],
         ['Cronos: The New Dawn', 15],
-        ['Tormented Souls 2', 13]
+        ['Tormented Souls 2', 13],
+        ['Post Trauma', 13],
+        ['Karma: The Dark World', 14],
+        ['Horses', 13],
+        ['Directive 8020', null]
     ],
     11: [ // Indie
         ['DELTARUNE', 17],
@@ -133,13 +177,27 @@ const GAMES = {
         ['Hades II', 17],
         ['BALL x PIT', 15],
         ['Mudborne', 14],
-        ['The Winter Burrow', 14]
+        ['The Winter Burrow', 14],
+        ['Schedule I', 16],
+        ['R.E.P.O.', 16],
+        ['Megabonk', 16],
+        ['CloverPit', 15]
     ]
 };
 
 // Jeux majeurs SANS page Steam : lien vers le site officiel de l'éditeur, jaquette indisponible.
 const OFFICIAL_GAMES = [
-    { title: 'Grand Theft Auto VI', categoryId: 1, year: 2026, note: null, link: 'https://www.rockstargames.com/games/gtavi' }
+    { title: 'Grand Theft Auto VI', categoryId: 1, year: 2026, note: null, link: 'https://www.rockstargames.com/games/gtavi' },
+    { title: 'Ghost of Yōtei', categoryId: 1, year: 2025, note: 17, link: 'https://www.playstation.com/en-us/games/ghost-of-yotei/' },
+    { title: 'Hyrule Warriors: Age of Imprisonment', categoryId: 1, year: 2025, note: 14, link: 'https://www.nintendo.com/us/store/products/hyrule-warriors-age-of-imprisonment-switch-2/' },
+    { title: 'Marvel’s Wolverine', categoryId: 1, year: 2026, note: null, link: 'https://www.playstation.com/en-us/games/marvels-wolverine/' },
+    { title: 'Pokémon Legends: Z-A', categoryId: 3, year: 2025, note: 15, link: 'https://www.nintendo.com/us/store/products/pokemon-legends-z-a-switch/' },
+    { title: 'Fire Emblem Fortune’s Weave', categoryId: 4, year: 2026, note: null, link: 'https://www.nintendo.com/us/store/products/fire-emblem-fortunes-weave-switch-2/' },
+    { title: 'MARVEL Tokon: Fighting Souls', categoryId: 5, year: 2026, note: null, link: 'https://www.playstation.com/en-us/games/marvel-tokon-fighting-souls/' },
+    { title: 'Kirby Air Riders', categoryId: 6, year: 2025, note: 15, link: 'https://www.nintendo.com/us/store/products/kirby-air-riders-switch-2/' },
+    { title: 'Metroid Prime 4: Beyond', categoryId: 7, year: 2025, note: 16, link: 'https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-switch-2/' },
+    { title: 'Donkey Kong Bananza', categoryId: 8, year: 2025, note: 17, link: 'https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/' },
+    { title: 'Days Gone Remastered', categoryId: 1, year: 2025, note: 14, link: 'https://www.playstation.com/en-us/games/days-gone-remastered/' }
 ];
 
 const STEAM_CDN = 'https://cdn.cloudflare.steamstatic.com/steam/apps';
@@ -330,6 +388,12 @@ if (failures.length) {
     console.log('\nÉCHECS :');
     failures.forEach((line) => console.log('  ! ' + line));
 }
+
+// Rattrapage : les jeux « à venir » sans date exploitable côté Steam sont datés 2026
+// (fenêtre d'annonce éditeur la plus probable). Idempotent : ne touche que les lignes NULL.
+await connection.execute(
+    "UPDATE games SET release_year = 2026 WHERE release_year IS NULL AND lien LIKE 'https://store.steampowered.com/%'"
+);
 
 const [counts] = await connection.query(
     'SELECT c.name, COUNT(g.id) AS total FROM categories c LEFT JOIN games g ON g.categorie_id = c.id GROUP BY c.id ORDER BY c.id'
