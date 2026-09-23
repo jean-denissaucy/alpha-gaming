@@ -96,7 +96,7 @@ export default function Games() {
                 </div>
             </div>
 
-            <div className="news-filters my-6">
+            <div className="news-filters news-filters-center my-6">
                 {categories.map((entry) => (
                     <button className={category === entry ? 'active' : ''} onClick={() => setCategory(entry)} key={entry}>{entry}</button>
                 ))}
