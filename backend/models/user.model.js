@@ -125,6 +125,17 @@ const User = {
         };
 
     },
+    // Récupère uniquement le hash du mot de passe (vérification avant changement).
+    async findPasswordHashById(id) {
+        const users = await query(`SELECT password FROM users WHERE id = ? LIMIT 1`, [id]);
+        return users[0]?.password || null;
+    },
+    // Met à jour le mot de passe d'un utilisateur en le hashant avant écriture (comme create).
+    async updatePasswordById(id, plainPassword) {
+        const hashedPassword = await bcrypt.hash(plainPassword, 10);
+        const result = await query(`UPDATE users SET password = ? WHERE id = ?`, [hashedPassword, id]);
+        return result.affectedRows > 0;
+    },
     // Vérifie si le mot de passe saisi correspond au hash stocké en base.
     async verifyPassword(plainPassword, hashedPassword) {
         return bcrypt.compare(plainPassword, hashedPassword);

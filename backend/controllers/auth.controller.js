@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import { isDatabaseError } from '../config/db.js';
 import { buildErrorResponse, buildSuccessResponse } from '../utils/response.js';
-import { validateRegistration } from '../utils/validation.js';
+import { validateRegistration, validatePasswordChange } from '../utils/validation.js';
 
 // Emails promus administrateurs via la variable d'environnement ADMIN_EMAILS.
 // Doit rester STRICTEMENT identique à la logique de middlewares/admin.middleware.js :
@@ -11,7 +11,7 @@ import { validateRegistration } from '../utils/validation.js';
 const getConfiguredAdminEmails = () => (process.env.ADMIN_EMAILS || '')
     .split(',')
     .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
+    .filter(Boolean);
 
 // Rôle effectif : admin si le rôle SQL est 'admin' OU si l'email est dans ADMIN_EMAILS.
 const resolveRole = (user) => {
@@ -19,16 +19,16 @@ const resolveRole = (user) => {
     const email = String(user.email || '').trim().toLowerCase();
     if (user.role === 'admin' || getConfiguredAdminEmails().includes(email)) return 'admin';
     return user.role || 'user';
-};
+};
 
 // Normalise les données utilisateur pour uniformiser le format renvoyé au frontend.
 const normalizeUser = (user, favoriteGames = []) => {
-    if (!user) return null;
+    if (!user) return null;
 
     const fullName = (user.name || '').trim();
     const parts = fullName ? fullName.split(/\s+/) : [];
     const firstname = user.firstname || parts[0] || '';
-    const lastname = user.lastname || (parts.length > 1 ? parts.slice(1).join(' ') : '');
+    const lastname = user.lastname || (parts.length > 1 ? parts.slice(1).join(' ') : '');
 
     return {
         id: user.id,
@@ -39,16 +39,16 @@ const normalizeUser = (user, favoriteGames = []) => {
         created_at: user.created_at,
         favorite_games: favoriteGames
     };
-};
+};
 
 // Génère un token JWT signé avec le secret de l'application pour sécuriser les sessions.
 const generateToken = (user) => {
     const jwtSecret = process.env.JWT_SECRET || process.env.JTW_secret;
-    const jwtExpiresIn = process.env.JWT_EXPIRES_IN || process.env.JTW_EXPIRES_IN || '7d';
+    const jwtExpiresIn = process.env.JWT_EXPIRES_IN || process.env.JTW_EXPIRES_IN || '7d';
 
     if (!jwtSecret) {
         throw new Error('JWT_SECRET manquant dans les variables d\'environnement');
-    }
+    }
 
     return jwt.sign(
         { id: user.id, email: user.email, role: user.role || 'user' },
@@ -66,7 +66,7 @@ export const register = async (req, res) => {
         if (!validation.isValid) {
             return res.status(400).json(buildErrorResponse(validation.errors.join(' '), 400));
         }
-        const { email, password, firstname, lastname } = validation.values;
+        const { email, password, firstname, lastname } = validation.values;
 
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
@@ -115,6 +115,36 @@ export const getProfile = async (req, res) => {
         return res.json(buildSuccessResponse({ user: normalizeUser(req.user, favoriteGames) }));
     } catch (error) {
         console.error('Erreur getProfile:', error);
+        return res.status(500).json(buildErrorResponse('Erreur serveur', 500));
+    }
+};
+
+// PUT /api/auth/password
+// Change le mot de passe de l'utilisateur connecté : vérifie l'ancien, hache le nouveau (bcrypt).
+export const changePassword = async (req, res) => {
+    try {
+        const validation = validatePasswordChange(req.body || {});
+        if (!validation.isValid) {
+            return res.status(400).json(buildErrorResponse(validation.errors.join(' '), 400));
+        }
+        const { currentPassword, newPassword } = validation.values;
+
+        // req.user (posé par authMiddleware) ne contient pas le hash : requête dédiée.
+        const passwordHash = await User.findPasswordHashById(req.user.id);
+        if (!passwordHash || !(await User.verifyPassword(currentPassword, passwordHash))) {
+            return res.status(401).json(buildErrorResponse('Mot de passe actuel incorrect', 401));
+        }
+
+        const updated = await User.updatePasswordById(req.user.id, newPassword);
+        if (!updated) {
+            return res.status(500).json(buildErrorResponse('Impossible de mettre à jour le mot de passe', 500));
+        }
+        return res.json(buildSuccessResponse({ message: 'Mot de passe modifié avec succès' }));
+    } catch (error) {
+        console.error('Erreur changePassword:', error.code || 'UNKNOWN', error.message);
+        if (isDatabaseError(error)) {
+            return res.status(503).json(buildErrorResponse('Base de données indisponible ou mal configurée', 503));
+        }
         return res.status(500).json(buildErrorResponse('Erreur serveur', 500));
     }
 };

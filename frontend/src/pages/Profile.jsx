@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Heart, Gamepad2, ExternalLink, Mail, Calendar, User, ShieldCheck, LogOut } from 'lucide-react';
+import { Heart, Gamepad2, ExternalLink, Mail, Calendar, User, ShieldCheck, LogOut, KeyRound } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
 import usePageTitle from '../hooks/usePageTitle.js';
 import { authService, gamesService } from '../services/api.js';
@@ -12,6 +12,11 @@ export default function Profile() {
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    // Changement de mot de passe
+    const [pwdForm, setPwdForm] = useState({ current: '', next: '', confirm: '' });
+    const [pwdFeedback, setPwdFeedback] = useState(null); // { type: 'success' | 'error', message }
+    const [pwdSaving, setPwdSaving] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
@@ -49,6 +54,41 @@ export default function Profile() {
         load();
         return () => { isMounted = false; };
     }, []);
+
+    // Change le mot de passe : validation locale alignée sur le serveur, puis appel API.
+    const handlePasswordChange = async (event) => {
+        event.preventDefault();
+        if (pwdSaving) return;
+
+        if (!pwdForm.current || !pwdForm.next || !pwdForm.confirm) {
+            setPwdFeedback({ type: 'error', message: 'Veuillez remplir les trois champs.' });
+            return;
+        }
+        if (pwdForm.next.length < 8) {
+            setPwdFeedback({ type: 'error', message: 'Le nouveau mot de passe doit contenir au moins 8 caractères.' });
+            return;
+        }
+        if (pwdForm.next === pwdForm.current) {
+            setPwdFeedback({ type: 'error', message: 'Le nouveau mot de passe doit être différent du mot de passe actuel.' });
+            return;
+        }
+        if (pwdForm.next !== pwdForm.confirm) {
+            setPwdFeedback({ type: 'error', message: 'La confirmation ne correspond pas au nouveau mot de passe.' });
+            return;
+        }
+
+        try {
+            setPwdSaving(true);
+            const response = await authService.changePassword(pwdForm.current, pwdForm.next);
+            const message = response?.data?.message || 'Mot de passe modifié avec succès';
+            setPwdFeedback({ type: 'success', message });
+            setPwdForm({ current: '', next: '', confirm: '' });
+        } catch (err) {
+            setPwdFeedback({ type: 'error', message: err?.message || 'Impossible de changer le mot de passe.' });
+        } finally {
+            setPwdSaving(false);
+        }
+    };
 
     const displayUser = profile || user;
     const createdAt = displayUser?.created_at;
@@ -161,6 +201,73 @@ export default function Profile() {
                         ) : (
                             <p className="mt-3 text-sm text-slate-300">Aucun jeu favori enregistré.</p>
                         )}
+                    </div>
+
+                    {/* Changement de mot de passe (RGAA : labels reliés, autocomplete, annonces) */}
+                    <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/70 p-4 sm:p-6">
+                        <div className="flex items-center gap-3">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/15 text-cyan-300"><KeyRound className="h-4 w-4" /></span>
+                            <div>
+                                <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-200">Changer mon mot de passe</h2>
+                                <p className="mt-0.5 text-xs text-slate-400">Minimum 8 caractères. Vos mots de passe sont chiffrés (bcrypt), même l'équipe ne peut pas les lire.</p>
+                            </div>
+                        </div>
+
+                        <form className="mt-4 grid gap-4 sm:grid-cols-3" onSubmit={handlePasswordChange} noValidate>
+                            <div>
+                                <label htmlFor="pwd-current" className="text-xs uppercase tracking-wide text-slate-400">Mot de passe actuel</label>
+                                <input
+                                    id="pwd-current"
+                                    type="password"
+                                    className="input mt-2"
+                                    value={pwdForm.current}
+                                    autoComplete="current-password"
+                                    onChange={(e) => setPwdForm({ ...pwdForm, current: e.target.value })}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="pwd-next" className="text-xs uppercase tracking-wide text-slate-400">Nouveau mot de passe</label>
+                                <input
+                                    id="pwd-next"
+                                    type="password"
+                                    className="input mt-2"
+                                    value={pwdForm.next}
+                                    autoComplete="new-password"
+                                    onChange={(e) => setPwdForm({ ...pwdForm, next: e.target.value })}
+                                    required
+                                    minLength={8}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="pwd-confirm" className="text-xs uppercase tracking-wide text-slate-400">Confirmer le nouveau</label>
+                                <input
+                                    id="pwd-confirm"
+                                    type="password"
+                                    className="input mt-2"
+                                    value={pwdForm.confirm}
+                                    autoComplete="new-password"
+                                    onChange={(e) => setPwdForm({ ...pwdForm, confirm: e.target.value })}
+                                    required
+                                    minLength={8}
+                                />
+                            </div>
+                            <div className="flex flex-wrap items-center gap-4 sm:col-span-3">
+                                <button type="submit" className="btn btn-primary disabled:cursor-not-allowed disabled:opacity-60" disabled={pwdSaving}>
+                                    {pwdSaving ? 'Enregistrement…' : 'Enregistrer le nouveau mot de passe'}
+                                </button>
+                                {pwdFeedback && (
+                                    <p
+                                        role={pwdFeedback.type === 'error' ? 'alert' : 'status'}
+                                        className={pwdFeedback.type === 'error'
+                                            ? 'text-sm font-medium text-red-300'
+                                            : 'text-sm font-medium text-emerald-300'}
+                                    >
+                                        {pwdFeedback.message}
+                                    </p>
+                                )}
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

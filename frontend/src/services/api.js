@@ -66,7 +66,13 @@ export const authService = {
     }),
 
     // Récupération du profil utilisateur (endpoint protégé)
-    getProfile: () => fetchAPI('/auth/me')
+    getProfile: () => fetchAPI('/auth/me'),
+
+    // Changement du mot de passe de l'utilisateur connecté (endpoint protégé)
+    changePassword: (currentPassword, newPassword) => fetchAPI('/auth/password', {
+        method: 'PUT',
+        body: JSON.stringify({ currentPassword, newPassword })
+    })
 };
 
 export const gamesService = {

@@ -61,3 +61,35 @@ export function validateRegistration(payload = {}) {
         }
     };
 }
+
+// Valide une demande de changement de mot de passe (utilisateur connecté).
+// Les mots de passe ne sont PAS trimés : un espace peut être volontaire dans un mot de passe.
+export function validatePasswordChange(payload = {}) {
+    const data = payload || {};
+    const errors = [];
+
+    const currentPassword = String(data.currentPassword ?? '');
+    const newPassword = String(data.newPassword ?? '');
+
+    if (!currentPassword) {
+        errors.push('Le mot de passe actuel est requis.');
+    } else if (currentPassword.length > MAX_PASSWORD_LENGTH) {
+        errors.push(`Le mot de passe actuel ne doit pas dépasser ${MAX_PASSWORD_LENGTH} caractères.`);
+    }
+
+    if (!newPassword) {
+        errors.push('Le nouveau mot de passe est requis.');
+    } else if (newPassword.length < MIN_PASSWORD_LENGTH) {
+        errors.push(`Le nouveau mot de passe doit contenir au moins ${MIN_PASSWORD_LENGTH} caractères.`);
+    } else if (newPassword.length > MAX_PASSWORD_LENGTH) {
+        errors.push(`Le nouveau mot de passe ne doit pas dépasser ${MAX_PASSWORD_LENGTH} caractères.`);
+    } else if (currentPassword && newPassword === currentPassword) {
+        errors.push("Le nouveau mot de passe doit être différent du mot de passe actuel.");
+    }
+
+    return {
+        isValid: errors.length === 0,
+        errors,
+        values: { currentPassword, newPassword }
+    };
+}
