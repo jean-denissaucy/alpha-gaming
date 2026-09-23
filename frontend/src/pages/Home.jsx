@@ -6,7 +6,7 @@ import { Star, Monitor, Gamepad2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
 import usePageTitle from '../hooks/usePageTitle.js';
 import BrandLogo from '../components/BrandLogo.jsx';
-import { newsService, esportService, testsService } from '../services/api.js';
+import { newsService, esportService, testsService, secureImageUrl } from '../services/api.js';
 
 function homeScoreColor(score) {
     const value = Number.parseInt(score, 10);
@@ -231,7 +231,7 @@ function Home() {
                         const cardContent = (
                             <>
                                 <div className="relative">
-                                    {news.image ? <img className="aspect-[16/9] w-full rounded-xl object-cover" src={news.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="flex aspect-[16/9] w-full items-center justify-center rounded-xl bg-slate-800 text-sm font-bold uppercase tracking-[0.2em] text-slate-500">ACTU</div>}
+                                    {secureImageUrl(news.image) ? <img className="aspect-[16/9] w-full rounded-xl object-cover" src={secureImageUrl(news.image)} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="flex aspect-[16/9] w-full items-center justify-center rounded-xl bg-slate-800 text-sm font-bold uppercase tracking-[0.2em] text-slate-500">ACTU</div>}
                                     <span className="absolute left-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-200 backdrop-blur">{news.category || 'Actu'}</span>
                                 </div>
                                 <div className="flex flex-1 flex-col p-5">

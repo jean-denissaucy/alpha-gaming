@@ -5,6 +5,11 @@ import { getApiCandidates } from './apiConfig.js';
 // URL de base de l'API backend
 const API_URLS = getApiCandidates(import.meta.env, window.location);
 
+export function secureImageUrl(value) {
+    if (typeof value !== 'string' || !value.trim()) return null;
+    return value.trim().replace(/^http:\/\//i, 'https://');
+}
+
 // Fonction générique pour effectuer des requêtes API
 async function fetchAPI(endpoint, options = {}) {
     const token = localStorage.getItem('token');

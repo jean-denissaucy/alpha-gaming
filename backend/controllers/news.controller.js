@@ -53,6 +53,13 @@ function stripHtml(input = '') {
 }
 
 // Tente de récupérer l'image du flux RSS ou du contenu HTML, en supportant plusieurs structures de données.
+function normalizeImageUrl(value) {
+    if (typeof value !== 'string' || !value.trim()) return null;
+
+    const imageUrl = value.trim();
+    return imageUrl.replace(/^http:\/\//i, 'https://');
+}
+
 function extractImage(item = {}) {
     const candidates = [
         item.image,
@@ -67,7 +74,7 @@ function extractImage(item = {}) {
 
     const findImageUrl = (value) => {
         if (!value) return null;
-        if (typeof value === 'string') return /^https?:\/\//i.test(value) ? value : null;
+        if (typeof value === 'string') return /^https?:\/\//i.test(value) ? normalizeImageUrl(value) : null;
         if (Array.isArray(value)) return value.map(findImageUrl).find(Boolean) || null;
         if (typeof value === 'object') {
             return findImageUrl(value.url)
@@ -85,7 +92,7 @@ function extractImage(item = {}) {
 
     const html = item['content:encoded'] || item.content || '';
     const htmlImage = String(html).match(/<img[^>]+src=["']([^"']+)["']/i)?.[1];
-    return /^https?:\/\//i.test(htmlImage || '') ? htmlImage : null;
+    return /^https?:\/\//i.test(htmlImage || '') ? normalizeImageUrl(htmlImage) : null;
 }
 
 function cleanTitle(title = '') {
@@ -443,7 +450,7 @@ async function getNewsFromDatabase(limit) {
          LIMIT ${safeLimit}`
     ); return rows.map((row) => ({
         ...row,
-        image: row.image || null,
+        image: normalizeImageUrl(row.image),
         excerpt: row.excerpt || 'Résumé indisponible.'
     }));
 }
