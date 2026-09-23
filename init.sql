@@ -1,3 +1,6 @@
+-- Initialisation complète de la base Alpha Gaming.
+-- Attention : ce script supprime puis recrée les tables. Pour une base existante,
+-- utiliser une migration ALTER TABLE dédiée afin de conserver les données.
 CREATE DATABASE IF NOT EXISTS `jean-denis-saucy_alpha-gaming` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `jean-denis-saucy_alpha-gaming`;
 SET NAMES utf8mb4;
@@ -29,7 +32,7 @@ CREATE TABLE `games` (
   `is_external` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `categorie_id` int UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_games_titre` (`titre_jeu`), KEY `idx_games_categorie_id` (`categorie_id`),
+  PRIMARY KEY (`id`), UNIQUE KEY `uq_games_titre` (`titre_jeu`), KEY `idx_games_categorie_id` (`categorie_id`), KEY `idx_games_is_external` (`is_external`),
   CONSTRAINT `fk_games_categories` FOREIGN KEY (`categorie_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -45,7 +48,7 @@ CREATE TABLE `news` (
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_news_url` (`url`), KEY `idx_news_published_at` (`published_at`)
+  PRIMARY KEY (`id`), UNIQUE KEY `uq_news_url` (`url`), KEY `idx_news_published_at` (`published_at`), KEY `idx_news_category_published` (`categorie`,`published_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `notes_gaming` (
@@ -61,7 +64,7 @@ CREATE TABLE `notes_gaming` (
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_notes_gaming_url` (`url`), KEY `idx_notes_gaming_published_at` (`published_at`)
+  PRIMARY KEY (`id`), UNIQUE KEY `uq_notes_gaming_url` (`url`), KEY `idx_notes_gaming_published_at` (`published_at`), KEY `idx_notes_gaming_score` (`score`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `live_esport` (
@@ -79,7 +82,7 @@ CREATE TABLE `live_esport` (
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`), UNIQUE KEY `uq_live_esport_href` (`href`), KEY `idx_live_esport_kickoff` (`kickoff_time`)
+  PRIMARY KEY (`id`), UNIQUE KEY `uq_live_esport_href` (`href`), KEY `idx_live_esport_kickoff` (`kickoff_time`), KEY `idx_live_esport_status_kickoff` (`status`,`kickoff_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `users` (
