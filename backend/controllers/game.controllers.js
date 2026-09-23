@@ -7,6 +7,14 @@ function isValidCategoryId(categoryId) {
     return Number.isInteger(parsed) && parsed > 0;
 }
 
+// Valide la note reçue : vide/absent = null, sinon nombre entre 0 et 20 (une décimale max).
+function parseNote(note) {
+    if (note === null || note === undefined || String(note).trim() === '') return null;
+    const parsed = Number(note);
+    if (!Number.isFinite(parsed) || parsed < 0 || parsed > 20) return undefined; // undefined = invalide
+    return Math.round(parsed * 10) / 10;
+}
+
 const gameController = {
     // Récupère la liste complète des jeux avec leur catégorie pour le front office.
     async getAllGames(req, res) {
@@ -52,7 +60,7 @@ const gameController = {
     // Crée un jeu avec les données reçues dans le corps de la requête.
     async createGame(req, res) {
         try {
-            const { categoryId, gameName, link, image } = req.body;
+            const { categoryId, gameName, link, image, note } = req.body;
 
             // Validation minimale de sécurité
             if (!gameName || !String(gameName).trim()) {
@@ -64,8 +72,12 @@ const gameController = {
             if (!isValidCategoryId(categoryId)) {
                 return res.status(400).json({ message: 'La catégorie du jeu est invalide.' });
             }
+            const parsedNote = parseNote(note);
+            if (parsedNote === undefined) {
+                return res.status(400).json({ message: 'La note doit être un nombre entre 0 et 20.' });
+            }
 
-            const newGame = await Game.create({ categoryId: Number(categoryId), gameName, link, image });
+            const newGame = await Game.create({ categoryId: Number(categoryId), gameName, link, image, note: parsedNote });
             return res.status(201).json({
                 message: 'Jeu créé avec succès.',
                 game: newGame
@@ -80,7 +92,7 @@ const gameController = {
     async updateGame(req, res) {
         try {
             const { id } = req.params;
-            const { categoryId, gameName, link, image } = req.body;
+            const { categoryId, gameName, link, image, note } = req.body;
 
             if (!gameName || !String(gameName).trim()) {
                 return res.status(400).json({ message: 'Le nom du jeu est obligatoire.' });
@@ -91,8 +103,12 @@ const gameController = {
             if (!isValidCategoryId(categoryId)) {
                 return res.status(400).json({ message: 'La catégorie du jeu est invalide.' });
             }
+            const parsedNote = parseNote(note);
+            if (parsedNote === undefined) {
+                return res.status(400).json({ message: 'La note doit être un nombre entre 0 et 20.' });
+            }
 
-            const isUpdated = await Game.update(id, { categoryId: Number(categoryId), gameName, link, image });
+            const isUpdated = await Game.update(id, { categoryId: Number(categoryId), gameName, link, image, note: parsedNote });
 
             if (!isUpdated) {
                 return res.status(404).json({ message: 'Jeu non trouvé ou aucune modification apportée.' });
