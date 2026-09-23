@@ -8,7 +8,7 @@ import {
 import { getApiCandidates } from '../services/apiConfig.js';
 
 const apiBase = getApiCandidates(import.meta.env, window.location)[0];
-const emptyForm = { categoryId: '', gameName: '', link: '', image: '' };
+const emptyForm = { categoryId: '', gameName: '', link: '', image: '', note: '' };
 // Cartes de statistiques : les valeurs viennent de l'API (/admin/stats), la config (libellés + icônes) vit ici.
 const STAT_CARDS = [
     { key: 'users', label: 'Utilisateurs', Icon: Users },
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
     const openAdd = () => { setEditingId(null); setForm(emptyForm); setGameModalOpen(true); };
     const openEdit = (game) => {
         setEditingId(game.id);
-        setForm({ categoryId: String(game.categorie_id ?? ''), gameName: game.game_name || '', link: game.link || '', image: game.image || '' });
+        setForm({ categoryId: String(game.categorie_id ?? ''), gameName: game.game_name || '', link: game.link || '', image: game.image || '', note: game.note != null ? String(game.note) : '' });
         setGameModalOpen(true);
     };
 
@@ -184,7 +184,7 @@ export default function AdminDashboard() {
             <div className="admin-table-wrap">
                 <table className="admin-table">
                     <thead>
-                        <tr><th>JEU</th><th>CATÉGORIE</th><th>LIEN</th><th className="admin-th-actions">ACTIONS</th></tr>
+                        <tr><th>JEU</th><th>CATÉGORIE</th><th>NOTE</th><th>LIEN</th><th className="admin-th-actions">ACTIONS</th></tr>
                     </thead>
                     <tbody>
                         {visibleGames.map((game) => (
@@ -198,6 +198,9 @@ export default function AdminDashboard() {
                                     </div>
                                 </td>
                                 <td><span className="admin-category">{game.category || `Catégorie ${game.categorie_id}`}</span></td>
+                                <td>{game.note != null
+                                    ? <span className="admin-note">★ {Number(game.note).toLocaleString('fr-FR', { maximumFractionDigits: 1 })}/20</span>
+                                    : <span className="admin-muted">—</span>}</td>
                                 <td>{game.link
                                     ? <a className="admin-link" href={game.link} target="_blank" rel="noreferrer"><ExternalLink className="h-3.5 w-3.5" /> Ouvrir</a>
                                     : <span className="admin-muted">—</span>}</td>
@@ -258,6 +261,9 @@ export default function AdminDashboard() {
                         </label>
                         <label>Image / jaquette <span>(URL https://…)</span>
                             <input type="url" value={form.image} placeholder="https://…/cover.jpg" onChange={(e) => setForm({ ...form, image: e.target.value })} />
+                        </label>
+                        <label>Note <span>(sur 20, optionnelle)</span>
+                            <input type="number" min="0" max="20" step="0.1" value={form.note} placeholder="Ex : 17.5" onChange={(e) => setForm({ ...form, note: e.target.value })} />
                         </label>
                         {form.image && <div className="admin-form-preview"><img src={form.image} alt="Aperçu de la jaquette" /></div>}
                         <div className="admin-form-actions">
