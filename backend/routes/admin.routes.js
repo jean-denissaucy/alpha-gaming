@@ -23,10 +23,8 @@ router.get('/stats', async (req, res) => {
             news: Number(news[0]?.total || 0),
             esport: Number(esport[0]?.total || 0)
         }));
-    } catch (error) {
-        console.error('Erreur statistiques admin:', error.code || 'UNKNOWN', error.message);
-    debugger;
-        return res.status(503).json(buildErrorResponse('Données administrateur indisponibles', 503));
+    } catch (error) {    console.error('Erreur statistiques admin:', error.code || 'UNKNOWN', error.message);
+    return res.status(503).json(buildErrorResponse('Données administrateur indisponibles', 503));
     }
 });
 
