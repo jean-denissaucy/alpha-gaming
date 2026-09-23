@@ -27,6 +27,14 @@ function parseNote(note) {
     return Math.round(parsed * 10) / 10;
 }
 
+// Valide l'année de sortie reçue : vide/absent = null, sinon entier plausible (1970–2100).
+function parseReleaseYear(releaseYear) {
+    if (releaseYear === null || releaseYear === undefined || String(releaseYear).trim() === '') return null;
+    const parsed = Number(releaseYear);
+    if (!Number.isInteger(parsed) || parsed < 1970 || parsed > 2100) return undefined; // undefined = invalide
+    return parsed;
+}
+
 const gameController = {
     // Récupère la liste complète des jeux avec leur catégorie pour le front office.
     async getAllGames(req, res) {
@@ -85,8 +93,12 @@ const gameController = {
             if (parsedNote === undefined) {
                 return res.status(400).json({ message: 'La note doit être un nombre entre 0 et 20.' });
             }
+            const parsedYear = parseReleaseYear(req.body.releaseYear ?? req.body.release_year);
+            if (parsedYear === undefined) {
+                return res.status(400).json({ message: "L'année de sortie doit être un nombre entre 1970 et 2100." });
+            }
 
-            const newGame = await Game.create({ categoryId: Number(categoryId), gameName, link, image, note: parsedNote });
+            const newGame = await Game.create({ categoryId: Number(categoryId), gameName, link, image, note: parsedNote, releaseYear: parsedYear });
             return res.status(201).json({
                 message: 'Jeu créé avec succès.',
                 game: newGame
@@ -115,8 +127,12 @@ const gameController = {
             if (parsedNote === undefined) {
                 return res.status(400).json({ message: 'La note doit être un nombre entre 0 et 20.' });
             }
+            const parsedYear = parseReleaseYear(req.body.releaseYear ?? req.body.release_year);
+            if (parsedYear === undefined) {
+                return res.status(400).json({ message: "L'année de sortie doit être un nombre entre 1970 et 2100." });
+            }
 
-            const isUpdated = await Game.update(id, { categoryId: Number(categoryId), gameName, link, image, note: parsedNote });
+            const isUpdated = await Game.update(id, { categoryId: Number(categoryId), gameName, link, image, note: parsedNote, releaseYear: parsedYear });
 
             if (!isUpdated) {
                 return res.status(404).json({ message: 'Jeu non trouvé ou aucune modification apportée.' });
