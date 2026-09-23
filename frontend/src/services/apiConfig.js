@@ -11,7 +11,7 @@ export function resolveApiBaseUrl(env = {}, location = {}) {
     const hostname = (location.hostname || '').toLowerCase();
 
     if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.localhost')) {
-        return 'http://localhost:10000/api';
+        return 'https://alpha-gaming-1.onrender.com/api';
     }
 
     // En prod, le front doit utiliser le chemin relatif /api pour passer via le host.

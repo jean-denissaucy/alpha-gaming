@@ -1,5 +1,6 @@
 CREATE DATABASE IF NOT EXISTS `jean-denis-saucy_alpha-gaming` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `jean-denis-saucy_alpha-gaming`;
+SET NAMES utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `user_favorite_games`;
@@ -43,7 +44,7 @@ CREATE TABLE `news` (
   `reading_time` varchar(20) NOT NULL DEFAULT '2 min',
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`), UNIQUE KEY `uq_news_url` (`url`), KEY `idx_news_published_at` (`published_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -59,7 +60,7 @@ CREATE TABLE `notes_gaming` (
   `verdict` varchar(255) DEFAULT NULL,
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`), UNIQUE KEY `uq_notes_gaming_url` (`url`), KEY `idx_notes_gaming_published_at` (`published_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -77,7 +78,7 @@ CREATE TABLE `live_esport` (
   `status` varchar(30) NOT NULL DEFAULT 'upcoming',
   `published_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`), UNIQUE KEY `uq_live_esport_href` (`href`), KEY `idx_live_esport_kickoff` (`kickoff_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

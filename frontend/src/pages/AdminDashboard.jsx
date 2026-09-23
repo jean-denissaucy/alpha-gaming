@@ -47,13 +47,18 @@ export default function AdminDashboard() {
     const [usersOpen, setUsersOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
 
+    // Fermeture de la modale jeu : déclarée AVANT useFocusTrap ci-dessous, qui la référence.
+    // (une const utilisée avant sa déclaration lèverait « Cannot access before initialization » au rendu)
+    const closeGameModal = () => { setGameModalOpen(false); setEditingId(null); setForm(emptyForm); };
+
     // RGAA 7.3 : focus piégé dans les modales (Tab enfermé, Échap ferme, focus restitué à la fermeture).
     const gameModalRef = useFocusTrap(gameModalOpen, closeGameModal);
     const usersModalRef = useFocusTrap(usersOpen, () => setUsersOpen(false));
 
     const load = async () => {
-        setLoading(true);
+
         try {
+            setLoading(true);
             const [nextStats, nextGames] = await Promise.all([adminFetch('/admin/stats'), adminFetch('/admin/games')]);
             const list = Array.isArray(nextGames) ? nextGames : nextGames.games || [];
             setStats(nextStats);
@@ -93,7 +98,6 @@ export default function AdminDashboard() {
         setForm({ categoryId: String(game.categorie_id ?? ''), gameName: game.game_name || '', link: game.link || '', image: game.image || '' });
         setGameModalOpen(true);
     };
-    const closeGameModal = () => { setGameModalOpen(false); setEditingId(null); setForm(emptyForm); };
 
     const submit = async (event) => {
         event.preventDefault(); setSaving(true); setError('');
