@@ -6,7 +6,7 @@ USE `jean-denis-saucy_alpha-gaming`;
 SET NAMES utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS `user_favorite_games`;
+DROP TABLE IF EXISTS `user_favorite_games `;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `notes_gaming`;
 DROP TABLE IF EXISTS `news`;

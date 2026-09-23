@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import usePageTitle from '../hooks/usePageTitle.js';
-import { Heart, ExternalLink, Gamepad2, ArrowRight, ArrowLeft, Star } from 'lucide-react';
+import { Heart, ExternalLink, Gamepad2, ArrowRight, ArrowLeft, Star, Search } from 'lucide-react';
 import { gamesService } from '../services/api.js';
 import { useAuth } from '../hooks/useAuth.js';
 
@@ -11,6 +11,7 @@ export default function Games() {
     usePageTitle('Catalogue de jeux');
     const [games, setGames] = useState([]);
     const [category, setCategory] = useState('Toutes');
+    const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -38,11 +39,13 @@ export default function Games() {
     }, [isAuthenticated]);
 
     const categories = useMemo(() => ['Toutes', ...new Set(games.map((game) => game.category).filter(Boolean))], [games]);
-    const visibleGames = category === 'Toutes' ? games : games.filter((game) => game.category === category);
+    const normalizedSearch = search.trim().toLowerCase();
+    const visibleGames = (category === 'Toutes' ? games : games.filter((game) => game.category === category))
+        .filter((game) => !normalizedSearch || (game.game_name || '').toLowerCase().includes(normalizedSearch));
     const gamesWithFavorites = visibleGames.map((game) => ({ ...game, isFavorite: favoriteIds.has(Number(game.id)) }));
     const totalPages = Math.max(1, Math.ceil(visibleGames.length / PAGE_SIZE));
 
-    useEffect(() => setPage(1), [category]);
+    useEffect(() => setPage(1), [category, search]);
 
     const toggleFavorite = async (game) => {
         if (!isAuthenticated) {
@@ -77,6 +80,21 @@ export default function Games() {
                 <p>Retrouvez tous les jeux, leur catégorie et leur univers.</p>
                 {!isAuthenticated && <p className="mt-3 text-amber-200">Connectez-vous pour utiliser les favoris.</p>}
             </section>
+
+            <div className="my-6 flex justify-center">
+                <div className="relative w-full max-w-md">
+                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+                    <label htmlFor="game-search" className="sr-only">Rechercher un jeu par son nom</label>
+                    <input
+                        id="game-search"
+                        type="search"
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        placeholder="Rechercher un jeu…"
+                        className="w-full rounded-full border border-slate-700 bg-slate-900/75 py-2.5 pl-11 pr-4 text-sm text-white placeholder:text-slate-400 focus:border-cyan-400/60 focus:outline-none"
+                    />
+                </div>
+            </div>
 
             <div className="news-filters my-6">
                 {categories.map((entry) => (
@@ -156,7 +174,7 @@ export default function Games() {
                         })}
                     </div>
 
-                    {gamesWithFavorites.length === 0 && <p className="mt-6 text-slate-300">Aucun jeu dans cette catégorie.</p>}
+                    {gamesWithFavorites.length === 0 && <p className="mt-6 text-slate-300">{normalizedSearch ? `Aucun jeu ne correspond à « ${search.trim()} ».` : 'Aucun jeu dans cette catégorie.'}</p>}
 
                     {totalPages > 1 && (
                         <div className="mt-8 flex items-center justify-center gap-4">
