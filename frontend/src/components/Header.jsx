@@ -2,33 +2,30 @@
 
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Home, Newspaper, Gamepad2, ClipboardCheck, Trophy, User, Shield, LogIn, LogOut, UserPlus, ChevronDown, Menu, X, Info } from 'lucide-react';
+import { Home, Newspaper, Gamepad2, ClipboardCheck, Trophy, User, Shield, LogIn, LogOut, UserPlus, ChevronDown, Menu, X, Info, Languages } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
+import { useLang } from '../hooks/useLang.js';
 import BrandLogo from './BrandLogo.jsx';
 
 // Définition des liens principaux du menu de navigation du site.
-const NAV_ITEMS = [
-    { to: '/', label: 'Accueil', Icon: Home },
-    { to: '/news', label: 'Actualités', Icon: Newspaper },
-    { to: '/games', label: 'Jeux', Icon: Gamepad2 },
-    { to: '/tests', label: 'Test', Icon: ClipboardCheck },
-    { to: '/esport', label: 'Esport', Icon: Trophy },
-    { to: '/a-propos', label: 'À propos', Icon: Info }
-];
+// Les libellés sont traduits via le contexte de langue (t.nav).
 
 function Header() {
 
     // Récupération des infos utilisateur et fonction de déconnexion
     const { user, isAuthenticated, logout } = useAuth();
+    const { lang, setLang, t, languages } = useLang();
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [langMenuOpen, setLangMenuOpen] = useState(false);
 
     useEffect(() => {
         const closeOnEscape = (event) => {
             if (event.key === 'Escape') {
                 setMenuOpen(false);
                 setMobileMenuOpen(false);
+                setLangMenuOpen(false);
             }
         };
         document.addEventListener('keydown', closeOnEscape);
@@ -51,6 +48,7 @@ function Header() {
     const navigateTo = (path) => {
         setMenuOpen(false);
         setMobileMenuOpen(false);
+        setLangMenuOpen(false);
         navigate(path);
     };
 
@@ -65,6 +63,19 @@ function Header() {
     const userInitial = (user?.firstname || user?.name || 'U').charAt(0).toUpperCase();
     const mobileNavClass = ({ isActive }) => isActive ? 'mobile-nav-link mobile-nav-link-active' : 'mobile-nav-link';
 
+    // Navigation avec libellés traduits selon la langue active.
+    const NAV_ITEMS = [
+        { to: '/', label: t.nav.home, Icon: Home },
+        { to: '/news', label: t.nav.news, Icon: Newspaper },
+        { to: '/games', label: t.nav.games, Icon: Gamepad2 },
+        { to: '/tests', label: t.nav.tests, Icon: ClipboardCheck },
+        { to: '/esport', label: t.nav.esport, Icon: Trophy },
+        { to: '/a-propos', label: t.nav.about, Icon: Info }
+    ];
+
+    // Libellé court de la langue courante (FR / EN) affiché dans le bouton.
+    const currentLanguage = languages.find((entry) => entry.code === lang) || languages[0];
+
     return (
         <header className="site-header sticky top-0 z-40 border-b border-cyan-400/20 bg-black/80 backdrop-blur-xl">
             <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
@@ -77,11 +88,49 @@ function Header() {
 
                 <nav className="hidden items-center gap-2 lg:flex" aria-label="Navigation principale">
                     {NAV_ITEMS.map((item) => (
-                        <NavLink key={item.to} to={item.to} className={navClass} end={item.to === '/'}>
-                            <item.Icon className="h-4 w-4" /> {item.label}
+                        <NavLink key={item.to} to={item.to} className={navClass} end={item.to === '/'} aria-label={item.label}>
+                            <item.Icon className="h-4 w-4" aria-hidden="true" /> {item.label}
                         </NavLink>
                     ))}
                 </nav>
+
+                {/* Sélecteur de langue FR / EN */}
+                <div className="relative hidden lg:block">
+                    <button
+                        type="button"
+                        onClick={() => setLangMenuOpen((open) => !open)}
+                        aria-expanded={langMenuOpen}
+                        aria-haspopup="menu"
+                        aria-label={`${t.header.language} : ${currentLanguage.label}`}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/70 px-3 py-[0.6rem] text-sm font-semibold text-slate-200 transition hover:border-cyan-400/50 hover:text-white"
+                    >
+                        <Languages className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+                        {currentLanguage.short}
+                        <ChevronDown className={`h-4 w-4 text-slate-400 transition ${langMenuOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+                    </button>
+
+                    {langMenuOpen && (
+                        <>
+                            <button type="button" aria-label="Fermer le menu langue" className="fixed inset-0 z-40 cursor-default" onClick={() => setLangMenuOpen(false)} />
+                            <div className="absolute right-0 z-50 mt-2 w-40 overflow-hidden rounded-2xl border border-slate-700/70 bg-slate-950/95 p-1.5 shadow-2xl backdrop-blur-xl" role="menu">
+                                {languages.map((entry) => (
+                                    <button
+                                        key={entry.code}
+                                        type="button"
+                                        onClick={() => { setLang(entry.code); setLangMenuOpen(false); }}
+                                        className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition hover:bg-white/10 hover:text-white ${lang === entry.code ? 'text-cyan-300' : 'text-slate-200'}`}
+                                        role="menuitem"
+                                        aria-current={lang === entry.code ? 'true' : undefined}
+                                    >
+                                        <Languages className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+                                        {entry.label}
+                                        {lang === entry.code && <span className="ml-auto text-xs text-cyan-400" aria-hidden="true">✓</span>}
+                                    </button>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </div>
 
                 <div className="flex items-center gap-3">
                     {isAuthenticated ? (
@@ -110,7 +159,7 @@ function Header() {
                                             className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
                                             role="menuitem"
                                         >
-                                            <User className="h-4 w-4 text-cyan-300" /> Mon profil
+                                            <User className="h-4 w-4 text-cyan-300" /> {t.header.profile}
                                         </button>
                                         {user?.role === 'admin' && (
                                             <button
@@ -118,7 +167,7 @@ function Header() {
                                                 onClick={() => navigateTo('/admin')}
                                                 className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
                                             >
-                                                <Shield className="h-4 w-4 text-cyan-300" /> Administration
+                                                <Shield className="h-4 w-4 text-cyan-300" /> {t.header.admin}
                                             </button>
                                         )}
                                         <div className="my-1.5 h-px bg-slate-800" />
@@ -127,7 +176,7 @@ function Header() {
                                             onClick={handleLogout}
                                             className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-rose-300 transition hover:bg-rose-500/10 hover:text-rose-200"
                                         >
-                                            <LogOut className="h-4 w-4" /> Déconnexion
+                                            <LogOut className="h-4 w-4" /> {t.header.logout}
                                         </button>
                                     </div>
                                 </>
@@ -136,10 +185,10 @@ function Header() {
                     ) : (
                         <div className="hidden items-center gap-3 lg:flex">
                             <Link to="/login" className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-300 hover:text-white">
-                                <LogIn className="h-4 w-4" /> Connexion
+                                <LogIn className="h-4 w-4" /> {t.header.login}
                             </Link>
                             <Link to="/register" className="btn btn-primary inline-flex items-center gap-2">
-                                <UserPlus className="h-4 w-4" /> Inscription
+                                <UserPlus className="h-4 w-4" /> {t.header.register}
                             </Link>
                         </div>
                     )}
@@ -148,7 +197,7 @@ function Header() {
                         type="button"
                         className="mobile-menu-toggle inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-700 bg-slate-900/80 text-cyan-200 transition hover:border-cyan-400/60 hover:bg-cyan-400/10 lg:hidden"
                         onClick={() => setMobileMenuOpen((open) => !open)}
-                        aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+                        aria-label={mobileMenuOpen ? t.header.closeMenu : t.header.openMenu}
                         aria-expanded={mobileMenuOpen}
                         aria-controls="mobile-navigation"
                     >
@@ -168,6 +217,21 @@ function Header() {
                         ))}
                     </nav>
                     <div className="mobile-navigation-divider" />
+                    <div className="mobile-account-actions">
+                        {languages.map((entry) => (
+                            <button
+                                key={entry.code}
+                                type="button"
+                                onClick={() => setLang(entry.code)}
+                                className={`mobile-nav-link ${lang === entry.code ? 'mobile-nav-link-active' : ''}`}
+                                aria-current={lang === entry.code ? 'true' : undefined}
+                            >
+                                <Languages className="h-5 w-5" />
+                                <span>{entry.label}</span>
+                                {lang === entry.code && <span className="ml-auto text-xs text-cyan-400" aria-hidden="true">✓</span>}
+                            </button>
+                        ))}
+                    </div>
                     {isAuthenticated ? (
                         <div className="mobile-account-actions">
                             <button type="button" onClick={() => navigateTo('/profile')} className="mobile-nav-link"><User className="h-5 w-5" /><span>Mon profil</span></button>
@@ -176,8 +240,8 @@ function Header() {
                         </div>
                     ) : (
                         <div className="mobile-account-actions">
-                            <Link to="/login" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}><LogIn className="h-5 w-5" /><span>Connexion</span></Link>
-                            <Link to="/register" className="mobile-nav-link mobile-nav-link-primary" onClick={() => setMobileMenuOpen(false)}><UserPlus className="h-5 w-5" /><span>Inscription</span></Link>
+                            <Link to="/login" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}><LogIn className="h-5 w-5" /><span>{t.header.login}</span></Link>
+                            <Link to="/register" className="mobile-nav-link mobile-nav-link-primary" onClick={() => setMobileMenuOpen(false)}><UserPlus className="h-5 w-5" /><span>{t.header.register}</span></Link>
                         </div>
                     )}
                 </div>
