@@ -272,7 +272,7 @@ function About() {
                     Ce site est <strong className="text-white">partiellement conforme</strong> : une partie des critères du RGAA 4.1
                     niveau AA est respectée, mais le site n'a pas encore fait l'objet d'un audit complet.
                 </p>
-                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="mt-4">
                     <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-4">
                         <strong className="block text-emerald-200">✓ Mises en place sur le site</strong>
                         <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-slate-300">
@@ -288,16 +288,6 @@ function About() {
                             <li>Les écrans de chargement sont annoncés automatiquement aux lecteurs d'écran.</li>
                             <li>Le contenu strictement décoratif (vidéo de fond, particules) est masqué aux lecteurs d'écran.</li>
                             <li>La langue du document est déclarée (français) et la structure respecte la hiérarchie des titres.</li>
-                        </ul>
-                    </div>
-                    <div className="rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4">
-                        <strong className="block text-amber-200">△ Améliorations prévues</strong>
-                        <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-slate-300">
-                            <li>Audit complet des 106 critères du RGAA (contrastes, gestion du focus dans les modales).</li>
-                            <li>Vérification systématique des contrastes de texte sur le fond animé (images, vidéos).</li>
-                            <li>Message explicite lors d'un changement de contenu dynamique (chargements).</li>
-                            <li>Plan du site.</li>
-                            <li>Vidéo de fond avec alternative statique pour les connexions lentes.</li>
                         </ul>
                     </div>
                 </div>
