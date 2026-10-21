@@ -1,7 +1,9 @@
+// Vérifie la validation et la normalisation des données d'inscription.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateRegistration, MIN_PASSWORD_LENGTH } from '../utils/validation.js';
 
+// Une inscription complète et correctement formatée doit être acceptée.
 test('validateRegistration accepts a valid registration payload', () => {
     const result = validateRegistration({
         email: '  Jane.Doe@Example.com  ',
@@ -18,6 +20,7 @@ test('validateRegistration accepts a valid registration payload', () => {
     assert.equal(result.values.password, 'mot-de-passe-solide');
 });
 
+// Le mot de passe doit respecter la longueur minimale requise.
 test('validateRegistration rejects a password shorter than the minimum length', () => {
     const result = validateRegistration({
         email: 'jane@example.com',
@@ -30,6 +33,7 @@ test('validateRegistration rejects a password shorter than the minimum length', 
     assert.ok(result.errors.some((message) => message.includes(String(MIN_PASSWORD_LENGTH))));
 });
 
+// L'adresse électronique doit respecter le format attendu.
 test('validateRegistration rejects an invalid email format', () => {
     const result = validateRegistration({
         email: 'not-an-email',
@@ -42,6 +46,7 @@ test('validateRegistration rejects an invalid email format', () => {
     assert.ok(result.errors.some((message) => message.toLowerCase().includes('email')));
 });
 
+// La limite de bcrypt empêche les mots de passe de dépasser 72 octets.
 test('validateRegistration rejects a password longer than 72 bytes (bcrypt limit)', () => {
     const result = validateRegistration({
         email: 'jane@example.com',
@@ -54,6 +59,7 @@ test('validateRegistration rejects a password longer than 72 bytes (bcrypt limit
     assert.ok(result.errors.some((message) => message.includes('72')));
 });
 
+// Le prénom et le nom sont obligatoires et ne doivent pas dépasser la taille maximale.
 test('validateRegistration rejects missing or oversized names', () => {
     const missing = validateRegistration({
         email: 'jane@example.com',
@@ -74,6 +80,7 @@ test('validateRegistration rejects missing or oversized names', () => {
     assert.ok(oversized.errors.some((message) => message.includes('100')));
 });
 
+// Une charge utile nulle doit être rejetée proprement avec toutes les erreurs attendues.
 test('validateRegistration handles null and non-object payloads without throwing', () => {
     const result = validateRegistration(null);
 

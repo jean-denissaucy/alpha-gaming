@@ -1,7 +1,9 @@
+// Vérifie les règles de gestion des jeux favoris d'un utilisateur.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizeFavoriteGames, buildFavoriteGamesPayload, resolveUserFavoriteGames } from '../utils/favorites.js';
 
+// Un nouvel utilisateur reçoit tous les favoris disponibles, puis conserve uniquement sa sélection existante.
 test('resolveUserFavoriteGames grants all favorites to a new user and keeps personal selections afterward', () => {
     const allGames = [
         { game_name: 'DOOM: Dark Ages', category: 'Action' },
@@ -17,6 +19,7 @@ test('resolveUserFavoriteGames grants all favorites to a new user and keeps pers
     ]);
 });
 
+// Les favoris sont nettoyés, dédoublonnés et les entrées sans nom sont ignorées.
 test('normalizeFavoriteGames keeps unique items and trims unsafe values', () => {
     const normalized = normalizeFavoriteGames([
         { game_name: '  DOOM: Dark Ages  ', category: ' Action ' },
@@ -31,6 +34,7 @@ test('normalizeFavoriteGames keeps unique items and trims unsafe values', () => 
     ]);
 });
 
+// La réponse contenant les favoris doit garder une structure stable pour l'API.
 test('buildFavoriteGamesPayload serializes user favorites in a stable shape', () => {
     const payload = buildFavoriteGamesPayload([
         { game_name: 'DOOM: Dark Ages', category: 'Action' },

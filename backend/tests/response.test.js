@@ -1,7 +1,9 @@
+// Vérifie le format commun des réponses positives et négatives de l'API.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildSuccessResponse, buildErrorResponse } from '../utils/response.js';
 
+// Une réponse positive expose les données principales et les champs de compatibilité.
 test('buildSuccessResponse wraps payload and keeps compatibility fields', () => {
     const response = buildSuccessResponse({ user: { id: 1 } }, { user: { id: 1 }, token: 'abc123' });
 
@@ -11,6 +13,7 @@ test('buildSuccessResponse wraps payload and keeps compatibility fields', () => 
     assert.equal(response.token, 'abc123');
 });
 
+// Une réponse d'erreur utilise toujours les mêmes propriétés et le même statut HTTP.
 test('buildErrorResponse returns a consistent error payload', () => {
     const response = buildErrorResponse('Bad request', 400);
 
