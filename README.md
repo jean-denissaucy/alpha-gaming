@@ -7,10 +7,12 @@ Alpha Gaming est une application web full-stack consacrée aux actualités gamin
 - Actualités gaming, notes de jeux et contenus esports.
 - Catalogue de jeux classés par catégories.
 - Inscription et connexion avec JWT et bcrypt.
+- Affichage ou masquage du mot de passe dans les formulaires d'authentification.
 - Dashboard et profil protégés.
 - Favoris persistants par utilisateur.
 - Espace administrateur protégé par rôle.
 - Synchronisation RSS quotidienne à 04:00 hors environnement Vercel.
+- En-têtes HTTP de sécurité et politique CSP au déploiement Vercel.
 
 ## Stack
 
@@ -88,6 +90,9 @@ npm --prefix frontend run lint
 npm run build
 ```
 
+Les tests backend couvrent notamment la validation des inscriptions et changements de mot de passe,
+la normalisation des favoris, le format des réponses API et la sécurisation des limites de pagination.
+
 ## API principale
 
 ```text
@@ -108,6 +113,13 @@ GET    /api/admin/*                         JWT + rôle admin
 
 ## Déploiement
 
-Le frontend se déploie sur Vercel. La fonction `frontend/api/[...path].js` relaie les requêtes vers Render. Définir `BACKEND_API_URL` dans Vercel avec l'URL publique de l'API et configurer les variables MySQL, JWT et CORS dans Render.
+Le frontend se déploie sur Vercel. La fonction `frontend/api/[...path].js` relaie les requêtes vers Render.
+Définir `BACKEND_API_URL` dans Vercel avec l'URL publique de l'API et configurer les variables MySQL,
+JWT et CORS dans Render.
+
+Les fichiers `vercel.json` configurent une politique de sécurité du contenu (CSP) ainsi que les en-têtes
+`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` et `Permissions-Policy`.
+La CSP autorise uniquement les ressources nécessaires au frontend : scripts locaux, Google Fonts,
+images et médias HTTPS, ainsi que l'API Render.
 
 Consulter [dossier-exam/INSTALLATION.md](dossier-exam/INSTALLATION.md), [dossier-exam/ARCHITECTURE.md](dossier-exam/ARCHITECTURE.md) et [dossier-exam/DEPLOYMENT.md](dossier-exam/DEPLOYMENT.md) pour les détails.

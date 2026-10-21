@@ -9,6 +9,8 @@ API REST Node.js/Express de l'application Alpha Gaming.
 - Accès MySQL aux utilisateurs, jeux, catégories et favoris.
 - Exposition des actualités, notes de jeux et contenus esports.
 - Synchronisation des flux RSS avec `rss-parser` et `node-cron`.
+- Validation et normalisation des données reçues avant traitement.
+- Réponses API standardisées pour les succès et les erreurs.
 
 ## Installation
 
@@ -64,6 +66,9 @@ npm test
 
 Le script utilise le test runner natif de Node.js et exécute les tests présents dans `tests/`.
 
+Les tests vérifient les règles d'inscription et de changement de mot de passe, la gestion des favoris,
+le format des réponses HTTP et la validation des limites de pagination.
+
 ## Endpoints
 
 ### Authentification
@@ -94,6 +99,15 @@ Les routes `/api/admin/*` nécessitent un JWT et un rôle administrateur, ou une
 
 - `GET /` : état de l'API.
 - `GET /health/db` : vérification de la connexion MySQL.
+
+## Sécurité
+
+- Les mots de passe sont hachés avec `bcrypt` et ne sont jamais stockés en clair.
+- Les mots de passe sont limités à 72 caractères pour respecter la contrainte de bcrypt.
+- Les routes privées utilisent un JWT transmis dans l'en-tête `Authorization`.
+- Les origines autorisées sont contrôlées par CORS.
+- Les routes d'administration vérifient le JWT et le rôle ou l'adresse administrateur autorisée.
+- Les variables sensibles doivent rester dans `.env` et ne doivent jamais être versionnées.
 
 ## Structure
 

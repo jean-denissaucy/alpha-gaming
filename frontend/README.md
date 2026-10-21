@@ -8,6 +8,8 @@ Application React/Vite d'Alpha Gaming.
 - Inscription et connexion avec contexte d'authentification.
 - Routes protégées avec `PrivateRoute`.
 - Dashboard, profil et favoris persistants.
+- Boutons permettant d'afficher ou de masquer les mots de passe dans la connexion,
+  l'inscription et le changement de mot de passe.
 - Interface responsive avec Tailwind CSS et Lucide React.
 - Appels JSON avec `fetch` via `src/services/api.js`.
 
@@ -83,6 +85,12 @@ DELETE /api/users/favorites/:gameId
 ```
 
 Les appels privés transmettent le JWT dans l'en-tête `Authorization`. En production, le proxy `api/[...path].js` relaie `/api/*` vers le backend Render; sa cible est configurée avec `BACKEND_API_URL`.
+
+## Sécurité des formulaires
+
+Les champs de mot de passe sont masqués par défaut. Chaque champ dispose d'un bouton accessible
+permettant d'afficher temporairement sa valeur ou de la masquer à nouveau. Cette option est disponible
+sur les pages de connexion, d'inscription et de profil.
 
 ## Déploiement
 
