@@ -87,3 +87,15 @@ Les appels privés transmettent le JWT dans l'en-tête `Authorization`. En produ
 ## Déploiement
 
 Le projet est configuré pour Vercel avec `vercel.json`, `outputDirectory: dist` et le proxy serverless dans `api/`. Définir `BACKEND_API_URL` dans l'environnement Vercel avant le déploiement.
+
+### En-têtes de sécurité
+
+Le fichier `vercel.json` configure automatiquement des en-têtes de sécurité pour toutes les pages :
+
+- `Content-Security-Policy` limite les scripts, styles, polices, images, vidéos et connexions aux sources nécessaires au site.
+- `X-Content-Type-Options: nosniff` empêche le navigateur de deviner un autre type MIME.
+- `X-Frame-Options: DENY` interdit l'intégration du site dans une iframe.
+- `Referrer-Policy: strict-origin-when-cross-origin` limite les informations transmises dans le référent.
+- `Permissions-Policy` désactive l'accès à la caméra, au microphone et à la géolocalisation.
+
+`vercel.json` reste volontairement un fichier JSON strict : les commentaires JavaScript ne doivent pas y être ajoutés, car ils empêcheraient Vercel de lire la configuration.
