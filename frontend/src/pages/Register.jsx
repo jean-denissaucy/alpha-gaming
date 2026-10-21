@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Eye, Trash2, Lock } from 'lucide-react';
+import { ShieldCheck, Eye, EyeOff, Trash2, Lock } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
 import usePageTitle from '../hooks/usePageTitle.js';
 
@@ -14,6 +14,7 @@ function Register() {
     const [lastname, setLastname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     // Consentement RGPD : obligatoire avant de pouvoir créer le compte.
     const [rgpdConsent, setRgpdConsent] = useState(false);
@@ -179,18 +180,29 @@ function Register() {
                     {/* Champ mot de passe */}
                     <div className="mt-4">
                         <label htmlFor="register-password" className="text-xs uppercase tracking-wide text-slate-400">Mot de passe</label>
-                        <input
-                            id="register-password"
-                            name="password"
-                            type="password"
-                            autoComplete="new-password"
-                            className="input mt-2"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            minLength={8}
-                            placeholder="Au moins 8 caractères"
-                        />
+                        <div className="relative mt-2">
+                            <input
+                                id="register-password"
+                                name="password"
+                                type={showPassword ? 'text' : 'password'}
+                                autoComplete="new-password"
+                                className="input pr-12"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                minLength={8}
+                                placeholder="Au moins 8 caractères"
+                            />
+                            <button
+                                type="button"
+                                className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-slate-400 transition hover:text-cyan-300 focus:outline-none focus-visible:text-cyan-300"
+                                onClick={() => setShowPassword((visible) => !visible)}
+                                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                                aria-pressed={showPassword}
+                            >
+                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                            </button>
+                        </div>
                     </div>
 
                     {/* Consentement RGPD obligatoire avant la création du compte */}

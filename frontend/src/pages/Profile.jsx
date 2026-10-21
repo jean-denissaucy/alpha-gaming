@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Heart, Gamepad2, ExternalLink, Mail, Calendar, User, ShieldCheck, LogOut, KeyRound } from 'lucide-react';
+import { Heart, Gamepad2, ExternalLink, Mail, Calendar, User, ShieldCheck, LogOut, KeyRound, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
 import usePageTitle from '../hooks/usePageTitle.js';
 import { authService, gamesService } from '../services/api.js';
@@ -17,6 +17,11 @@ export default function Profile() {
     const [pwdForm, setPwdForm] = useState({ current: '', next: '', confirm: '' });
     const [pwdFeedback, setPwdFeedback] = useState(null); // { type: 'success' | 'error', message }
     const [pwdSaving, setPwdSaving] = useState(false);
+    const [visiblePasswords, setVisiblePasswords] = useState({
+        current: false,
+        next: false,
+        confirm: false
+    });
 
     useEffect(() => {
         let isMounted = true;
@@ -216,41 +221,74 @@ export default function Profile() {
                         <form className="mt-4 grid gap-4 sm:grid-cols-3" onSubmit={handlePasswordChange} noValidate>
                             <div>
                                 <label htmlFor="pwd-current" className="text-xs uppercase tracking-wide text-slate-400">Mot de passe actuel</label>
-                                <input
-                                    id="pwd-current"
-                                    type="password"
-                                    className="input mt-2"
-                                    value={pwdForm.current}
-                                    autoComplete="current-password"
-                                    onChange={(e) => setPwdForm({ ...pwdForm, current: e.target.value })}
-                                    required
-                                />
+                                <div className="relative mt-2">
+                                    <input
+                                        id="pwd-current"
+                                        type={visiblePasswords.current ? 'text' : 'password'}
+                                        className="input pr-12"
+                                        value={pwdForm.current}
+                                        autoComplete="current-password"
+                                        onChange={(e) => setPwdForm({ ...pwdForm, current: e.target.value })}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-slate-400 transition hover:text-cyan-300 focus:outline-none focus-visible:text-cyan-300"
+                                        onClick={() => setVisiblePasswords((state) => ({ ...state, current: !state.current }))}
+                                        aria-label={visiblePasswords.current ? 'Masquer le mot de passe actuel' : 'Afficher le mot de passe actuel'}
+                                        aria-pressed={visiblePasswords.current}
+                                    >
+                                        {visiblePasswords.current ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label htmlFor="pwd-next" className="text-xs uppercase tracking-wide text-slate-400">Nouveau mot de passe</label>
-                                <input
-                                    id="pwd-next"
-                                    type="password"
-                                    className="input mt-2"
-                                    value={pwdForm.next}
-                                    autoComplete="new-password"
-                                    onChange={(e) => setPwdForm({ ...pwdForm, next: e.target.value })}
-                                    required
-                                    minLength={8}
-                                />
+                                <div className="relative mt-2">
+                                    <input
+                                        id="pwd-next"
+                                        type={visiblePasswords.next ? 'text' : 'password'}
+                                        className="input pr-12"
+                                        value={pwdForm.next}
+                                        autoComplete="new-password"
+                                        onChange={(e) => setPwdForm({ ...pwdForm, next: e.target.value })}
+                                        required
+                                        minLength={8}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-slate-400 transition hover:text-cyan-300 focus:outline-none focus-visible:text-cyan-300"
+                                        onClick={() => setVisiblePasswords((state) => ({ ...state, next: !state.next }))}
+                                        aria-label={visiblePasswords.next ? 'Masquer le nouveau mot de passe' : 'Afficher le nouveau mot de passe'}
+                                        aria-pressed={visiblePasswords.next}
+                                    >
+                                        {visiblePasswords.next ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label htmlFor="pwd-confirm" className="text-xs uppercase tracking-wide text-slate-400">Confirmer le nouveau</label>
-                                <input
-                                    id="pwd-confirm"
-                                    type="password"
-                                    className="input mt-2"
-                                    value={pwdForm.confirm}
-                                    autoComplete="new-password"
-                                    onChange={(e) => setPwdForm({ ...pwdForm, confirm: e.target.value })}
-                                    required
-                                    minLength={8}
-                                />
+                                <div className="relative mt-2">
+                                    <input
+                                        id="pwd-confirm"
+                                        type={visiblePasswords.confirm ? 'text' : 'password'}
+                                        className="input pr-12"
+                                        value={pwdForm.confirm}
+                                        autoComplete="new-password"
+                                        onChange={(e) => setPwdForm({ ...pwdForm, confirm: e.target.value })}
+                                        required
+                                        minLength={8}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-slate-400 transition hover:text-cyan-300 focus:outline-none focus-visible:text-cyan-300"
+                                        onClick={() => setVisiblePasswords((state) => ({ ...state, confirm: !state.confirm }))}
+                                        aria-label={visiblePasswords.confirm ? 'Masquer la confirmation du mot de passe' : 'Afficher la confirmation du mot de passe'}
+                                        aria-pressed={visiblePasswords.confirm}
+                                    >
+                                        {visiblePasswords.confirm ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    </button>
+                                </div>
                             </div>
                             <div className="flex flex-wrap items-center gap-4 sm:col-span-3">
                                 <button type="submit" className="btn btn-primary disabled:cursor-not-allowed disabled:opacity-60" disabled={pwdSaving}>

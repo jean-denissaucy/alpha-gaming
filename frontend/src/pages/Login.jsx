@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth.js';
 import usePageTitle from '../hooks/usePageTitle.js';
 
@@ -11,6 +12,7 @@ function Login() {
     // États pour gérer les champs du formulaire
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     // États pour gérer les erreurs et le chargement
     const [error, setError] = useState('');
@@ -78,17 +80,28 @@ function Login() {
                         {/* Champ mot de passe */}
                         <div className="mt-4">
                             <label htmlFor="login-password" className="text-xs uppercase tracking-wide text-slate-400">Mot de passe</label>
-                            <input
-                                id="login-password"
-                                name="password"
-                                type="password"
-                                autoComplete="current-password"
-                                className="input mt-2"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                placeholder="Ton mot de passe"
-                            />
+                            <div className="relative mt-2">
+                                <input
+                                    id="login-password"
+                                    name="password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    autoComplete="current-password"
+                                    className="input pr-12"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    placeholder="Ton mot de passe"
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-slate-400 transition hover:text-cyan-300 focus:outline-none focus-visible:text-cyan-300"
+                                    onClick={() => setShowPassword((visible) => !visible)}
+                                    aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                                    aria-pressed={showPassword}
+                                >
+                                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Affichage de l'erreur si présente — annoncé automatiquement par les lecteurs d'écran (RGAA 11.10) */}
