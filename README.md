@@ -59,7 +59,7 @@ DB_PASSWORD=
 DB_NAME=jean-denis-saucy_alpha-gaming
 JWT_SECRET=remplacer_par_un_secret_aleatoire
 JWT_EXPIRES_IN=7d
-ADMIN_EMAILS=jean-denis.saucy@laplateforme.io
+ADMIN_EMAILS=admin@example.com
 CORS_ORIGINS=http://localhost:5173
 ```
 
