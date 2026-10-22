@@ -34,6 +34,7 @@ DB_PASSWORD=
 DB_NAME=jean-denis-saucy_alpha-gaming
 JWT_SECRET=remplacer_par_un_secret_aleatoire
 JWT_EXPIRES_IN=7d
+ADMIN_EMAILS=jean-denis.saucy@laplateforme.io
 CORS_ORIGINS=http://localhost:5173
 ```
 
@@ -46,6 +47,7 @@ Les secrets de production doivent rester dans les variables d'environnement et n
 | `DB_USER`, `DB_PASSWORD`, `DB_NAME` | Accès à la base |
 | `JWT_SECRET` | Signature des tokens |
 | `JWT_EXPIRES_IN` | Durée de validité du JWT |
+| `ADMIN_EMAILS` | Adresses administratrices séparées par des virgules |
 | `CORS_ORIGINS` | Origines autorisées séparées par des virgules |
 | `CRON_SCHEDULE` | Expression cron personnalisée, `0 4 * * *` par défaut |
 
@@ -105,6 +107,9 @@ Les routes `/api/admin/*` nécessitent un JWT et un rôle administrateur, ou une
 - Les mots de passe sont hachés avec `bcrypt` et ne sont jamais stockés en clair.
 - Les mots de passe sont limités à 72 caractères pour respecter la contrainte de bcrypt.
 - Les routes privées utilisent un JWT transmis dans l'en-tête `Authorization`.
+- Le middleware vérifie le format `Bearer`, la signature, l'expiration et la présence de l'identifiant utilisateur dans le JWT.
+- L'utilisateur est rechargé depuis MySQL à chaque requête protégée afin de refuser les comptes supprimés ou désactivés du système.
+- Les erreurs d'authentification renvoient `401`; une base indisponible renvoie `503`.
 - Les origines autorisées sont contrôlées par CORS.
 - Les routes d'administration vérifient le JWT et le rôle ou l'adresse administrateur autorisée.
 - Les variables sensibles doivent rester dans `.env` et ne doivent jamais être versionnées.

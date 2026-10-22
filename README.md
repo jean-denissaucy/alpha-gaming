@@ -59,8 +59,13 @@ DB_PASSWORD=
 DB_NAME=jean-denis-saucy_alpha-gaming
 JWT_SECRET=remplacer_par_un_secret_aleatoire
 JWT_EXPIRES_IN=7d
+ADMIN_EMAILS=jean-denis.saucy@laplateforme.io
 CORS_ORIGINS=http://localhost:5173
 ```
+
+`ADMIN_EMAILS` est une liste d'adresses séparées par des virgules. Ces adresses
+obtiennent le rôle administrateur après authentification, en complément des utilisateurs
+dont le rôle est `admin` en base de données.
 
 Ne jamais publier les valeurs réelles de `DB_PASSWORD`, `JWT_SECRET` ou des autres variables sensibles.
 
@@ -110,6 +115,16 @@ POST   /api/users/favorites/:gameId        JWT
 DELETE /api/users/favorites/:gameId        JWT
 GET    /api/admin/*                         JWT + rôle admin
 ```
+
+Les routes protégées utilisent l'en-tête HTTP suivant :
+
+```http
+Authorization: Bearer [JWT]
+```
+
+Le middleware d'authentification vérifie la signature et l'expiration du JWT, exige un
+identifiant utilisateur dans le token, puis recharge l'utilisateur depuis MySQL avant
+de laisser la requête continuer. Un utilisateur supprimé ou un token invalide est refusé.
 
 ## Déploiement
 
